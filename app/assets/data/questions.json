@@ -1,0 +1,124 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "dimension": "anxiety",
+      "question": "Quand mon partenaire met plus de temps que d'habitude à me répondre, je commence rapidement à me demander s'il/elle s'éloigne de moi.",
+      "tags": ["distanceSilence", "fearOfLoss"]
+    },
+    {
+      "id": 2,
+      "dimension": "avoidance",
+      "question": "Quand la relation devient très proche émotionnellement, je ressens parfois le besoin de prendre de la distance pour retrouver mon équilibre.",
+      "tags": ["proximityDiscomfort", "withdrawalUnderStress"]
+    },
+    {
+      "id": 3,
+      "dimension": "anxiety",
+      "question": "Lorsque mon partenaire semble moins attentionné ou plus distant que d'habitude, je me sens facilement inquiet pour la relation.",
+      "tags": ["validationRequired", "distanceSilence"]
+    },
+    {
+      "id": 4,
+      "dimension": "avoidance",
+      "question": "Dans une relation amoureuse, je peux me sentir mal à l'aise lorsque mon partenaire devient très dépendant émotionnellement de moi.",
+      "tags": ["proximityDiscomfort", "autonomyNeed"]
+    },
+    {
+      "id": 5,
+      "dimension": "anxiety",
+      "question": "Si mon partenaire s'éloigne après un moment de forte proximité, j'ai tendance à vouloir rétablir rapidement le lien.",
+      "tags": ["quickRepair", "fearOfLoss"]
+    },
+    {
+      "id": 6,
+      "dimension": "avoidance",
+      "question": "Dans une relation amoureuse, j'ai besoin de beaucoup d'espace personnel pour me sentir bien.",
+      "tags": ["autonomyNeed"]
+    },
+    {
+      "id": 7,
+      "dimension": "anxiety",
+      "question": "Quand il y a un conflit dans mon couple, j'ai du mal à me calmer tant que la situation n'est pas clarifiée.",
+      "tags": ["quickRepair", "conflict"]
+    },
+    {
+      "id": 8,
+      "dimension": "avoidance",
+      "question": "Lorsqu'une discussion avec mon partenaire devient émotionnellement trop intense, je préfère parfois me retirer pour retrouver mon calme.",
+      "tags": ["conflict", "withdrawalUnderStress"]
+    },
+    {
+      "id": 9,
+      "dimension": "anxiety",
+      "question": "Si mon partenaire ne me rassure pas clairement sur ses sentiments, je peux me sentir rapidement insécurisé.",
+      "tags": ["validationRequired"]
+    },
+    {
+      "id": 10,
+      "dimension": "avoidance",
+      "question": "Je me sens parfois envahi lorsque mon partenaire veut partager beaucoup d'émotions ou aller très profondément dans l'échange émotionnel.",
+      "tags": ["proximityDiscomfort", "emotionalContainment"]
+    },
+    {
+      "id": 11,
+      "dimension": "anxiety",
+      "question": "Quand je sens que mon partenaire prend ses distances, j'ai du mal à penser à autre chose.",
+      "tags": ["distanceSilence", "overthinking"]
+    },
+    {
+      "id": 12,
+      "dimension": "avoidance",
+      "question": "Dans une relation amoureuse, j'ai tendance à garder certaines émotions pour moi plutôt que de les partager à mon partenaire.",
+      "tags": ["emotionalContainment"]
+    },
+    {
+      "id": 13,
+      "dimension": "anxiety",
+      "question": "J'ai souvent besoin de savoir clairement où j'en suis dans la relation pour me sentir apaisé.",
+      "tags": ["validationRequired"]
+    },
+    {
+      "id": 14,
+      "dimension": "avoidance",
+      "question": "Lorsque mon partenaire se rapproche très vite ou très fort émotionnellement, je peux ressentir le besoin de ralentir la relation.",
+      "tags": ["controlNeed", "proximityDiscomfort"]
+    },
+    {
+      "id": 15,
+      "dimension": "anxiety",
+      "question": "Après un désaccord ou un conflit, j'ai besoin de me sentir reconnecté rapidement avec mon partenaire.",
+      "tags": ["quickRepair", "conflict"]
+    },
+    {
+      "id": 16,
+      "dimension": "avoidance",
+      "question": "Quand une relation devient sérieuse, je peux parfois me demander si je risque d'y perdre trop de liberté.",
+      "tags": ["autonomyNeed", "controlNeed"]
+    },
+    {
+      "id": 17,
+      "dimension": "anxiety",
+      "question": "Si mon partenaire devient silencieux ou distant pendant un moment, cela peut rapidement me faire imaginer le pire.",
+      "tags": ["distanceSilence", "fearOfLoss", "overthinking"]
+    },
+    {
+      "id": 18,
+      "dimension": "avoidance",
+      "question": "Dans une relation amoureuse, j'aime garder une certaine indépendance émotionnelle plutôt que de tout partager avec mon partenaire.",
+      "tags": ["autonomyNeed", "emotionalContainment"]
+    },
+    {
+      "id": 19,
+      "dimension": "anxiety",
+      "question": "Quand je me sens blessé dans la relation, j'ai tendance à vouloir en parler rapidement pour réparer le lien.",
+      "tags": ["quickRepair", "conflict"]
+    },
+    {
+      "id": 20,
+      "dimension": "avoidance",
+      "question": "Quand la relation devient émotionnellement trop lourde ou trop stressante, j'ai parfois besoin de prendre du recul pour me protéger.",
+      "tags": ["withdrawalUnderStress", "controlNeed"]
+    }
+  ]
+}

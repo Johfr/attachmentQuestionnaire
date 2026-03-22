@@ -1,0 +1,408 @@
+{
+  "page": {
+    "slug": "attachment-scoring-logic",
+    "title": "Logique métier du test d'attachement adulte",
+    "description": "Documentation métier du moteur de calcul du test : dimensions, tags, niveaux, pondérations, profils et règles d'interprétation."
+  },
+  "sections": [
+    {
+      "id": "overview",
+      "title": "Vue d'ensemble",
+      "paragraphs": [
+        "Le test repose sur deux dimensions principales : l'anxiété d'attachement et l'évitement de l'intimité. Ces deux axes constituent la base de lecture du résultat.",
+        "Les tags ne remplacent pas les dimensions principales. Ils servent à préciser la manière dont chaque dimension s'exprime concrètement dans la relation.",
+        "L'ordre de lecture retenu est le suivant : 1) style global, 2) intensité par dimension, 3) sous-profils, 4) déclencheurs principaux."
+      ]
+    },
+    {
+      "id": "scoringPrinciples",
+      "title": "Principes de calcul",
+      "paragraphs": [
+        "Chaque question est notée sur une échelle de 0 à 4. Le score brut de chaque dimension est transformé en pourcentage pour obtenir un score d'intensité.",
+        "Chaque tag est calculé à partir de la moyenne des réponses des questions qui lui sont associées. Cette moyenne permet ensuite de classer le tag en faible, modéré ou élevé.",
+        "Les dimensions servent de porte d'entrée principale. Les profils ne doivent jamais être déduits uniquement à partir des tags si le niveau global de la dimension n'est pas cohérent."
+      ],
+      "examples": [
+        {
+          "title": "Exemple de score de dimension",
+          "content": "10 questions anxiété x note maximale 4 = 40 points. Si une personne obtient 28/40, alors anxietyPercent = 70. Elle est classée en niveau high."
+        },
+        {
+          "title": "Exemple de score de tag",
+          "content": "Si un tag repose sur 3 questions et que les réponses sont 3, 2 et 4, la moyenne du tag est (3 + 2 + 4) / 3 = 3. Le tag est classé en niveau high."
+        }
+      ]
+    },
+    {
+      "id": "levels",
+      "title": "Niveaux d'intensité",
+      "paragraphs": [
+        "Les dimensions et les tags utilisent trois niveaux : low, medium, high.",
+        "Pour les dimensions, le niveau est calculé à partir d'un pourcentage global.",
+        "Pour les tags, le niveau est calculé à partir de la moyenne des réponses associées au tag."
+      ],
+      "data": {
+        "dimensionLevels": {
+          "low": { "min": 0, "max": 33 },
+          "medium": { "min": 34, "max": 66 },
+          "high": { "min": 67, "max": 100 }
+        },
+        "tagLevels": {
+          "low": { "min": 0, "max": 1.49 },
+          "medium": { "min": 1.5, "max": 2.49 },
+          "high": { "min": 2.5, "max": 4 }
+        }
+      }
+    },
+    {
+      "id": "weights",
+      "title": "Rôle des poids",
+      "paragraphs": [
+        "Les poids servent à mesurer la force avec laquelle un niveau de tag favorise ou affaiblit un profil.",
+        "Un poids n'est pas un score absolu. Il sert à comparer plusieurs signaux entre eux dans un calcul cumulatif.",
+        "Plus le poids est élevé, plus le signal compte dans l'orientation vers un profil donné."
+      ],
+      "data": {
+        "weightScale": {
+          "1": "favorise légèrement ou affaiblit légèrement un profil",
+          "2": "favorise clairement ou affaiblit clairement un profil",
+          "3": "favorise fortement ou s'oppose fortement à un profil"
+        }
+      },
+      "examples": [
+        {
+          "title": "Exemple simple",
+          "content": "Si quickRepair.high donne +3 à anxiousActivated et overthinking.high donne +3 à anxiousActivated, alors le moteur comprend que l'hypothèse anxieuse activée devient très forte."
+        },
+        {
+          "title": "Exemple comparatif",
+          "content": "Si anxiousActivated totalise 8 points de soutien et anxiousRegulated seulement 2, le profil anxieux activé est considéré comme dominant."
+        }
+      ]
+    },
+    {
+      "id": "dimensionsAndTags",
+      "title": "Dimensions et tags",
+      "paragraphs": [
+        "Chaque tag appartient à une dimension principale, sauf conflict qui est un tag mixte.",
+        "Les tags anxieux décrivent les mécanismes d'hyperactivation du lien. Les tags évitants décrivent les mécanismes de mise à distance, de contrôle ou de fermeture."
+      ],
+      "data": {
+        "dimensions": {
+          "anxiety": {
+            "label": "Anxiété d'attachement",
+            "tags": [
+              "distanceSilence",
+              "fearOfLoss",
+              "overthinking",
+              "validationRequired",
+              "quickRepair"
+            ]
+          },
+          "avoidance": {
+            "label": "Évitement de l'intimité",
+            "tags": [
+              "proximityDiscomfort",
+              "autonomyNeed",
+              "emotionalContainment",
+              "controlNeed",
+              "withdrawalUnderStress"
+            ]
+          },
+          "mixed": {
+            "label": "Tag transversal",
+            "tags": [
+              "conflict"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "globalStyles",
+      "title": "Styles globaux",
+      "paragraphs": [
+        "Le style global dépend d'abord des deux dimensions principales. Les tags viennent ensuite préciser le mode d'expression du profil.",
+        "Un style global ne doit pas être déduit directement de l'intuition ou d'un seul déclencheur fort."
+      ],
+      "data": {
+        "globalStyles": {
+          "secure": {
+            "rule": "anxiety low + avoidance low",
+            "description": "Fonctionnement globalement stable, peu de déclencheurs majeurs, bonne tolérance aux variations normales du lien."
+          },
+          "anxious": {
+            "rule": "anxiety high + avoidance low",
+            "description": "Hyperactivation relationnelle dominante, forte sensibilité au lien, à l'incertitude et à la distance."
+          },
+          "dismissiveAvoidant": {
+            "rule": "anxiety low + avoidance high",
+            "description": "Distance émotionnelle dominante, besoin d'espace, fermeture ou retrait plus marqués."
+          },
+          "fearfulAvoidant": {
+            "rule": "anxiety high + avoidance high",
+            "description": "Double activation : fort besoin de lien et forte difficulté à tolérer l'intimité ou la surcharge émotionnelle."
+          },
+          "mixedProfile": {
+            "rule": "combinaison non nette ou medium/medium sans dominance claire",
+            "description": "Profil nuancé, intermédiaire ou contradictoire, sans pattern de régulation suffisamment clair pour trancher."
+          }
+        }
+      }
+    },
+    {
+      "id": "subProfiles",
+      "title": "Sous-profils et conditions métier",
+      "paragraphs": [
+        "Les sous-profils servent à préciser comment la dimension s'exprime. Ils ne remplacent jamais le style global.",
+        "Chaque sous-profil repose sur une combinaison de niveau de dimension et de signaux de tags."
+      ],
+      "data": {
+        "profiles": {
+          "anxiousActivated": {
+            "dimensionGate": {
+              "dimension": "anxiety",
+              "requiredLevel": "high"
+            },
+            "coreSignals": [
+              "quickRepair high",
+              "overthinking high"
+            ],
+            "supportSignals": [
+              "distanceSilence high",
+              "fearOfLoss high",
+              "validationRequired high"
+            ],
+            "logic": "Le profil est renforcé si les deux signaux centraux sont élevés et qu'au moins un signal de soutien est élevé."
+          },
+          "anxiousRegulated": {
+            "dimensionGate": {
+              "dimension": "anxiety",
+              "requiredLevels": ["medium", "high"]
+            },
+            "coreSignals": [
+              "quickRepair lowOrMedium",
+              "overthinking lowOrMedium"
+            ],
+            "supportSignals": [
+              "conflict lowOrMedium"
+            ],
+            "logic": "Le profil est retenu si la sensibilité relationnelle existe mais sans emballement marqué ni urgence forte à réparer."
+          },
+          "anxiousAmbivalent": {
+            "dimensionGate": {
+              "dimension": "anxiety",
+              "requiredLevel": "medium"
+            },
+            "coreSignals": [
+              "majorityAnxietyTags medium"
+            ],
+            "supportSignals": [],
+            "logic": "Le profil est retenu si l'anxiété est intermédiaire, avec plusieurs tags modérés mais sans pattern activé net ni pattern régulé net."
+          },
+          "avoidantRigid": {
+            "dimensionGate": {
+              "dimension": "avoidance",
+              "requiredLevel": "high"
+            },
+            "coreSignals": [
+              "proximityDiscomfort high",
+              "emotionalContainment high"
+            ],
+            "supportSignals": [
+              "withdrawalUnderStress high",
+              "controlNeed high",
+              "autonomyNeed high"
+            ],
+            "logic": "Le profil est renforcé si la proximité dérange fortement, que l'expression émotionnelle est verrouillée, et qu'au moins un marqueur défensif est élevé."
+          },
+          "avoidantFlexible": {
+            "dimensionGate": {
+              "dimension": "avoidance",
+              "requiredLevel": "medium"
+            },
+            "coreSignals": [
+              "autonomyNeed mediumOrHigh",
+              "conflict low"
+            ],
+            "supportSignals": [
+              "emotionalContainment lowOrMedium",
+              "withdrawalUnderStress lowOrMedium",
+              "controlNeed medium"
+            ],
+            "logic": "Le profil est retenu si le besoin d'espace est réel mais sans fermeture trop rigide ni retrait défensif trop fort."
+          },
+          "avoidantAdaptive": {
+            "dimensionGate": {
+              "dimension": "avoidance",
+              "requiredLevel": "medium"
+            },
+            "coreSignals": [
+              "majorityAvoidanceTags medium"
+            ],
+            "supportSignals": [
+              "conflict lowOrMedium"
+            ],
+            "logic": "Le profil est retenu si l'évitement est intermédiaire, relativement équilibré, sans pattern rigide net."
+          },
+          "fearfulAvoidantActivated": {
+            "dimensionGate": {
+              "dimensions": {
+                "anxiety": "high",
+                "avoidance": "high"
+              }
+            },
+            "coreSignals": [
+              "quickRepair high",
+              "overthinking high",
+              "withdrawalUnderStress high"
+            ],
+            "supportSignals": [
+              "conflict high",
+              "proximityDiscomfort high",
+              "fearOfLoss high"
+            ],
+            "logic": "Le profil est renforcé si la personne présente à la fois une forte hyperactivation anxieuse et une forte stratégie de retrait ou de défense évitante."
+          }
+        }
+      }
+    },
+    {
+      "id": "tagContributions",
+      "title": "Contributions métier des tags",
+      "paragraphs": [
+        "Chaque tag peut favoriser ou affaiblir un ou plusieurs profils selon son niveau low, medium ou high.",
+        "Ces contributions ne suffisent pas à elles seules à attribuer un profil. Elles viennent confirmer ou affaiblir une hypothèse déjà cohérente avec les dimensions."
+      ],
+      "data": {
+        "contributionLogic": {
+          "low": "peut favoriser des profils plus régulés, adaptatifs ou flexibles selon le tag",
+          "medium": "peut orienter vers des profils intermédiaires, ambivalents ou adaptatifs",
+          "high": "favorise les profils les plus activés, rigides ou défensifs selon le tag"
+        },
+        "examples": [
+          {
+            "tag": "distanceSilence",
+            "low": "favorise légèrement anxiousRegulated",
+            "medium": "peut orienter vers anxiousAmbivalent",
+            "high": "favorise clairement anxiousActivated"
+          },
+          {
+            "tag": "overthinking",
+            "low": "favorise clairement anxiousRegulated",
+            "medium": "favorise clairement anxiousAmbivalent",
+            "high": "favorise fortement anxiousActivated"
+          },
+          {
+            "tag": "withdrawalUnderStress",
+            "low": "favorise clairement avoidantFlexible",
+            "medium": "reste compatible avec avoidantFlexible ou avoidantAdaptive",
+            "high": "favorise fortement avoidantRigid et clairement fearfulAvoidantActivated"
+          }
+        ]
+      }
+    },
+    {
+      "id": "calculationFlow",
+      "title": "Ordre de calcul recommandé",
+      "paragraphs": [
+        "Le moteur doit d'abord calculer les scores de dimension, puis les niveaux des tags, puis les styles globaux, puis les sous-profils.",
+        "Les tags ne doivent pas court-circuiter la logique des dimensions."
+      ],
+      "data": {
+        "steps": [
+          "Calculer les scores bruts de anxiety et avoidance",
+          "Transformer les scores de dimension en pourcentage",
+          "Attribuer un niveau low, medium ou high à chaque dimension",
+          "Calculer la moyenne de chaque tag",
+          "Attribuer un niveau low, medium ou high à chaque tag",
+          "Déterminer le style global à partir des deux dimensions",
+          "Calculer les scores pondérés de soutien et d'opposition pour chaque sous-profil",
+          "Retenir le sous-profil dominant uniquement s'il est cohérent avec le niveau de dimension",
+          "Utiliser mixedProfile comme fallback si aucune combinaison n'est suffisamment nette"
+        ]
+      }
+    },
+    {
+      "id": "weightedCalculationExample",
+      "title": "Exemple de calcul pondéré",
+      "paragraphs": [
+        "Le système de poids permet de comparer plusieurs hypothèses de sous-profils sans rester bloqué dans une logique binaire.",
+        "L'exemple ci-dessous illustre une logique simple d'addition de signaux favorables."
+      ],
+      "examples": [
+        {
+          "title": "Exemple anxiousActivated",
+          "content": "anxiety = high, quickRepair = high (+3), overthinking = high (+3), distanceSilence = high (+2), fearOfLoss = medium (+0 ou +1 selon règle interne). Le profil anxiousActivated devient très probable."
+        },
+        {
+          "title": "Exemple avoidantFlexible",
+          "content": "avoidance = medium, autonomyNeed = high (+2), conflict = low (+2), emotionalContainment = medium (+1), withdrawalUnderStress = low (+2). Le profil avoidantFlexible devient cohérent et probable."
+        },
+        {
+          "title": "Exemple mixedProfile",
+          "content": "anxiety = medium, avoidance = medium, aucun score pondéré ne domine clairement, ou plusieurs hypothèses se neutralisent. Le résultat doit rester mixedProfile."
+        }
+      ]
+    },
+    {
+      "id": "guardrails",
+      "title": "Garde-fous métier",
+      "paragraphs": [
+        "Un tag élevé n'est jamais suffisant à lui seul pour attribuer un sous-profil.",
+        "Un score medium sur les deux dimensions ne doit pas automatiquement conduire à fearfulAvoidant ou à un profil désorganisé.",
+        "Le moteur doit accepter qu'aucun sous-profil net n'émerge. Dans ce cas, mixedProfile est un résultat valide, utile et plus honnête.",
+        "Le style global reste la lecture principale. Les sous-profils et tags viennent seulement l'affiner."
+      ]
+    }
+  ],
+  "businessData": {
+    "questionnaire": {
+      "questionsCount": 20,
+      "dimensions": {
+        "anxiety": {
+          "questionsCount": 10,
+          "maxScore": 40
+        },
+        "avoidance": {
+          "questionsCount": 10,
+          "maxScore": 40
+        }
+      },
+      "responseScale": [
+        { "label": "Pas du tout d'accord", "value": 0 },
+        { "label": "Pas vraiment d'accord", "value": 1 },
+        { "label": "D'accord / Neutre", "value": 2 },
+        { "label": "Plutôt d'accord", "value": 3 },
+        { "label": "Tout à fait d'accord", "value": 4 }
+      ]
+    },
+    "tagKeys": [
+      "distanceSilence",
+      "fearOfLoss",
+      "overthinking",
+      "validationRequired",
+      "quickRepair",
+      "proximityDiscomfort",
+      "autonomyNeed",
+      "emotionalContainment",
+      "controlNeed",
+      "withdrawalUnderStress",
+      "conflict"
+    ],
+    "profileKeys": [
+      "secure",
+      "anxious",
+      "dismissiveAvoidant",
+      "fearfulAvoidant",
+      "mixedProfile",
+      "anxiousActivated",
+      "anxiousRegulated",
+      "anxiousAmbivalent",
+      "avoidantRigid",
+      "avoidantFlexible",
+      "avoidantAdaptive",
+      "fearfulAvoidantActivated"
+    ]
+  }
+}

@@ -1,0 +1,89 @@
+// stores/attachmentQuestionnaire.ts
+import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
+import type { AttachmentQuestionnaireResults, QuestionResult } from '~/types/attachmentQuestionnaireResults'
+
+export type AttachmentQuestionnaireStep =
+  | 'introduction'
+  | 'questionnaire'
+  | 'results'
+
+export const useAttachmentQuestionnaireStore = defineStore(
+  'attachmentQuestionnaire',
+  () => {
+    const currentStep = ref<AttachmentQuestionnaireStep>('introduction')
+    const hasStarted = ref(false)
+    const isCompleted = ref(false)
+
+    const answers = ref<Record<string, string | number | boolean>>({})
+    const result = ref<QuestionResult[] | null>(null)
+
+    const isIntroductionStep = computed(() => currentStep.value === 'introduction')
+    const isQuestionnaireStep = computed(() => currentStep.value === 'questionnaire')
+    const isResultsStep = computed(() => currentStep.value === 'results')
+
+    const start = () => {
+      console.log('start', currentStep.value);
+      
+      hasStarted.value = true
+      currentStep.value = 'questionnaire'
+    }
+
+    const goToIntroduction = () => {
+      currentStep.value = 'introduction'
+    }
+
+    const goToQuestionnaire = () => {
+      if (!hasStarted.value) return
+      currentStep.value = 'questionnaire'
+    }
+
+    const setAnswer = (
+      key: string,
+      value: string | number | boolean
+    ) => {
+      answers.value[key] = value
+    }
+
+    const setAnswers = (
+      payload: Record<string, string | number | boolean>
+    ) => {
+      answers.value = {
+        ...answers.value,
+        ...payload
+      }
+    }
+
+    const complete = (payload: QuestionResult[]) => {
+      result.value = payload
+      isCompleted.value = true
+      currentStep.value = 'results'
+    }
+
+    const reset = () => {
+      currentStep.value = 'introduction'
+      hasStarted.value = false
+      isCompleted.value = false
+      answers.value = {}
+      result.value = null
+    }
+
+    return {
+      currentStep,
+      hasStarted,
+      isCompleted,
+      answers,
+      result,
+      isIntroductionStep,
+      isQuestionnaireStep,
+      isResultsStep,
+      start,
+      goToIntroduction,
+      goToQuestionnaire,
+      setAnswer,
+      setAnswers,
+      complete,
+      reset
+    }
+  }
+)

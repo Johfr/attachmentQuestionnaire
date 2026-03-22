@@ -1,0 +1,244 @@
+{
+  "globalProfiles": [
+    {
+      "key": "globallySecure",
+      "label": "Globalement sécure",
+      "dimension": "global",
+      "explanation": "Ton profil global suggère un fonctionnement relationnel plutôt stable et globalement sécure. Les variations normales du lien, de la proximité ou du conflit ne semblent pas suffire à désorganiser fortement ton équilibre émotionnel. Cela ne veut pas dire que rien ne t'atteint, mais plutôt que ton système d'attachement ne paraît pas dominé par des mécanismes anxieux ou évitants marqués. Tu sembles pouvoir rester en lien sans suractiver massivement la peur de perdre l'autre, ni ressentir un besoin fort de te protéger de l'intimité. Ce profil décrit donc une base relationnelle plus régulée, plus souple et globalement moins défensive.",
+      "rules": {
+        "eligibility": {
+          "dimensions": {
+            "anxiety": ["low"],
+            "avoidance": ["low"]
+          }
+        },
+        "coreRules": [
+          {
+            "dimension": "anxiety",
+            "levels": ["low"]
+          },
+          {
+            "dimension": "avoidance",
+            "levels": ["low"]
+          }
+        ],
+        "supportRules": [],
+        "exclusionRules": [
+          {
+            "type": "profileConflict",
+            "profile": "anxious",
+            "reason": "Un profil global anxieux est incompatible avec une anxiété basse."
+          },
+          {
+            "type": "profileConflict",
+            "profile": "dismissiveAvoidant",
+            "reason": "Un profil global dismissiveAvoidant est incompatible avec un évitement bas."
+          },
+          {
+            "type": "profileConflict",
+            "profile": "fearfulAvoidant",
+            "reason": "Un profil global fearfulAvoidant est incompatible avec une anxiété basse et un évitement bas."
+          }
+        ],
+        "matchPolicy": "allCore"
+      }
+    },
+    {
+      "key": "anxious",
+      "label": "Anxieux",
+      "dimension": "global",
+      "explanation": "Ton profil global suggère une dominante anxieuse dans ta manière de vivre le lien. La relation semble occuper une place importante dans ton équilibre intérieur, surtout lorsqu'elle devient floue, incertaine ou moins lisible. L'activation principale ne vient pas d'un rejet de l'intimité, mais plutôt de la difficulté à tolérer le doute, la distance ou l'instabilité du lien. Ce profil indique donc une orientation générale vers l'hypervigilance relationnelle, la sensibilité à la connexion et le besoin de sécurité affective. La façon précise dont cette anxiété s'exprime dépendra ensuite de ton sous-profil et de tes déclencheurs dominants.",
+      "rules": {
+        "eligibility": {
+          "dimensions": {
+            "anxiety": ["high"],
+            "avoidance": ["low"]
+          }
+        },
+        "coreRules": [
+          {
+            "dimension": "anxiety",
+            "levels": ["high"]
+          },
+          {
+            "dimension": "avoidance",
+            "levels": ["low"]
+          }
+        ],
+        "supportRules": [],
+        "exclusionRules": [
+          {
+            "type": "profileConflict",
+            "profile": "globallySecure",
+            "reason": "Un profil globalement sécure est incompatible avec une anxiété élevée."
+          },
+          {
+            "type": "profileConflict",
+            "profile": "fearfulAvoidant",
+            "reason": "Un profil fearfulAvoidant suppose aussi un évitement élevé."
+          }
+        ],
+        "matchPolicy": "allCore"
+      }
+    },
+    {
+      "key": "dismissiveAvoidant",
+      "label": "Evitant détaché (dismissive-avoidant)",
+      "dimension": "global",
+      "explanation": "Ton profil global suggère une dominante évitante dans ta manière de vivre le lien. La difficulté principale ne semble pas venir de la peur de perdre la relation, mais plutôt de la proximité émotionnelle, de l'envahissement possible du lien ou du besoin de préserver ton espace intérieur. Ce profil indique une orientation générale vers la distance, l'autonomie et une certaine retenue affective lorsque la relation devient trop prenante. L'activation se joue donc davantage du côté de la protection de soi que du côté de l'hypervigilance anxieuse. La manière exacte dont cet évitement s'exprime dépendra ensuite de ton sous-profil et de tes déclencheurs dominants.",
+      "rules": {
+        "eligibility": {
+          "dimensions": {
+            "anxiety": ["low"],
+            "avoidance": ["high"]
+          }
+        },
+        "coreRules": [
+          {
+            "dimension": "anxiety",
+            "levels": ["low"]
+          },
+          {
+            "dimension": "avoidance",
+            "levels": ["high"]
+          }
+        ],
+        "supportRules": [],
+        "exclusionRules": [
+          {
+            "type": "profileConflict",
+            "profile": "globallySecure",
+            "reason": "Un profil globalement sécure est incompatible avec un évitement élevé."
+          },
+          {
+            "type": "profileConflict",
+            "profile": "fearfulAvoidant",
+            "reason": "Un profil fearfulAvoidant suppose aussi une anxiété élevée."
+          }
+        ],
+        "matchPolicy": "allCore"
+      }
+    },
+    {
+      "key": "fearfulAvoidant",
+      "label": "Evitant craintif (fearful-avoidant)",
+      "dimension": "global",
+      "explanation": "Ton profil global suggère une double insécurité sur les deux axes principaux de l'attachement : l'anxiété et l'évitement. Le lien peut donc être vécu à la fois comme très important et comme difficile à supporter lorsqu'il devient trop intense, trop flou ou trop chargé émotionnellement. Ce profil indique une tension structurelle entre le besoin de proximité et la difficulté à rester serein dans cette proximité. L'autre compte, mais le lien active aussi des mécanismes de protection, de stress ou de désorganisation. La manière exacte dont cette double activation s'exprime dépendra ensuite de ton sous-profil croisé et de tes déclencheurs les plus saillants.",
+      "rules": {
+        "eligibility": {
+          "dimensions": {
+            "anxiety": ["high"],
+            "avoidance": ["high"]
+          }
+        },
+        "coreRules": [
+          {
+            "dimension": "anxiety",
+            "levels": ["high"]
+          },
+          {
+            "dimension": "avoidance",
+            "levels": ["high"]
+          }
+        ],
+        "supportRules": [],
+        "exclusionRules": [
+          {
+            "type": "profileConflict",
+            "profile": "globallySecure",
+            "reason": "Un profil globalement sécure est incompatible avec une forte activation sur les deux dimensions."
+          },
+          {
+            "type": "profileConflict",
+            "profile": "anxious",
+            "reason": "Un profil global anxieux simple suppose un évitement bas."
+          },
+          {
+            "type": "profileConflict",
+            "profile": "dismissiveAvoidant",
+            "reason": "Un profil global dismissiveAvoidant suppose une anxiété basse."
+          }
+        ],
+        "matchPolicy": "allCore"
+      }
+    },
+    {
+      "key": "mixedProfile",
+      "label": "Profil mixte ou nuancé",
+      "dimension": "global",
+      "explanation": "Ton profil global suggère un fonctionnement relationnel intermédiaire, nuancé ou non suffisamment tranché pour être réduit à une dominante unique. Les deux dimensions peuvent être présentes à un niveau modéré, ou bien les signaux peuvent rester trop mélangés pour faire ressortir un profil global net. Ce résultat n'indique pas une absence de logique, mais plutôt une configuration plus subtile, moins rigide et parfois plus contextuelle. Dans ce cas, la lecture des sous-profils et des déclencheurs devient particulièrement importante pour comprendre comment ton attachement s'exprime concrètement. C'est souvent le profil global le plus honnête lorsqu'aucune dominante claire ne s'impose sur les deux axes principaux.",
+      "rules": {
+        "eligibility": {
+          "fallback": true
+        },
+        "coreRules": [
+          {
+            "type": "dimensionCombination",
+            "dimensions": {
+              "anxiety": ["medium"],
+              "avoidance": ["medium"]
+            }
+          },
+          {
+            "type": "or"
+          },
+          {
+            "type": "dimensionCombination",
+            "dimensions": {
+              "anxiety": ["medium"],
+              "avoidance": ["low"]
+            }
+          },
+          {
+            "type": "or"
+          },
+          {
+            "type": "dimensionCombination",
+            "dimensions": {
+              "anxiety": ["low"],
+              "avoidance": ["medium"]
+            }
+          },
+          {
+            "type": "or"
+          },
+          {
+            "type": "dimensionCombination",
+            "dimensions": {
+              "anxiety": ["high"],
+              "avoidance": ["medium"]
+            }
+          },
+          {
+            "type": "or"
+          },
+          {
+            "type": "dimensionCombination",
+            "dimensions": {
+              "anxiety": ["medium"],
+              "avoidance": ["high"]
+            }
+          }
+        ],
+        "supportRules": [
+          {
+            "type": "noClearGlobalMatch",
+            "profiles": [
+              "globallySecure",
+              "anxious",
+              "dismissiveAvoidant",
+              "fearfulAvoidant"
+            ]
+          }
+        ],
+        "exclusionRules": [
+          {
+            "type": "clearProfileMatchExists",
+            "reason": "Le profil mixte ou nuancé ne doit pas être retenu si un profil global net est déjà validé à partir des deux dimensions."
+          }
+        ],
+        "matchPolicy": "fallback_if_no_clear_global_match"
+      }
+    }
+  ]
+}

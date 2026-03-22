@@ -1,0 +1,179 @@
+[
+  {
+    "id": 1,
+    "dimension": "anxiety",
+    "value": 2,
+    "tags": [
+      "distanceSilence",
+      "fearOfLoss"
+    ]
+  },
+  {
+    "id": 2,
+    "dimension": "avoidance",
+    "value": 0,
+    "tags": [
+      "proximityDiscomfort",
+      "withdrawalUnderStress"
+    ]
+  },
+  {
+    "id": 3,
+    "dimension": "anxiety",
+    "value": 2,
+    "tags": [
+      "validationRequired",
+      "distanceSilence"
+    ]
+  },
+  {
+    "id": 4,
+    "dimension": "avoidance",
+    "value": 1,
+    "tags": [
+      "proximityDiscomfort",
+      "autonomyNeed"
+    ]
+  },
+  {
+    "id": 5,
+    "dimension": "anxiety",
+    "value": 0,
+    "tags": [
+      "quickRepair",
+      "fearOfLoss"
+    ]
+  },
+  {
+    "id": 6,
+    "dimension": "avoidance",
+    "value": 2,
+    "tags": [
+      "autonomyNeed"
+    ]
+  },
+  {
+    "id": 7,
+    "dimension": "anxiety",
+    "value": 1,
+    "tags": [
+      "quickRepair",
+      "conflict"
+    ]
+  },
+  {
+    "id": 8,
+    "dimension": "avoidance",
+    "value": 0,
+    "tags": [
+      "conflict",
+      "withdrawalUnderStress"
+    ]
+  },
+  {
+    "id": 9,
+    "dimension": "anxiety",
+    "value": 0,
+    "tags": [
+      "validationRequired"
+    ]
+  },
+  {
+    "id": 10,
+    "dimension": "avoidance",
+    "value": 3,
+    "tags": [
+      "proximityDiscomfort",
+      "emotionalContainment"
+    ]
+  },
+  {
+    "id": 11,
+    "dimension": "anxiety",
+    "value": 2,
+    "tags": [
+      "distanceSilence",
+      "overthinking"
+    ]
+  },
+  {
+    "id": 12,
+    "dimension": "avoidance",
+    "value": 0,
+    "tags": [
+      "emotionalContainment"
+    ]
+  },
+  {
+    "id": 13,
+    "dimension": "anxiety",
+    "value": 2,
+    "tags": [
+      "validationRequired"
+    ]
+  },
+  {
+    "id": 14,
+    "dimension": "avoidance",
+    "value": 0,
+    "tags": [
+      "controlNeed",
+      "proximityDiscomfort"
+    ]
+  },
+  {
+    "id": 15,
+    "dimension": "anxiety",
+    "value": 2,
+    "tags": [
+      "quickRepair",
+      "conflict"
+    ]
+  },
+  {
+    "id": 16,
+    "dimension": "avoidance",
+    "value": 2,
+    "tags": [
+      "autonomyNeed",
+      "controlNeed"
+    ]
+  },
+  {
+    "id": 17,
+    "dimension": "anxiety",
+    "value": 1,
+    "tags": [
+      "distanceSilence",
+      "fearOfLoss",
+      "overthinking"
+    ]
+  },
+  {
+    "id": 18,
+    "dimension": "avoidance",
+    "value": 2,
+    "tags": [
+      "autonomyNeed",
+      "emotionalContainment"
+    ]
+  },
+  {
+    "id": 19,
+    "dimension": "anxiety",
+    "value": 1,
+    "tags": [
+      "quickRepair",
+      "conflict"
+    ]
+  },
+  {
+    "id": 20,
+    "dimension": "avoidance",
+    "value": 0,
+    "tags": [
+      "withdrawalUnderStress",
+      "controlNeed"
+    ]
+  }
+]
