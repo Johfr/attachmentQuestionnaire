@@ -100,21 +100,20 @@ const chartOptions = computed(() => ({
 </script>
 
 <template>
-  <div class="chart-container" :style="{ '--chart-width': props.width, '--chart-height': props.height }">
+  <!-- <div class="chart-container" :style="{ '--chart-width': props.width, '--chart-height': props.height }"> -->
     <PolarArea :data="chartData" :options="chartOptions" />
-  </div>
+  <!-- </div> -->
 </template>
 
-<style scoped>
-.chart-container {
-  max-width: var(--chart-width);
-  max-height: var(--chart-height);
-}
-
-/* @media (max-width: 768px) {
-  .chart-container {
-    max-width: 400px !important;
-    max-height: 400px !important;
-  }
-} */
+<style lang="scss" scoped>
+// .chart-container {
+//   width: var(--chart-width);
+//   height: var(--chart-height);
+//   margin: 0 auto;
+  
+//   @media screen and (min-width: 768px) {
+//     width: 600px !important;
+//     height: 600px !important;
+//   }
+// }
 </style>

@@ -8,16 +8,17 @@ function toggle() {
 }
 
 const props = defineProps<{
-  title: string
+  title: string,
+  colorType?: 'anxiety' | 'avoidance'
 }>()
 
-//ajouter une transition pour l'ouverture et la fermeture de l'accordéon
+const colorTypeClass = computed(() => props.colorType)
 
 </script>
 
 <template>
-  <div class="mt-5 p-5 text-green-700 bg-green-400 rounded-lg">
-    <h3 @click="toggle" class="flex font-bold cursor-pointer text-md mt-3 ">
+  <div :class="['mt-5 p-5 rounded-lg', colorTypeClass]">
+    <h3 @click="toggle" class="flex font-bold cursor-pointer text-md">
       {{ props.title }}
       <LucideChevronRight :class="['transition-transform', { 'rotate-90': isOpen }]" />
     </h3>
@@ -33,9 +34,18 @@ const props = defineProps<{
 <style lang="scss" scoped>
 div {
   padding: 15px;
-  background-color: #f8fafc; // #1d4266
   border-radius: 15px;
-  color: #91B852;
+  // color :#91B852;
+  // background-color: #f8fafc; // #1d4266 - 1b3753
+
+  // &.anxiety {
+  //   color: #f8fafc; // #1d4266 - 
+  //   background-color: var(--primary-color); 
+  // }
+  // &.avoidance {
+  //   color: #f8fafc; // #1d4266 - 
+  //   background-color: var(--secondary-color); 
+  // }
 }
 .accordion-transition-enter-active, .accordion-transition-leave-active {
   transition: all 0.3s ease;

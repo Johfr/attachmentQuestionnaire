@@ -10,10 +10,17 @@ export default {
   ],
   theme: {
     colors: {
+      primary: '#ecf3fd',
+      secondary: '#faecf1',
+      white: colors.white,
       gray: colors.gray,
       blue: colors.sky,
       red: colors.rose,
       pink: colors.fuchsia,
+      yellow: colors.amber,
+      green: colors.emerald,
+      transparent: 'transparent',
+      current: 'currentColor',
     },
     fontWeight: {
       normal: 400,
@@ -34,8 +41,8 @@ export default {
         '4xl': '2rem',
       },
       colors: { 
-        primary: colors.blue[600],
-        secondary: colors.gray[600],
+        primary: '#ecf3fd',
+        secondary: '#faecf1',
       },
     }
   },

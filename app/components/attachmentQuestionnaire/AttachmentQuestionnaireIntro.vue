@@ -24,7 +24,7 @@ const switchLoginForm = () => {
 <template>
   <section>
     <h1 title="Questionnaire d'attachement adulte">Questionnaire d'attachement adulte</h1>
-    <p class="subtitle">
+    <p class="subtitle text-gray-500">
       <LucideClock5 :size="12" class="mr-2" />
       Durée estimée : 8-15 minutes
     </p>
@@ -49,53 +49,53 @@ const switchLoginForm = () => {
 
       <form>
         <div v-if="!user && currentForm === 'login'" class="information-container">
-          <h3>A propos de toi</h3>
+          <h3 class="">A propos de toi</h3>
 
           <label for="userFirstName">
             Ton prénom*
-            <input type="text" id="userFirstName" placeholder="Ex: Alex" />
+            <input type="text" id="userFirstName" name="userFirstName" autocomplete="given-name" placeholder="Ex: Alex" />
           </label>
           <label for="userAge">
             Ton âge*
-            <input type="number" id="userAge" placeholder="Ex: 28" />
+            <input type="number" id="userAge" name="userAge" autocomplete="off" placeholder="Ex: 28" />
           </label>
-          <label for="userEmail">
+          <label for="userEmailSignup">
             Ton email*
-            <input type="email" id="userEmail" placeholder="Ex: alex@example.com" />
+            <input type="email" id="userEmailSignup" name="userEmail" autocomplete="email" placeholder="Ex: alex@example.com" />
           </label>
-          <label for="userPassword">
+          <label for="userPasswordSignup">
             Ton mot de passe*
             <small>(pour sauvegarder tes résultats et y accéder plus tard)</small>
-            <input type="password" id="userPassword" placeholder="Ex: monMotDePasse123" />
+            <input type="password" id="userPasswordSignup" name="userPassword" autocomplete="new-password" placeholder="Ex: monMotDePasse123" />
           </label>
         </div>
         
         <div v-if="!user && currentForm === 'signup'" class="information-container">
           <h3>A propos de toi</h3>
           
-          <label for="userEmail">
+          <label for="userEmailLogin">
             Ton email*
-            <input type="email" id="userEmail" placeholder="Ex: alex@example.com" />
+            <input type="email" id="userEmailLogin" name="userEmailLogin" autocomplete="email" placeholder="Ex: alex@example.com" />
           </label>
-          <label for="userPassword">
+          <label for="userPasswordLogin">
             Ton mot de passe*
             <small>(pour sauvegarder tes résultats et y accéder plus tard)</small>
-            <input type="password" id="userPassword" placeholder="Ex: monMotDePasse123" />
+            <input type="password" id="userPasswordLogin" name="userPasswordLogin" autocomplete="current-password" placeholder="Ex: monMotDePasse123" />
           </label>
         </div>
         
         <div class="information-container">
-          <h3>
+          <h3 class="">
             A propos de ton/ta partenaire
             <span>(Facultatif)</span>
           </h3>
           <label for="partnerFirstName">
             Son prénom
-            <input type="text" id="partnerFirstName" placeholder="Ex: Camille" />
+            <input type="text" id="partnerFirstName" name="partnerFirstName" autocomplete="off" placeholder="Ex: Camille" />
           </label>
           <label for="partnerAge">
             Son âge
-            <input type="number" id="partnerAge" placeholder="Ex: 30" />
+            <input type="number" id="partnerAge" name="partnerAge" autocomplete="off" placeholder="Ex: 30" />
           </label>
         </div>
         
@@ -103,7 +103,7 @@ const switchLoginForm = () => {
           Commencer le questionnaire
           <LucideMoveRight :size="16" />
         </button>
-        <p class="legacy-information">
+        <p class="mt-5 legacy-information">
           Vos données personnelles restent privées et ne sont utilisées que pour personnaliser votre expérience. Elles ne sont pas partagées avec des tiers et sont protégées conformément à notre politique de confidentialité.
         </p>
       </form>
@@ -126,10 +126,10 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 1.5rem;
+  // margin-top: 1.5rem;
   text-align: center;
   font-size: 14px;
-  color: var(--secondary-color);
+  // color: var(--secondary-color);
   font-weight: 400;
 }
 .introduction {
@@ -166,7 +166,7 @@ form {
       margin-top: 0;
       font-size: 12px;
       font-weight: 600;
-      color: var(--secondary-color);
+      // color: var(--secondary-color);
       text-transform: uppercase;
     }
   }

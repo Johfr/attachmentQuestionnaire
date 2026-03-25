@@ -4,17 +4,22 @@
 /* * {
   box-sizing: border-box;
 } */
+
+html {
+  scroll-behavior: smooth;
+}
 body {
   font-family: 'Inter', Arial, sans-serif;
   font-weight: 400;
   margin: 0;
   padding: 0;
   /* background-color: #fbfbfb; */
-  background-color: #f6f6f8;
+  background-color: #f7f9fc;
 
   --primary-color: rgb(54, 112, 226);
   --primary-color-light: rgba(54, 112, 226, 0.1);
-  --secondary-color: #456564;
+  --secondary-color: rgb(254, 205, 211); /*#fecdd3*/
+  --tertiary-color: #456564;
   --text-color: #333;
   --button-color: rgb(34, 0, 128);
 }

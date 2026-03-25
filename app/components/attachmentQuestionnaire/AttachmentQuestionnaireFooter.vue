@@ -10,18 +10,19 @@ const numericSteps = {
   results: 3
 }
 const questionnaireStore = useAttachmentQuestionnaireStore()
+const questionnaireCurrentStep = computed(() => questionnaireStore.currentStep)
 
 </script>
 
 <template>  
   <div class="footer">
     <p>
-      Etape {{ numericSteps[questionnaireStore.currentStep] }} sur {{ Object.keys(numericSteps).length }}
+      Etape {{ numericSteps[questionnaireCurrentStep] }} sur {{ Object.keys(numericSteps).length }}
     </p>
     <div class="steps">
       <div class="step active" />
-      <div class="step" :class="{ active: questionnaireStore.currentStep === 'questionnaire' || questionnaireStore.currentStep === 'results' }" />
-      <div class="step" :class="{ active: questionnaireStore.currentStep === 'results' }" />
+      <div class="step" :class="{ active: questionnaireCurrentStep === 'questionnaire' || questionnaireCurrentStep === 'results' }" />
+      <div class="step" :class="{ active: questionnaireCurrentStep === 'results' }" />
     </div>
   </div>
 </template>

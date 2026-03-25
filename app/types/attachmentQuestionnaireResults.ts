@@ -71,6 +71,7 @@ export type TagDefinition = {
 }
 
 export type TagDisplayItem = {
+  key: string
   tag: string
   regulationLevel: RegulationLevel
   label: string
@@ -79,6 +80,26 @@ export type TagDisplayItem = {
   associatedBehaviors: string[]
   outputText: string
   advices: string[]
+}
+
+export type DoughnutDataset = {
+  data: number[]
+  backgroundColor: string[]
+  borderRadius: number
+  spacing: number
+}
+
+export type PolarTagDataItem = {
+  key: string
+  label: string
+  value: number
+  color: string
+  dimension: AttachmentDimension
+}
+
+export type TagsResultsByDimension = {
+  anxiety: TagDisplayItem[]
+  avoidance: TagDisplayItem[]
 }
 
 export type ProfileRule = {
@@ -144,4 +165,10 @@ export type AttachmentQuestionnaireResults = {
   dimensionScores: AttachmentDimensionScores
   averageScores: AverageScore[]
   attachmentProfilesByDimension: AttachmentProfilesByDimension
+  completionDate: string
+}
+
+export type ComputeAttachmentResultsRequest = {
+  results: QuestionResult[]
+  questions: AttachmentQuestion[]
 }

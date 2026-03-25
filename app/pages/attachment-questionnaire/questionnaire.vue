@@ -50,7 +50,7 @@ onBeforeRouteLeave((to, from, next) => {
 <template>
   <section>
     <!-- {{ questionnaireStore.isCompleted }} -->
-    <h1 title="attachment survey" class="text-lg font-bold my-8 text-primary">Questionnaire d'attachement adulte</h1>
+    <h1 class="text-3xl font-bold my-8">Questionnaire d'attachement adulte</h1>
     <AttachmentQuestionnaireForm
       :questions="questionList"
       @complete="handleComplete"

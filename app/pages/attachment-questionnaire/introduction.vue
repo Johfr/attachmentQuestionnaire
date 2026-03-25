@@ -2,11 +2,11 @@
 import { useAttachmentQuestionnaireStore } from '~/stores/attachmentQuestionnaire'
 import { useAuthStore } from '~/stores/auth'
 
-definePageMeta({
-  middleware: ["auth"],
-  requiresAuth: false,
-  // layout: false,
-})
+// definePageMeta({
+//   // middleware: ["auth"],
+//   requiresAuth: false,
+//   // layout: false,
+// })
 
 const questionnaireStore = useAttachmentQuestionnaireStore()
 const authStore = useAuthStore()

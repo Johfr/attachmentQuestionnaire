@@ -9,8 +9,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   await authStore.initAuth()
 
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+    // authStore.redirectAfterLogin = to.fullPath
     authStore.openLoginModal()
-    // return abortNavigation()
-    // return navigateTo('/')
+    return navigateTo('/')
   }
 })

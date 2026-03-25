@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { AttachmentQuestionnaireResults, QuestionResult } from '~/types/attachmentQuestionnaireResults'
+// import personalResults from '~/assets/data/resultsTest.json'
 
 export type AttachmentQuestionnaireStep =
   | 'introduction'
@@ -14,9 +15,13 @@ export const useAttachmentQuestionnaireStore = defineStore(
     const currentStep = ref<AttachmentQuestionnaireStep>('introduction')
     const hasStarted = ref(false)
     const isCompleted = ref(false)
+    // const currentStep = ref<AttachmentQuestionnaireStep>('results')
+    // const hasStarted = ref(true)
+    // const isCompleted = ref(true)
 
     const answers = ref<Record<string, string | number | boolean>>({})
     const result = ref<QuestionResult[] | null>(null)
+    // const result = ref<QuestionResult[] | null>(personalResults as unknown as QuestionResult[])
 
     const isIntroductionStep = computed(() => currentStep.value === 'introduction')
     const isQuestionnaireStep = computed(() => currentStep.value === 'questionnaire')
