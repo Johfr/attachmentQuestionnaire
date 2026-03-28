@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useAttachmentQuestionnaireStore } from '~/stores/attachmentQuestionnaire'
+import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
 import { useAuthStore } from '~/stores/auth'
 
-const questionnaireStore = useAttachmentQuestionnaireStore()
+const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore()
 const authStore = useAuthStore()
 const user = computed(() => authStore.user)
 
 const startSurvey = async () => {
   if (user.value) {
-    questionnaireStore.start()
+    questionnaireWizardStore.start()
     await navigateTo('/attachment-questionnaire/questionnaire')
   } else {
     authStore.openLoginModal()
@@ -16,7 +16,7 @@ const startSurvey = async () => {
 }
 
 const resetStore = () => {
-  questionnaireStore.reset()
+  questionnaireWizardStore.reset()
 }
 
 const goHome = async () => {

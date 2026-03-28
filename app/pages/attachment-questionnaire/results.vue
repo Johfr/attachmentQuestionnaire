@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAttachmentQuestionnaireStore } from '~/stores/attachmentQuestionnaire'
+import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
 import type {
   AttachmentQuestion,
   AttachmentDimension,
@@ -21,7 +21,7 @@ definePageMeta({
   // layout: "default",
 })
 
-const questionnaireStore = useAttachmentQuestionnaireStore()
+const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore()
 const questionList = questions.questions as unknown as AttachmentQuestion[]
 const computedResults = ref<AttachmentQuestionnaireResults | null>(null)
 const computeError = ref<string | null>(null)
@@ -111,7 +111,7 @@ const getTagsResultsForDisplay = (results: AttachmentQuestionnaireResults): Tags
 }
 
 const loadComputedResults = async () => {
-  if (!questionnaireStore.result?.length) {
+  if (!questionnaireWizardStore.result?.length) {
     return
   }
 
@@ -120,7 +120,7 @@ const loadComputedResults = async () => {
     computedResults.value = await $fetch<AttachmentQuestionnaireResults>(endpoint, {
       method: 'POST',
       body: {
-        results: questionnaireStore.result,
+        results: questionnaireWizardStore.result,
         questions: questionList
       }
     })
@@ -211,7 +211,7 @@ const tagData = computed<PolarTagDataItem[]>(() => {
 })
 
 const resetStore = () => {
-  questionnaireStore.reset()
+  questionnaireWizardStore.reset()
 }
 
 const goHome = async () => {

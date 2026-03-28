@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAttachmentQuestionnaireStore } from '~/stores/attachmentQuestionnaire'
+import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
 
 // 'introduction'
 //   | 'questionnaire'
@@ -9,8 +9,8 @@ const numericSteps = {
   questionnaire: 2,
   results: 3
 }
-const questionnaireStore = useAttachmentQuestionnaireStore()
-const questionnaireCurrentStep = computed(() => questionnaireStore.currentStep)
+const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore()
+const questionnaireCurrentStep = computed(() => questionnaireWizardStore.currentStep)
 
 </script>
 

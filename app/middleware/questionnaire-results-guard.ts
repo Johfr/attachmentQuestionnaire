@@ -1,10 +1,10 @@
-import { useAttachmentQuestionnaireStore } from '~/stores/attachmentQuestionnaire'
+import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const nuxtApp = useNuxtApp()
-  const questionnaireStore = useAttachmentQuestionnaireStore(nuxtApp.$pinia)
+  const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore(nuxtApp.$pinia)
 
-  if (!questionnaireStore.isCompleted || !questionnaireStore.result) {
+  if (!questionnaireWizardStore.isCompleted || !questionnaireWizardStore.result) {
     return navigateTo('/')
   }
 })

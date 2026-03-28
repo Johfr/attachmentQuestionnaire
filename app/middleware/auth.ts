@@ -1,10 +1,10 @@
 import { useAuthStore } from '~/stores/auth'
-// import { useAttachmentQuestionnaireStore } from '~/stores/attachmentQuestionnaire'
+// import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const nuxtApp = useNuxtApp()
   const authStore = useAuthStore(nuxtApp.$pinia)
-  // const questionnaireStore = useAttachmentQuestionnaireStore(nuxtApp.$pinia)
+  // const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore(nuxtApp.$pinia)
 
   await authStore.initAuth()
 

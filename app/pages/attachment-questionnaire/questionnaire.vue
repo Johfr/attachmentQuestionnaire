@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import questions from '~/assets/data/questions.json'
-import { useAttachmentQuestionnaireStore } from '~/stores/attachmentQuestionnaire'
+import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
 import type { QuestionResult, AttachmentQuestion } from '~/types/attachmentQuestionnaireResults'
 
 definePageMeta({
@@ -9,20 +9,20 @@ definePageMeta({
 })
 
 // const router = useRouter()
-const questionnaireStore = useAttachmentQuestionnaireStore()
+const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore()
 const questionList = questions.questions as unknown as AttachmentQuestion[]
 
 const resetStore = () => {
-  questionnaireStore.reset()
+  questionnaireWizardStore.reset()
 }
 
-if (!questionnaireStore.hasStarted) {
+if (!questionnaireWizardStore.hasStarted) {
   await navigateTo('/attachment-questionnaire/introduction')
 }
 
 const handleComplete = async (result: QuestionResult[]) => {
   console.log(result)
-  questionnaireStore.complete(result)
+  questionnaireWizardStore.complete(result)
   await navigateTo('/attachment-questionnaire/results')
 }
 
@@ -31,11 +31,11 @@ onBeforeRouteLeave((to, from, next) => {
     next()
     return
   } else {
-    if (questionnaireStore.hasStarted) {
+    if (questionnaireWizardStore.hasStarted) {
       const leave = confirm('Êtes-vous sûr de vouloir quitter le questionnaire ? Vos réponses seront perdues.')
       if (leave) {
         resetStore()
-        questionnaireStore.goToIntroduction()
+        questionnaireWizardStore.goToIntroduction()
         next()
       } else {
         next(false)
