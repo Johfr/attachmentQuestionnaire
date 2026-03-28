@@ -8,33 +8,29 @@ const { isLoginModalOpen } = storeToRefs(authStore)
 </script>
 
 <template>
-  <div class="default-layout">
-    <header>
-      <Navbar />
-    </header>
+  <div class="default-layout bg-lightPeach">
+    <div class="default-container pb-24">
+      <header>
+        <Navbar />
+      </header>
 
-    <!-- <main> -->
-      <NuxtPage />
-    <!-- </main> -->
+      <!-- <main> -->
+        <NuxtPage />
+      <!-- </main> -->
 
-    <LoginModal
-      v-if="isLoginModalOpen"
-      @close="authStore.closeLoginModal()"
-    />
+      <LoginModal
+        v-if="isLoginModalOpen"
+        @close="authStore.closeLoginModal()"
+      />
+    </div>
   </div>
 </template>
 
 <style lang="scss">
-.default-layout {
+.default-container {
   max-width: 1260px;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0 auto;
-  padding: 0 1rem 10rem;
+  padding: 1rem 1rem 10rem;
 }
-// main {
-//   height: 100%;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-// }
 </style>

@@ -111,9 +111,8 @@ const buildRegulationIndexByDimension = (
       const questionCountForTag = questions.filter(q => q.tags.includes(tag)).length
       const maxTagScore = questionCountForTag * 4
       const tagTotalValues = averageValue * questionCountForTag
-      const regulationLevel = tagTotalValues <= maxTagScore / 3
-        ? 'low'
-        : (tagTotalValues <= (maxTagScore / 3) * 2 ? 'medium' : 'high')
+      // Keep level thresholds consistent with trigger labels and profile matching rules.
+      const regulationLevel = getLevelLabel(averageValue)
 
       return { tag, tagTotalValues, maxTagScore, regulationLevel }
     })

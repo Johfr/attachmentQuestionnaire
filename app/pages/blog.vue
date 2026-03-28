@@ -1,10 +1,66 @@
 <script setup lang="ts">
+const fallbackTagIcon = resolveComponent('LucideCircleHelp') as Component
+
+const blogIcons: Record<string, Component> = {
+  Link: resolveComponent('LucideLink') as Component,
+  HeartHandshake: resolveComponent('LucideHeartHandshake') as Component,
+  Brain: resolveComponent('LucideBrain') as Component,
+  Activity: resolveComponent('LucideActivity') as Component,
+}
+
+const blogArticles = [
+  {
+    id: 2,
+    icon: 'Link',
+    title: 'La vérité crue sur les évitants',
+    description: 'Découvre les mécanismes d\'évitement et comment les surmonter pour construire des relations plus saines.',
+    image: '',
+    link: '/blog/comment-gerer-la-fuite-dans-une-relation-amoureuse',
+    duration: '8-15 min',
+    isActive: true,
+  },
+  {
+    id: 2,
+    icon: 'Link',
+    title: 'Pourquoi tu cherches la considération chez ta partenaire ?',
+    description: 'Découvre les raisons profondes de ce comportement et comment y remédier pour construire une relation plus saine.',
+    image: '',
+    link: '/blog/comment-gerer-la-fuite-dans-une-relation-amoureuse',
+    duration: '8-15 min',
+    isActive: true,
+  },
+  {
+    id: 3,
+    icon: 'Link',
+    title: 'Comment gérer la panique dans une relation amoureuse ?',
+    description: 'Découvre des stratégies efficaces pour apaiser ta panique et renforcer ta relation.',
+    image: '/images/blog-panique.png',
+    link: '/blog/comment-gerer-la-panique-dans-une-relation-amoureuse',
+    duration: '8-15 min',
+    isActive: false,
+  },
+  {
+    id: 4,
+    icon: 'Link',
+    title: 'Comment gérer la fuite dans une relation amoureuse ?',
+    description: 'Apprends à reconnaître les signes de la fuite et découvre des conseils pour y faire face.',
+    image: '',
+    link: '/blog/comment-gerer-la-fuite-dans-une-relation-amoureuse',
+    duration: '8-15 min',
+    isActive: false,
+  },
+]
+const itemsBackground = ['#fdf1ec', '#f2f7e7', '#f8ebe6'] // 'aliceblue', 'honeydew', 'lavender', antiquewhite, azure]
 
 </script>
 
 <template>
   <section>
-    <h1 title="blog">Blog</h1>
-    <routerLink to="/">Go to Home</routerLink>
+    <h2 class="text-lg font-bold">Les derniers articles</h2>
+    <HomeArticlesAndQuestionnairesList
+      :items="blogArticles"
+      :itemsBackground="itemsBackground"
+      :itemIcons="blogIcons"
+    />
   </section>  
 </template>

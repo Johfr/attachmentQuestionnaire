@@ -27,5 +27,6 @@ const { isLoginModalOpen } = storeToRefs(authStore)
   margin: 0 auto;
   padding: 1rem 1rem 6rem 1rem;
   position: relative;
+  background-color: #fff8f6;
 }
 </style>

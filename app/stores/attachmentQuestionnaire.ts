@@ -1,4 +1,3 @@
-// stores/attachmentQuestionnaire.ts
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { AttachmentQuestionnaireResults, QuestionResult } from '~/types/attachmentQuestionnaireResults'
@@ -28,8 +27,6 @@ export const useAttachmentQuestionnaireStore = defineStore(
     const isResultsStep = computed(() => currentStep.value === 'results')
 
     const start = () => {
-      console.log('start', currentStep.value);
-      
       hasStarted.value = true
       currentStep.value = 'questionnaire'
     }

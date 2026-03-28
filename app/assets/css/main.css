@@ -28,6 +28,14 @@ fieldset {
   padding: 0;
 }
 
+a {
+  height: 100%;
+  /* width: 100%; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .submit-button {
   display: flex;
   justify-content: center;

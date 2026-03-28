@@ -9,19 +9,6 @@ export default {
     './nuxt.config.{js,ts}'
   ],
   theme: {
-    colors: {
-      primary: '#ecf3fd',
-      secondary: '#faecf1',
-      white: colors.white,
-      gray: colors.gray,
-      blue: colors.sky,
-      red: colors.rose,
-      pink: colors.fuchsia,
-      yellow: colors.amber,
-      green: colors.emerald,
-      transparent: 'transparent',
-      current: 'currentColor',
-    },
     fontWeight: {
       normal: 400,
       medium: 500,
@@ -43,6 +30,13 @@ export default {
       colors: { 
         primary: '#ecf3fd',
         secondary: '#faecf1',
+        lightBrown: '#d4c9c4',
+        lightPeach: '#fff8f6',
+        rust : '#a7482f',
+        brown: '#39312d',
+        softGreen: '#f2f7e7',
+        softPeach: '#f8ebe6',
+        slateBlue: '#dfe8ff',
       },
     }
   },

@@ -4,6 +4,7 @@
 export default defineNuxtConfig({
   app: {
     pageTransition: { name: 'slide-up', mode: 'out-in' },
+    layoutTransition: { name: 'slide-up', mode: 'out-in' },
   },
   
   css: ['~/assets/css/main.css'],

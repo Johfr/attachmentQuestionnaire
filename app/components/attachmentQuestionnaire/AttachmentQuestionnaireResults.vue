@@ -161,7 +161,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
       />
     </div>
   </div>
-
+  
   <section class="my-8">
     <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left">Tes profils d'attachement</h2>
 
@@ -421,9 +421,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
           </div>
         </div>
       </div>
-      
     </div>
-
   </section>
 
   <!-- Go deeper -->
@@ -471,27 +469,37 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
         </div>
         
         <div class="mt-8 p-5 border-l-4 rounded-3xl md:m-0 bg-white md:max-w-[48%]">
-          <div class="flex justify-between items-center mb-5 font-semibold tracking-[.13rem]">
+          <div class="md:flex md:justify-between md:items-center mb-5 font-semibold tracking-[.13rem]">
             <h3 class="text-md">
               Analyse sur mesure
             </h3>
             <span class="text-xl">
-              4.99€
+              4.99€ (tout inclus)
             </span>
           </div>
 
           <p class="mb-5 text-sm">
-            Détaille ta situation amoureuse et reçois :
+            Détaille ta situation amoureuse*, sois le plus honnête possible. Décris ta situation, tes doutes, tes envies et ton objectif et reçois :
           </p>
           
           <ul class="list-disc text-sm pl-4 mb-5">
             <li class="mb-1">
+              L'ensemble de tes résultats débloqués
+            </li>
+            <li class="mb-1">
               Une analyse personnalisée de tes résultats en fonction de ta situation amoureuse actuelle
+            </li>
+            <li class="mb-1">
+              Une analyse détaillée de ta situation amoureuse
             </li>
             <li class="mb-1">
               Des conseils sur mesure pour avancer vers plus de sécurité dans ta relation actuelle
             </li>
+            <li class="mb-1">
+              Une grille de lecture et un plan d'action concret
+            </li>
           </ul>
+          <span class="text-xs text-gray-500">* Ne transmets aucunes données sensibles telles que nom, adresse, numéro de téléphone, etc.</span>
 
           <textarea
             class="w-full mb-5 p-3 rounded-lg border text-sm h-40" rows="4" placeholder="Parle-moi un peu de ta situation amoureuse actuelle..."></textarea>
@@ -500,13 +508,3 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
       </div>
     </section>
 </template>
-
-<style lang="scss" scoped>
-a {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>

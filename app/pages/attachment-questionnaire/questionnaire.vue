@@ -45,11 +45,19 @@ onBeforeRouteLeave((to, from, next) => {
     }
   }
 })
+
+const goHome = async () => {
+  // resetStore()
+  await navigateTo('/')
+}
 </script>
 
 <template>
   <section>
-    <!-- {{ questionnaireStore.isCompleted }} -->
+    <button @click="goHome" class="text-blue-500 text-xs md:text-sm flex items-center">
+      <LucideArrowLeft :size="16" />
+      Retour à l'accueil
+    </button>
     <h1 class="text-3xl font-bold my-8">Questionnaire d'attachement adulte</h1>
     <AttachmentQuestionnaireForm
       :questions="questionList"
