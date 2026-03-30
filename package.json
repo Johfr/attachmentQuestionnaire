@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "postbuild": "node -e \"const fs=require('fs'),p=JSON.parse(fs.readFileSync('.output/server/package.json','utf8'));delete p.dependencies['@img/sharp-win32-x64'];fs.writeFileSync('.output/server/package.json',JSON.stringify(p,null,2)+'\\n')\"",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",

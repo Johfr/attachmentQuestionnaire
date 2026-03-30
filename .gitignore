@@ -12,11 +12,14 @@ node_modules
 # Logs
 logs
 *.log
+firebase-debug.log
+firebase-debug.*.log
 
 # Misc
 .DS_Store
 .fleet
 .idea
+.firebase
 
 # Local env files
 .env

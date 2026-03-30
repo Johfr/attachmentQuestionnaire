@@ -33,4 +33,8 @@ export default defineNuxtConfig({
     'nuxt-charts',
     'nuxt-lucide-icons'
   ],
+
+  nitro: {
+    preset: 'firebase',
+  },
 })
