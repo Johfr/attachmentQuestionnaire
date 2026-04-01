@@ -38,7 +38,7 @@ const blogArticles = [
     title: 'La vérité crue sur les évitants',
     description: 'Découvre les mécanismes d\'évitement et comment les surmonter pour construire des relations plus saines.',
     image: '',
-    link: '/blog/comment-gerer-la-fuite-dans-une-relation-amoureuse',
+    link: '/blog/',
     duration: '5 min',
     isActive: true,
   }

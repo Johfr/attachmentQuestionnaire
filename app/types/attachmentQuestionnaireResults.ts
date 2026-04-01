@@ -171,6 +171,17 @@ export type AttachmentQuestionnaireResults = {
 export type ComputeAttachmentQuestionnaireResultsRequest = {
   results: QuestionResult[]
   questions: AttachmentQuestion[]
+  relationContext?: {
+    partnerFirstName: string | null
+    partnerAge: number | null
+  } | null
+}
+
+export type ComputeAttachmentResultsApiResponse = {
+  results: AttachmentQuestionnaireDisplayResults
+  sessionId: string | null
+  persisted: boolean
+  persistErrorCode?: string
 }
 
 export type EnrichAttachmentQuestionnaireResultsRequest = {

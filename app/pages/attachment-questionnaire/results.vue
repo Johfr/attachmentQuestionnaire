@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
+import { useAuthStore } from '~/stores/auth'
+import { firebaseFunctions } from '~/composables/firebase/init.js'
 import type {
   AttachmentQuestion,
-  AttachmentQuestionnaireDisplayResults
+  AttachmentQuestionnaireDisplayResults,
+  ComputeAttachmentResultsApiResponse,
 } from '~/types/attachmentQuestionnaireResults'
 import questions from '~/assets/data/questions.json'
 
@@ -14,8 +17,11 @@ definePageMeta({
 })
 
 const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore()
+const authStore = useAuthStore()
 const questionList = questions.questions as unknown as AttachmentQuestion[]
 const computedResults = ref<AttachmentQuestionnaireDisplayResults | null>(null)
+const sessionId = ref<string | null>(null)
+const persisted = ref(false)
 const computeError = ref<string | null>(null)
 
 const loadComputedResults = async () => {
@@ -24,13 +30,28 @@ const loadComputedResults = async () => {
   }
 
   try {
-    computedResults.value = await $fetch<AttachmentQuestionnaireDisplayResults>('/api/attachment/results', {
+    const token = await firebaseFunctions.auth.currentUser?.getIdToken()
+
+    const partnerCtx = authStore.currentPartnerContext
+    const response = await $fetch<ComputeAttachmentResultsApiResponse>('/api/attachment/results', {
       method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: {
         results: questionnaireWizardStore.result,
-        questions: questionList
-      }
+        questions: questionList,
+        relationContext: partnerCtx
+          ? { partnerFirstName: partnerCtx.firstName, partnerAge: partnerCtx.age }
+          : null,
+      },
     })
+
+    computedResults.value = response.results
+    sessionId.value = response.sessionId
+    persisted.value = response.persisted
+
+    if (!response.persisted) {
+      console.warn('[results] Firestore persist failed, code:', response.persistErrorCode)
+    }
   } catch (error) {
     computeError.value = error instanceof Error
       ? error.message

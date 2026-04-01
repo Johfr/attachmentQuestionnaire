@@ -1,4 +1,25 @@
 {
   "indexes": [],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "collectionGroup": "questionnaireSessions",
+      "fieldPath": "answers",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "questionnaireSessions",
+      "fieldPath": "result.triggers",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "aiExchange",
+      "fieldPath": "userInput",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "aiExchange",
+      "fieldPath": "output",
+      "indexes": []
+    }
+  ]
 }

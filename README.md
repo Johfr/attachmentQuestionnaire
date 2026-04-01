@@ -70,6 +70,21 @@ npm run test:nuxt
 ## Documentation backend
 
 - Convention multi-questionnaires: `docs/backend-questionnaires.md`
+- Persistance Firestore des sessions + retry idempotent: `docs/backend-questionnaires.md` (section "Persistance Firestore des resultats")
+
+## Persistance des resultats
+
+Flow cible en production:
+
+1. Le front envoie les reponses au endpoint Nuxt.
+2. Nuxt calcule les resultats et tente l'ecriture Firestore.
+3. Nuxt renvoie les resultats chauds + meta de persistance (`persisted`, `sessionId`, `persistErrorCode`).
+4. Si la persistance echoue, le front lance un retry cible idempotent (sans recalcul).
+
+Structure BDD:
+
+- `questionnaireSessions/{sessionId}`: reponses, scores, summary, acces
+- `questionnaireSessions/{sessionId}/aiExchange/result`: input user, output IA, statut
 
 ## Build production
 
