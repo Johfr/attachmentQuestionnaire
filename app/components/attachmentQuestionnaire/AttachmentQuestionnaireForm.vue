@@ -12,6 +12,7 @@ const inputRadioLength = ref([{ name:'Pas du tout d\'accord', value: 0 }, { name
 const currentQuestion = ref(1)
 const surveyCompleted = ref(false)
 const results = ref<QuestionResult[]>([])
+const isSubmitting = ref(false)
 
 const getInputValue = (questionDimension: AttachmentDimension, questionId: number, value: number, questionTags: string[]) => {
   if (currentQuestion.value === questionId) {
@@ -32,8 +33,15 @@ const getInputValue = (questionDimension: AttachmentDimension, questionId: numbe
   // return value
 }
 
-const submitForm = () => {
-  emit('complete', results.value)
+const submitForm = async () => {
+  if (isSubmitting.value) return
+
+  isSubmitting.value = true
+  try {
+    emit('complete', results.value)
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 
@@ -87,7 +95,10 @@ const submitForm = () => {
       </Transition>
     </div>
 
-    <button v-if="surveyCompleted" @click="submitForm" type="button" class="submit-button">Soumettre</button>
+    <button v-if="surveyCompleted" :disabled="isSubmitting" @click="submitForm" type="button" class="submit-button flex items-center justify-center gap-2 disabled:opacity-60">
+      <LucideLoader v-if="isSubmitting" :size="16" class="loader-spin" />
+      <span>Soumettre</span>
+    </button>
     
     <!-- <pre>{{ results }}</pre> -->
   </form>
@@ -105,6 +116,20 @@ $sm-resolution: 960px;
   position: relative;
   margin-bottom: 0.5rem;
   transition: .4s ease;
+}
+
+.loader-spin {
+  animation: loader-rotate 0.8s linear infinite;
+}
+
+@keyframes loader-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 .question-id-container {
   display: none;

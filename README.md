@@ -67,6 +67,10 @@ npm run test:unit
 npm run test:nuxt
 ```
 
+## Documentation backend
+
+- Convention multi-questionnaires: `docs/backend-questionnaires.md`
+
 ## Build production
 
 ```bash
