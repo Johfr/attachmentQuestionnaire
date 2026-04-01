@@ -11,6 +11,7 @@ import PolarChart from "~/components/attachmentQuestionnaire/PolarChart.vue"
 import regulationProfilesData from '~/assets/data/regulationProfiles.json'
 import globalProfilesData from '~/assets/data/globalProfiles.json'
 import Accordeon from '~/utils/Accordeon.vue'
+import { useBillingStore } from '~/stores/billing'
 
 const props = defineProps<{
   computedResults: AttachmentQuestionnaireResults
@@ -22,6 +23,8 @@ const props = defineProps<{
   avoidanceDatasets: DoughnutDataset[]
 }>()
 
+const questionnaireId = 'attachmentQuestionnaire' // à centraliser dans un fichier de constantes si besoin
+
 const graphData = computed(() => props.computedResults)
 const tagsResults = computed(() => props.tagsResults)
 const tagData = computed(() => props.tagData)
@@ -29,11 +32,12 @@ const anxietyAverageScore = computed(() => props.anxietyAverageScore)
 const avoidanceAverageScore = computed(() => props.avoidanceAverageScore)
 const anxietyDatasets = computed(() => props.anxietyDatasets)
 const avoidanceDatasets = computed(() => props.avoidanceDatasets)
-// const hasPremiumResults = computed(() => {
-//   return false
-//   // return billingStore.hasAccess('questionnaire', questionnaireId, 'premium_report')
-// })
-const hasPremiumResults = ref(false)
+const billingStore = useBillingStore()
+const hasResultsAccess = computed(() => {
+  // type AccessType = 'results' | 'ia'
+  return billingStore.hasAccessToContent(questionnaireId, 'results')
+})
+const hasIaAccess = computed(() => billingStore.hasAccessToContent(questionnaireId, 'ia'))
 
 const regulationProfileTranslations = Object.fromEntries(
   ((regulationProfilesData.regulationProfiles || []) as Array<{ key: string; label: string }>)
@@ -116,20 +120,6 @@ const isProfileExplanationOpen = (key: ProfileExplanationKey) => {
 const toggleProfileExplanation = (key: ProfileExplanationKey) => {
   profileExplanationOpen.value[key] = !profileExplanationOpen.value[key]
 }
-
-// créer un code couleur pour les tags high, medium, low
-// const getRegulationLevelColor = (level: string) => {
-//   switch (level) {
-//     case 'high':
-//       return 'text-red-600'
-//     case 'medium':
-//       return 'text-yellow-600'
-//     case 'low':
-//       return 'text-green-600'
-//     default:
-//       return 'text-gray-600'
-//   }
-// }
 </script>
 
 <template>
@@ -198,12 +188,12 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
         <div class="relative">
           <div
             class="mb-3 p-5 rounded-3xl"
-            :class="[ dimension === 'anxiety' ? 'bg-primary' : 'bg-secondary', !hasPremiumResults ? 'opacity-50 blur-[5px]' : '' ]"
+            :class="[ dimension === 'anxiety' ? 'bg-primary' : 'bg-secondary', !hasResultsAccess ? 'opacity-50 blur-[5px]' : '' ]"
           >
             <h3 class="text-md mb-3 font-bold">
               <component :is="getProfileIcon(getSubProfile(dimension))" :size="20" class="inline-block mr-2" />
               Sous profil :
-              <span v-if="!hasPremiumResults">
+              <span v-if="!hasResultsAccess">
                 Débloque l'accès
               </span>
               <span v-else>
@@ -214,7 +204,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
               class="max-h-36 overflow-hidden mb-3 text-sm text-gray-600 line-clamp-4"
               :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen(dimension) }"
             >
-              <span v-if="!hasPremiumResults">
+              <span v-if="!hasResultsAccess">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat reiciendis quos temporibus voluptatem repudiandae! Enim, aspernatur cupiditate optio possimus necessitatibus dicta iste laborum eligendi perferendis. Veniam quod neque ullam ducimus!
               </span>
               <span v-else>
@@ -228,7 +218,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
 
           <!-- Overlay de paiement non premium -->
           <div
-            v-if="!hasPremiumResults"
+            v-if="!hasResultsAccess"
             class="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm flex items-center justify-center rounded-3xl cursor-pointer"
             @click.prevent.stop=""
           >
@@ -302,7 +292,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
   </div>
 
   <!-- Polar chart -->
-  <section class="my-8" v-if="hasPremiumResults">
+  <section class="my-8" v-if="hasResultsAccess">
     <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left">Répartition détaillée des déclencheurs</h2>
     <div class="my-12 justify-center md:w-144 md:h-144 mx-auto flex">
       <PolarChart :tags="tagData" :width="'600px'" :height="'600px'" />
@@ -325,13 +315,13 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
           :class="[
             dimension === 'anxiety' ?  'border-primary' : 'border-secondary', 
             {'max-h-full md:max-h-full': isProfileExplanationOpen(tag.trigger)},
-            { 'relative h-[100px]': !hasPremiumResults && tagId != 0 }
+            { 'relative h-[100px]': !hasResultsAccess && tagId != 0 }
           ]"
         >
           <div
             class="flex justify-between"
             @click.prevent.stop="toggleProfileExplanation(tag.trigger)"
-            :class="[!hasPremiumResults && tagId != 0 ? 'cursor-not-allowed pointer-events-none' : 'cursor-pointer']"
+            :class="[!hasResultsAccess && tagId != 0 ? 'cursor-not-allowed pointer-events-none' : 'cursor-pointer']"
           >
             <p :class="tag.regulationLevel === 'high' ? 'text-red-600' : tag.regulationLevel === 'medium' ? 'text-yellow-600' : 'text-green-600'" class="p-1 rounded-md text-xs">
               <LucideMinusCircle :size="14" class="inline-block mr-1" v-if="isProfileExplanationOpen(tag.trigger)"/>
@@ -343,7 +333,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
             </p>
           </div>
 
-          <div v-if="hasPremiumResults || (!hasPremiumResults && tagId === 0)">
+          <div v-if="hasResultsAccess || (!hasResultsAccess && tagId === 0)">
             <h3
               class="text-md font-bold mt-3 mb-5 cursor-pointer"
               @click.prevent.stop="toggleProfileExplanation(tag.trigger)"
@@ -405,7 +395,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
 
           <!-- Overlay de paiement non premium -->
           <div
-            v-if="!hasPremiumResults && tagId != 0"
+            v-if="!hasResultsAccess && tagId != 0"
             class="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm flex items-center justify-center rounded-3xl cursor-pointer"
             @click.prevent.stop=""
           >
@@ -432,7 +422,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
 
       <div class="md:flex md:items-start md:gap-8">
         <div
-          v-if="!hasPremiumResults"
+          v-if="!hasResultsAccess"
           class="p-5 rounded-3xl bg-blue-700 text-white bg-gradient-to-tr from-blue-700 to-blue-500 md:max-w-[48%] "
         >
           <div class="flex justify-between items-center mb-5 font-semibold tracking-[.13rem]">
@@ -465,7 +455,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
             </li>
           </ul>
           
-          <button class="py-4 rounded-3xl w-full bg-white text-blue-700" @click="hasPremiumResults = true">Débloquer !</button>
+          <button class="py-4 rounded-3xl w-full bg-white text-blue-700" @click="">Débloquer !</button>
         </div>
         
         <div class="mt-8 p-5 border-l-4 rounded-3xl md:m-0 bg-white md:max-w-[48%]">

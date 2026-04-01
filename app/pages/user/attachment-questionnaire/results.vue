@@ -1,61 +1,44 @@
 <script setup lang="ts">
-import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
-import type {
-  AttachmentQuestion,
-  AttachmentQuestionnaireDisplayResults
-} from '~/types/attachmentQuestionnaireResults'
-import questions from '~/assets/data/questions.json'
+import { useAttachmentQuestionnaireResultsStore } from '~/stores/attachmentQuestionnaireResults'
+import type { AttachmentQuestionnaireDisplayResults } from '~/types/attachmentQuestionnaireResults'
 
 definePageMeta({
-  middleware: ["auth", "questionnaire-results-guard"],
+  middleware: ["auth"],
   requiresAuth: true,
-  requiresResults: true,
-  // layout: "default",
 })
 
-const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore()
-const questionList = questions.questions as unknown as AttachmentQuestion[]
+const resultsStore = useAttachmentQuestionnaireResultsStore()
 const computedResults = ref<AttachmentQuestionnaireDisplayResults | null>(null)
 const computeError = ref<string | null>(null)
 
-const loadComputedResults = async () => {
-  if (!questionnaireWizardStore.result?.length) {
-    return
-  }
-
+const loadResults = async () => {
   try {
-    computedResults.value = await $fetch<AttachmentQuestionnaireDisplayResults>('/api/attachment/results', {
+    await resultsStore.loadLatestResult()
+    const stored = resultsStore.currentResult
+
+    if (!stored) {
+      return
+    }
+
+    computedResults.value = await $fetch<AttachmentQuestionnaireDisplayResults>('/api/attachment/enrich', {
       method: 'POST',
-      body: {
-        results: questionnaireWizardStore.result,
-        questions: questionList
-      }
+      body: { computedResults: stored }
     })
   } catch (error) {
     computeError.value = error instanceof Error
       ? error.message
-      : 'Impossible de calculer les résultats pour le moment.'
+      : 'Impossible de charger les résultats pour le moment.'
   }
 }
 
-await loadComputedResults()
-
-const resetStore = () => {
-  questionnaireWizardStore.reset()
-}
+await loadResults()
 
 const goHome = async () => {
-  resetStore()
   await navigateTo('/')
 }
 
-// si le user a fini le test et est à la page des résultats il ne peut plus accéder au questionnaire ou à l'introduction. Il doit repasser par la home
-// Si le user n'est pas premium il ne peut repasser le test qu'une fois par mois
-// si le user est premium il peut repasser le test 1 fois par semaine
-// dans tous les cas, s'assurer que le store est reset quand il quitte la page results.
 onBeforeRouteLeave((to, from, next) => {
   if (to.path === '/attachment-questionnaire/questionnaire' || to.path === '/attachment-questionnaire/introduction') {
-    // bloquer la navigation vers le questionnaire ou l'introduction depuis les résultats
     next(false)
   } else {
     next()
@@ -74,7 +57,7 @@ onBeforeRouteLeave((to, from, next) => {
     <p v-if="computedResults" class="text-sm md:text-base text-center text-gray-600">
       {{ computedResults.completionDate }}
     </p>
-    
+
     <div class="my-10">
       <p v-if="computeError" class="text-red-600">{{ computeError }}</p>
       <AttachmentQuestionnaireResults

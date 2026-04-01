@@ -168,7 +168,24 @@ export type AttachmentQuestionnaireResults = {
   completionDate: string
 }
 
-export type ComputeAttachmentResultsRequest = {
+export type ComputeAttachmentQuestionnaireResultsRequest = {
   results: QuestionResult[]
   questions: AttachmentQuestion[]
+}
+
+export type EnrichAttachmentQuestionnaireResultsRequest = {
+  computedResults: AttachmentQuestionnaireResults
+}
+
+// Legacy aliases for compatibility while migrating callers.
+export type ComputeAttachmentResultsRequest = ComputeAttachmentQuestionnaireResultsRequest
+export type EnrichResultsRequest = EnrichAttachmentQuestionnaireResultsRequest
+
+export type AttachmentQuestionnaireDisplayResults = AttachmentQuestionnaireResults & {
+  tagsResults: TagsResultsByDimension
+  tagData: PolarTagDataItem[]
+  anxietyAverageScore: number
+  avoidanceAverageScore: number
+  anxietyDatasets: DoughnutDataset[]
+  avoidanceDatasets: DoughnutDataset[]
 }

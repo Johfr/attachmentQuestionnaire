@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { computeAttachmentResults } from '../../server/utils/attachment/computeResults'
+import { computeAttachmentQuestionnaireResults } from '../../server/utils/attachment/computeAttachmentQuestionnaireResults'
 import questionsData from '../../app/assets/data/questions.json'
 
-describe('computeAttachmentResults anxiousActivated matching', () => {
+describe('computeAttachmentQuestionnaireResults anxiousActivated matching', () => {
   it('matches anxiousActivated for the provided response set', () => {
     const results = [
       { id: 1, dimension: 'anxiety', value: 3, tags: ['distanceSilence', 'fearOfLoss'] },
@@ -27,7 +27,7 @@ describe('computeAttachmentResults anxiousActivated matching', () => {
       { id: 20, dimension: 'avoidance', value: 4, tags: ['withdrawalUnderStress', 'controlNeed'] }
     ] as const
 
-    const computed = computeAttachmentResults(results as any, (questionsData as any).questions)
+    const computed = computeAttachmentQuestionnaireResults(results as any, (questionsData as any).questions)
 
     expect(computed.attachmentProfilesByDimension.anxiety).toBe('anxiousActivated')
 

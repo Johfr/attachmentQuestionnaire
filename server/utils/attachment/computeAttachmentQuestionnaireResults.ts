@@ -13,7 +13,7 @@ import type {
   RegulationProfileDefinition,
   Trigger
 } from '../../../app/types/attachmentQuestionnaireResults'
-import regulationProfilesData from '../../data/regulationProfiles.json'
+import regulationProfilesData from '../../data/attachment/regulationProfiles.json'
 
 type IntensityByDimension = Record<'anxiety' | 'avoidance', RegulationLevel>
 
@@ -311,7 +311,7 @@ const buildAttachmentProfilesByDimension = (
   }
 }
 
-export const computeAttachmentResults = (
+export const computeAttachmentQuestionnaireResults = (
   results: QuestionResult[],
   questions: AttachmentQuestion[]
 ): AttachmentQuestionnaireResults => {
