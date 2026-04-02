@@ -58,7 +58,7 @@ const itemsBackground = ['#fdf1ec', '#f2f7e7', '#f8ebe6'] // 'aliceblue', 'honey
 
 <template>
   <div>
-    <DesignSystemPageSectionHeading :isTitleH2="true" title="Tous les questionnaires" />
+    <DesignSystemPageSectionHeading :isTitleH2="true" title="Tous les questionnaires" sectionSpacing="mt-8 mb-12" />
     <DesignSystemCardGridList
       :items="questionnaires"
       :itemsBackground="itemsBackground"

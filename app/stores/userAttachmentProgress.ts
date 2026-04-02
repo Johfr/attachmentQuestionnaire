@@ -1,7 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { firebaseFunctions } from '~/composables/firebase/init.js'
+import { useQuestionnaireSessionsStore } from '~/stores/questionnaireSessions'
 
 const TOTAL_TRIGGERS = 11
 const TRIGGER_THRESHOLD = 0.33
@@ -15,6 +14,8 @@ const PROFILE_TO_ELEMENT: Record<string, string> = {
 }
 
 export const useUserAttachmentProgressStore = defineStore('userAttachmentProgress', () => {
+  const sessionsStore = useQuestionnaireSessionsStore()
+
   const globalProfile = ref<string | null>(null)
   const triggers = ref<Record<string, { score: number; level: string }>>({})
   const isLoading = ref(false)
@@ -43,39 +44,18 @@ export const useUserAttachmentProgressStore = defineStore('userAttachmentProgres
   }
 
   const fetchLatestResult = async () => {
-    const firebaseUser = firebaseFunctions.auth.currentUser
-    if (!firebaseUser) {
-      reset()
-      return
-    }
-
     isLoading.value = true
     try {
-      // Equality-only filters — no orderBy, no composite index needed.
-      // Sort client-side to find the most recent completed session.
-      const q = query(
-        collection(firebaseFunctions.db, 'questionnaireSessions'),
-        where('uid', '==', firebaseUser.uid),
-        where('questionnaireType', '==', 'attachment'),
-        where('status', '==', 'completed'),
-      )
-      const snapshot = await getDocs(q)
+      await sessionsStore.loadSessions()
+      const latestSession = sessionsStore.latestAttachmentSession
 
-      if (snapshot.empty) {
-        hasResult.value = false
+      if (!latestSession) {
+        reset()
         return
       }
 
-      // Sort descending by completedAt (Firestore Timestamp has .seconds)
-      const sorted = snapshot.docs.sort((a, b) => {
-        const aSeconds: number = a.data()['completedAt']?.seconds ?? 0
-        const bSeconds: number = b.data()['completedAt']?.seconds ?? 0
-        return bSeconds - aSeconds
-      })
-
-      const data = sorted[0]!.data()
-      globalProfile.value = data['result']?.globalProfile ?? null
-      triggers.value = data['result']?.triggers ?? {}
+      globalProfile.value = latestSession.result?.globalProfile ?? null
+      triggers.value = latestSession.result?.triggers ?? {}
       hasResult.value = true
     } catch (err) {
       hasResult.value = false

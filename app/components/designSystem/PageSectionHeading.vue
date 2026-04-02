@@ -13,11 +13,11 @@ const props = defineProps<{
 <template>
   <section
     :class="[
-      'mb-8 md:max-w-[60%]', 
-      sectionSpacing ?? 'mt-16'
-    ]">
+      'md:max-w-[60%]', 
+      sectionSpacing ?? 'mt-16 mb-8'
+  ]">
     <p v-if="asTag" class="mb-4 text-sm uppercase text-rust">Daily resonance</p>
-    <h1 v-if="isTitleH1" class="text-left mb-5 text-5xl font-serif leading-tight md:text-center">
+    <h1 v-if="isTitleH1" class="text-left mb-5 text-5xl font-serif leading-tight">
       {{ title }}
       <em v-if="userName" class="text-rust">{{ userName }}.</em>
     </h1>

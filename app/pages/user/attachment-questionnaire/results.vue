@@ -1,40 +1,69 @@
 <script setup lang="ts">
-import { useAttachmentQuestionnaireResultsStore } from '~/stores/attachmentQuestionnaireResults'
+import { useQuestionnaireSessionsStore } from '~/stores/questionnaireSessions'
 import type { AttachmentQuestionnaireDisplayResults } from '~/types/attachmentQuestionnaireResults'
+import type { QuestionnaireSession } from '~/types/questionnaireSessions'
 
 definePageMeta({
   middleware: ["auth"],
   requiresAuth: true,
 })
 
-const resultsStore = useAttachmentQuestionnaireResultsStore()
+const route = useRoute()
+const router = useRouter()
+const sessionsStore = useQuestionnaireSessionsStore()
+const session = ref<QuestionnaireSession | null>(null)
+const loadingError = ref<string | null>(null)
 const computedResults = ref<AttachmentQuestionnaireDisplayResults | null>(null)
-const computeError = ref<string | null>(null)
 
-const loadResults = async () => {
+const loadSession = async () => {
   try {
-    await resultsStore.loadLatestResult()
-    const stored = resultsStore.currentResult
+    loadingError.value = null
+    computedResults.value = null
 
-    if (!stored) {
+    await sessionsStore.loadSessions()
+    const requestedSessionId = typeof route.query.sessionId === 'string' ? route.query.sessionId : null
+
+    if (requestedSessionId) {
+      const selectedSession = sessionsStore.getSessionById(requestedSessionId)
+      session.value = selectedSession && selectedSession.questionnaireType === 'attachment'
+        ? selectedSession
+        : null
+
+      if (!session.value) {
+        loadingError.value = 'La session demandee est introuvable.'
+        return
+      }
+    } else {
+      session.value = sessionsStore.latestAttachmentSession
+
+      if (!session.value) {
+        loadingError.value = 'Aucune session attachement disponible pour le moment.'
+        return
+      }
+    }
+
+    if (!session.value?.answers?.length) {
+      loadingError.value = 'Cette session ne contient pas de réponses exploitables.'
       return
     }
 
-    computedResults.value = await $fetch<AttachmentQuestionnaireDisplayResults>('/api/attachment/enrich', {
+    computedResults.value = await $fetch<AttachmentQuestionnaireDisplayResults>('/api/attachment/display-from-session', {
       method: 'POST',
-      body: { computedResults: stored }
+      body: {
+        answers: session.value.answers,
+      },
     })
   } catch (error) {
-    computeError.value = error instanceof Error
+    loadingError.value = error instanceof Error
       ? error.message
-      : 'Impossible de charger les résultats pour le moment.'
+      : 'Impossible de charger la session pour le moment.'
   }
 }
 
-await loadResults()
+await loadSession()
 
-const goHome = async () => {
-  await navigateTo('/')
+const goBack = async () => {
+  await navigateTo('/user/profil')
 }
 
 onBeforeRouteLeave((to, from, next) => {
@@ -48,9 +77,9 @@ onBeforeRouteLeave((to, from, next) => {
 
 <template>
   <section>
-    <button @click="goHome" class="light-button">
+    <button @click="goBack" class="light-button">
       <LucideArrowLeft :size="16" />
-      Retour à l'accueil
+      Retour au profil
     </button>
     <h1 class="text-xl font-bold text-center md:text-4xl md:max-w-144 md:mx-auto">Tes résultats au Questionnaire d'attachement adulte</h1>
     <p class="text-sm md:text-base text-center text-gray-600">Découvre ton style d'attachement</p>
@@ -59,7 +88,8 @@ onBeforeRouteLeave((to, from, next) => {
     </p>
 
     <div class="my-10">
-      <p v-if="computeError" class="text-red-600">{{ computeError }}</p>
+      <p v-if="loadingError" class="text-red-600">{{ loadingError }}</p>
+
       <AttachmentQuestionnaireResults
         v-if="computedResults"
         :computed-results="computedResults"

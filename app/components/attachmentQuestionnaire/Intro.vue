@@ -76,6 +76,18 @@ const nextStep = () => {
     <p class="mt-4 p-6 text-sm text-gray-700 text-center bg-white border border-solid border-gray-300 rounded-3xl">
       Ce test est inspiré des modèles contemporains de l'attachement adulte, notamment les dimensions d'anxiété et d'évitement. Il propose une lecture structurée et utile du fonctionnement relationnel, mais ne constitue pas un diagnostic clinique.
     </p>
+    
+    <p class="flex flex-col mt-4 p-6 text-sm text-gray-800 text-center bg-red-100 border border-solid border-gray-300 rounded-3xl">
+      <span class="mb-2">
+        Attention, tu ne pourras passer ce questionnaire qu'une fois.
+      </span>
+      <span class="mb-2">
+        assure toi d'être dans de bonnes conditions pour y répondre : un moment calme, où tu ne seras pas dérangé, et où tu pourras réfléchir à tes expériences relationnelles passées et présentes.
+      </span>
+      <span class="">
+        Il n'y a pas de bonnes ou de mauvaises réponses, sois simplement honnête avec toi-même. Prends ton temps pour réfléchir à chaque question et réponds en fonction de tes expériences et sentiments dans tes relations amoureuses passées et présentes. Bonne chance !
+      </span>
+    </p>
     <!-- Prends ton temps pour réfléchir à chaque question et réponds en fonction de tes expériences et sentiments dans tes relations amoureuses passées et présentes. Bonne chance ! -->
     <!-- <p>
       Ce questionnaire est conçu pour évaluer ton style d'attachement adulte en couple, basé sur les dimensions d'anxiété et d'évitement. Il n'est pas destiné à être un diagnostic clinique, mais plutôt un outil de réflexion personnelle pour mieux comprendre tes tendances relationnelles. Les résultats peuvent t'aider à identifier des schémas de comportement dans tes relations amoureuses et à explorer des pistes pour améliorer ton bien-être émotionnel et relationnel.

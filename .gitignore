@@ -20,6 +20,7 @@ firebase-debug.*.log
 .fleet
 .idea
 .firebase
+favicon/
 
 # Local env files
 .env
