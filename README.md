@@ -113,12 +113,26 @@ Ordre recommandé:
 # 1) Build Nuxt SSR
 npm run build
 
-# 2) Installer les deps de la function SSR générée
-cd .output/server
-npm install --legacy-peer-deps
-cd ../..
+# 2) Déployer
+firebase deploy
+```
 
-# 3) Déployer
+Le build génère maintenant un `.output/server/package.json` déterministe et son `package-lock.json`.
+Il ne faut pas installer manuellement des dépendances dans `.output/server` avant le déploiement.
+
+Si un déploiement SSR échoue après une modification de dépendances, la bonne remise à plat est:
+
+```bash
+rm -rf .output
+npm run build
+firebase deploy
+```
+
+Sous Windows PowerShell:
+
+```powershell
+Remove-Item -Recurse -Force .output
+npm run build
 firebase deploy
 ```
 
