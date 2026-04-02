@@ -35,13 +35,13 @@ const questionnaires = [
 
 const blogArticles = [
   {
-    id: 2,
-    icon: '',
-    title: 'La vérité crue sur les évitants',
-    description: 'Découvre les mécanismes d\'évitement et comment les surmonter pour construire des relations plus saines.',
+    id: 1,
+    icon: 'Link',
+    title: 'Pourquoi tu cherches la considération chez ta partenaire ?',
+    description: 'Découvre les raisons profondes de ce comportement et comment y remédier pour construire une relation plus saine.',
     image: '',
-    link: '',
-    duration: '5 min',
+    link: '/blog',
+    duration: '8-15 min',
     isActive: true,
   }
 ]

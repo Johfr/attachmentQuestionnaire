@@ -10,17 +10,7 @@ const blogIcons: Record<string, Component> = {
 
 const blogArticles = [
   {
-    id: 2,
-    icon: 'Link',
-    title: 'La vérité crue sur les évitants',
-    description: 'Découvre les mécanismes d\'évitement et comment les surmonter pour construire des relations plus saines.',
-    image: '',
-    link: '/blog',
-    duration: '8-15 min',
-    isActive: true,
-  },
-  {
-    id: 2,
+    id: 1,
     icon: 'Link',
     title: 'Pourquoi tu cherches la considération chez ta partenaire ?',
     description: 'Découvre les raisons profondes de ce comportement et comment y remédier pour construire une relation plus saine.',
@@ -30,7 +20,7 @@ const blogArticles = [
     isActive: true,
   },
   {
-    id: 3,
+    id: 2,
     icon: 'Link',
     title: 'Comment gérer la panique dans une relation amoureuse ?',
     description: 'Découvre des stratégies efficaces pour apaiser ta panique et renforcer ta relation.',
@@ -40,7 +30,7 @@ const blogArticles = [
     isActive: false,
   },
   {
-    id: 4,
+    id: 3,
     icon: 'Link',
     title: 'Comment gérer la fuite dans une relation amoureuse ?',
     description: 'Apprends à reconnaître les signes de la fuite et découvre des conseils pour y faire face.',
