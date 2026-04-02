@@ -16,6 +16,9 @@ type AuthActionResult = {
   errorMessage?: string
 }
 
+// Module-scoped flag — not in Pinia state to avoid SSR hydration pollution.
+let _clientInitDone = false
+
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<UserLoginForm | null>(null)
   const currentPartnerContext = ref<CurrentPartnerContext | null>(null)
@@ -266,11 +269,35 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const initAuth = async () => {
-    // plus tard : lire le user Firebase / cookie / token
-    // ici on simule juste une init unique
-    if (hasInitialized.value) return
+  const initAuth = (): Promise<void> => {
+    // Skip entirely during SSR — no Firebase Auth persistence available.
+    if (!import.meta.client) return Promise.resolve()
+
+    // Use a module-scoped flag to avoid re-registering the listener.
+    // Pinia's ref(hasInitialized) can be polluted by SSR hydration.
+    if (_clientInitDone) {
+      hasInitialized.value = true
+      return Promise.resolve()
+    }
+    _clientInitDone = true
     hasInitialized.value = true
+
+    return new Promise<void>((resolve) => {
+      firebaseFunctions.onAuthStateChanged(
+        firebaseFunctions.auth,
+        async (firebaseUser) => {
+          if (firebaseUser) {
+            const profile = await getUserProfileFromFirestore(firebaseUser.uid, firebaseUser.email || '')
+            user.value = profile.localUser
+            currentPartnerContext.value = profile.partnerContext
+          } else {
+            user.value = null
+            currentPartnerContext.value = null
+          }
+          resolve()
+        }
+      )
+    })
   }
   
 

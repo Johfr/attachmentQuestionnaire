@@ -1,16 +1,39 @@
 <script setup lang="ts">
-import { openBlock } from 'vue';
-import Popin from '~/utils/Popin.vue'
+import { ref, computed, resolveComponent, watch, type Component } from 'vue'
+import Popin from '../../utils/Popin.vue'
+import { useUserAttachmentProgressStore } from '~/stores/userAttachmentProgress'
+import { useAuthStore } from '~/stores/auth'
 
-const props = defineProps<{
-  userStats: {
-    id: number
-    level: number,
-    type: string,
-    element: string,
-    progress: number,
-  }
-}>()
+const authStore = useAuthStore()
+const progressStore = useUserAttachmentProgressStore()
+
+watch(
+  () => authStore.isLoggedIn,
+  (loggedIn) => {
+    if (loggedIn) {
+      progressStore.fetchLatestResult()
+    } else {
+      progressStore.reset()
+    }
+  },
+  { immediate: true },
+)
+
+const PROFILE_TO_TYPE: Record<string, string> = {
+  globallySecure: 'Sécure',
+  anxious: 'Anxieux',
+  dismissiveAvoidant: 'Évitant',
+  fearfulAvoidant: 'Désorganisé',
+  mixedProfile: 'Profil mixte',
+}
+
+const profileType = computed<string>(() => {
+  if (!progressStore.globalProfile) return '...'
+  return PROFILE_TO_TYPE[progressStore.globalProfile] ?? progressStore.globalProfile
+})
+
+const showPopin = ref(false)
+const fallbackElementIcon = resolveComponent('LucideCircle') as Component
 
 const profileExplanationOpen = ref<Record<string, boolean>>({
   global: false,
@@ -120,8 +143,6 @@ const definitions = [
   },
 ]
 
-const showPopin = ref(false)
-const fallbackElementIcon = resolveComponent('LucideCircle') as Component
 const elementIcons: Record<string, Component> = {
   mountain: resolveComponent('LucideMountain') as Component,
   water: resolveComponent('LucideDroplet') as Component,
@@ -155,33 +176,42 @@ const toggleProfileExplanation = (key: string) => {
 
 <template>
   <section class="p-5 mt-6 mb-6 bg-[#f1e2dd] rounded-3xl w-full md:max-w-[40%]">
-    <p class="flex justify-between items-center text-xs uppercase text-gray-400" :title="`Voir les caractéristiques de l'élément ${props.userStats.element}`">
+    <p
+      class="flex justify-between items-center text-xs uppercase text-gray-400"
+      :title="progressStore.hasResult ? `Voir les caractéristiques de l\'élément ${progressStore.element}` : 'Etat actuel'"
+    >
       Etat actuel
       <component
-        :is="elementIcons[props.userStats.element] || fallbackElementIcon"
+        :is="progressStore.hasResult ? (elementIcons[progressStore.element] || fallbackElementIcon) : fallbackElementIcon"
         :size="40"
         class="inline-block min-w-10 ml-2 p-2 rounded-full text-white shadow-none hover:shadow-lg shadow-slate-300 transition-shadow duration-500 cursor-pointer"
-        :class="bgColorByElement[props.userStats.element]"
+        :class="progressStore.hasResult ? bgColorByElement[progressStore.element] : 'bg-gray-300'"
         @click.self="showPopin = !showPopin"
       />
     </p>
     <h2 class="mb-6 text-lg font-serif font-bold">
-      Niveau {{ props.userStats.level }}
+      <template v-if="progressStore.hasResult">Niveau {{ progressStore.level }}</template>
+      <template v-else>...</template>
     </h2>
 
     <div class=" mb-6" @click="showPopin = !showPopin">
       <p
+        v-if="progressStore.hasResult"
         class="mb-2 px-4 py-2 text-sm inline-block rounded-3xl text-white shadow-none hover:shadow-lg shadow-slate-300 transition-shadow duration-500 cursor-pointer"
-        :class="bgColorByElement[props.userStats.element]"
+        :class="bgColorByElement[progressStore.element]"
         title="Voir les éléments de ce niveau"
       >
         Element
-        <span class="font-bold capitalize">{{ props.userStats.element }}</span>
+        <span class="font-bold capitalize">{{ progressStore.element }}</span>
       </p>
       
-      <p class="mr-3 px-4 py-2 text-sm bg-red-100 inline-block rounded-3xl shadow-none hover:shadow-lg shadow-slate-300 transition-shadow duration-500 cursor-pointer" title="Voir les différents types d'attachement">
+      <p v-if="progressStore.hasResult" class="mr-3 px-4 py-2 text-sm bg-red-100 inline-block rounded-3xl shadow-none hover:shadow-lg shadow-slate-300 transition-shadow duration-500 cursor-pointer" title="Voir les différents types d'attachement">
         Type
-        <span class="font-bold">{{ props.userStats.type }}</span>
+        <span class="font-bold">{{ profileType }}</span>
+      </p>
+
+      <p v-if="!progressStore.hasResult && !progressStore.isLoading" class="text-sm text-gray-400">
+        Passe le questionnaire pour découvrir ton niveau.
       </p>
     </div>
 
@@ -189,46 +219,43 @@ const toggleProfileExplanation = (key: string) => {
     <div class="w-full bg-[#d5d5d5] rounded-full h-2">
       <div
         class="h-2 rounded-full"
-        :class="bgColorByElement[props.userStats.element]"
-        :style="{ width: props.userStats.progress + '%' }"
+        :class="progressStore.hasResult ? bgColorByElement[progressStore.element] : 'bg-gray-400'"
+        :style="{ width: progressStore.progress + '%' }"
       ></div>
     </div>
-    <p class="text-xs text-gray-500">Progression vers le niveau {{ props.userStats.level + 1 }}</p>
+    <p v-if="progressStore.hasResult" class="text-xs text-gray-500">
+      <template v-if="progressStore.level < 11">Progression vers le niveau {{ progressStore.level + 1 }}</template>
+      <template v-else>Félicitation, tu as atteint un attachement sécure de haut niveau !</template>
+    </p>
 
     <!-- Popin -->
     <Popin v-model="showPopin">
       <div class="mb-8">
         <div class="mb-8">
-          <h2 class="text-2xl font-bold">Définitions</h2>
-          <div class="flex h-1 mt-1 mb-6">
-            <span class=" h-1 w-14 mr-2 bg-rust"></span>
-            <span class=" h-1 w-4 mr-2 bg-rust"></span>
-            <span class=" h-1 w-2 bg-rust"></span>
-          </div>
+          <DesignSystemPageSectionHeading :isTitleH2="true" title="Définitions" sectionSpacing="mt-0" />
         </div>
       </div>
 
       <!-- Elements -->
-      <div class="mb-8">
+      <div v-if="progressStore.hasResult" class="mb-8">
         <h3 class="md:text-lg font-bold mb-3 text-gray-700">
-          Caractéristiques de l'élément {{ props.userStats.element }}
+          Caractéristiques de l'élément {{ progressStore.element }}
           <component
-            :is="elementIcons[props.userStats.element] || fallbackElementIcon"
+            :is="elementIcons[progressStore.element] || fallbackElementIcon"
             :size="20"
             class="inline-block rounded-full"
-            :class="colorByElement[props.userStats.element]"
+            :class="colorByElement[progressStore.element]"
           />
         </h3>
-
-        <p class="text-sm text-gray-500 ">{{ definitions.find(def => def.elements === props.userStats.element)?.explanation }}</p>
+        <p class="text-sm text-gray-500 ">{{ definitions.find(def => def.elements === progressStore.element)?.explanation }}</p>
       </div>
 
       <!-- Levels -->
-      <div class="mb-8">
+      <div v-if="progressStore.hasResult" class="mb-8">
         <h3 class="md:text-lg font-bold mb-3 text-gray-700">
-          Tu es au niveau {{ props.userStats.level }}/{{ levelsDefinitions.length }}
+          Tu es au niveau {{ progressStore.level }}/{{ levelsDefinitions.length }}
         </h3>
-        <p class="text-sm text-gray-500 ">{{ levelsDefinitions.find(level => level.level === props.userStats.level)?.description }}</p>
+        <p class="text-sm text-gray-500 ">{{ levelsDefinitions.find(l => l.level === progressStore.level)?.description }}</p>
       </div>
 
       <!-- Style d'attachement -->

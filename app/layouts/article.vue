@@ -10,7 +10,6 @@ const { isLoginModalOpen } = storeToRefs(authStore)
 <template>
   <div class="article-layout">
     <div class="article-container">
-      <h1>article layout</h1>
       <header>
         <Navbar />
       </header>

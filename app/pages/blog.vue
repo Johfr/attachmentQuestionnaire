@@ -34,7 +34,7 @@ const blogArticles = [
     icon: 'Link',
     title: 'Comment gérer la panique dans une relation amoureuse ?',
     description: 'Découvre des stratégies efficaces pour apaiser ta panique et renforcer ta relation.',
-    image: '/images/blog-panique.png',
+    image: '',
     link: '/blog',
     duration: '8-15 min',
     isActive: false,
@@ -56,8 +56,8 @@ const itemsBackground = ['#fdf1ec', '#f2f7e7', '#f8ebe6'] // 'aliceblue', 'honey
 
 <template>
   <section>
-    <h2 class="text-lg font-bold">Les derniers articles</h2>
-    <HomeArticlesAndQuestionnairesList
+    <DesignSystemPageSectionHeading :isTitleH2="true" title="Tous les articles" />
+    <DesignSystemCardGridList
       :items="blogArticles"
       :itemsBackground="itemsBackground"
       :itemIcons="blogIcons"
