@@ -1,2 +1,3 @@
 User-Agent: *
 Disallow:
+Sitemap: https://relation-anxieux-evitant.web.app/sitemap.xml

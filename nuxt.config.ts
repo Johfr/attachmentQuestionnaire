@@ -27,12 +27,25 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/icon',
     '@nuxt/image',
+    '@nuxtjs/sitemap',
     '@nuxt/test-utils',
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
     'nuxt-charts',
     'nuxt-lucide-icons'
   ],
+
+  site: {
+    url: 'https://relation-anxieux-evitant.web.app',
+  },
+
+  sitemap: {
+    exclude: [
+      '/user/**',
+      '/attachment-questionnaire/questionnaire',
+      '/attachment-questionnaire/results',
+    ],
+  },
 
   nitro: {
     preset: 'firebase',
