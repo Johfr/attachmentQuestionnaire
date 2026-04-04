@@ -17,6 +17,9 @@ export default defineConfig({
           name: 'nuxt',
           include: ['test/nuxt/*.{test,spec}.ts'],
           environment: 'nuxt',
+          // Mocks Firebase SDK before the Nuxt app initializes so protobufjs/long
+          // never runs in happy-dom (which lacks the required native binding).
+          setupFiles: ['./test/setup.nuxt.ts'],
           environmentOptions: {
             nuxt: {
               rootDir: fileURLToPath(new URL('.', import.meta.url)),
