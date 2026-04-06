@@ -14,9 +14,9 @@ function toggle() {
 <template>
   <transition name="slide-up">
     <div v-if="isOpen" class="overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="toggle">
-      <div class="max-w-full max-h-128 p-6 bg-white rounded-2xl overflow-auto w-11/12 relative md:p-10 md:w-2/3 lg:w-1/2">
+      <div class="max-w-full max-h-144 pt-11 p-6 bg-white rounded-2xl overflow-auto w-11/12 relative md:p-10 md:w-2/3 lg:w-1/2">
         <!-- close button -->
-        <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-700" @click="toggle" title="fermer la popin">
+        <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors transition-duration-600" @click="toggle" title="fermer la popin">
           <LucideCircleX :size="24" />
         </button>
         <slot></slot>

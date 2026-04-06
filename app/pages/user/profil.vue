@@ -3,6 +3,7 @@ import UserProgress from '~/components/designSystem/UserProgress.vue'
 import { useAuthStore } from '~/stores/auth'
 import { useQuestionnaireSessionsStore } from '~/stores/questionnaireSessions'
 import type { QuestionnaireSession } from '~/types/questionnaireSessions'
+import { getProfileLabel } from '~/utils/attachmentProfileTranslations'
 
 definePageMeta({
   middleware: ["auth"],
@@ -104,7 +105,7 @@ const handleAuthAction = async () => {
       <UserProgress />
     </section>
 
-    <section class="max-w-[48%]">
+    <section class="md:max-w-[48%]">
       <h2 class="text-xl font-bold my-8">
         Historique de mes résultats
       </h2>
@@ -121,7 +122,7 @@ const handleAuthAction = async () => {
           :to="`/user/attachment-questionnaire/results?sessionId=${session.id}`"
           class="block p-4 rounded-2xl bg-white border border-gray-200 hover:border-rust transition-colors"
         >
-          <p class="font-bold text-gray-800 mt-1">{{ session.summary?.title }}</p>
+          <p class="font-bold text-gray-800 mt-1">{{ getProfileLabel(session.result.globalProfile) }}</p>
           <p class="text-xs uppercase text-gray-400">
             {{ session.questionnaireType }} • {{ formatSessionDate(session) }}
           </p>

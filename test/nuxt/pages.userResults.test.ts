@@ -126,8 +126,7 @@ const makeSession = (id: string): QuestionnaireSession =>
       avoidanceSubProfile: 'avoidantFlexible',
       triggers: {},
     },
-    summary: { title: '', subtitle: '', hasPaidResult: false, hasPaidAi: false },
-    access: { paidResultUnlocked: false, paidAiUnlocked: false },
+    billingInfo: { hasPaidResults: false, hasPaidIa: false, hasPaidMembership: false, hasPaidFormation: false },
     persist: { status: 'persisted', retryCount: 0, lastAttemptAt: null, lastErrorCode: null },
   } as QuestionnaireSession)
 

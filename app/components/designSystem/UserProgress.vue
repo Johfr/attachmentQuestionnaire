@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, resolveComponent, watch, type Component } from 'vue'
-import Popin from '../../utils/Popin.vue'
+import Popin from '~/utils/Popin.vue'
 import { useUserAttachmentProgressStore } from '~/stores/userAttachmentProgress'
 import { useAuthStore } from '~/stores/auth'
+import { getProfileLabel } from '~/utils/attachmentProfileTranslations'
 
 const authStore = useAuthStore()
 const progressStore = useUserAttachmentProgressStore()
@@ -19,17 +20,9 @@ watch(
   { immediate: true },
 )
 
-const PROFILE_TO_TYPE: Record<string, string> = {
-  globallySecure: 'Sécure',
-  anxious: 'Anxieux',
-  dismissiveAvoidant: 'Évitant',
-  fearfulAvoidant: 'Désorganisé',
-  mixedProfile: 'Profil mixte',
-}
-
 const profileType = computed<string>(() => {
   if (!progressStore.globalProfile) return '...'
-  return PROFILE_TO_TYPE[progressStore.globalProfile] ?? progressStore.globalProfile
+  return getProfileLabel(progressStore.globalProfile)
 })
 
 const showPopin = ref(false)

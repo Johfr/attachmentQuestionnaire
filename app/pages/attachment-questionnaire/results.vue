@@ -99,7 +99,8 @@ onBeforeRouteLeave((to, from, next) => {
     <div class="my-10">
       <p v-if="computeError" class="text-red-600">{{ computeError }}</p>
       <AttachmentQuestionnaireResults
-        v-if="computedResults"
+        v-if="computedResults && sessionId"
+        :docId="sessionId"
         :computed-results="computedResults"
         :tags-results="computedResults.tagsResults"
         :tag-data="computedResults.tagData"

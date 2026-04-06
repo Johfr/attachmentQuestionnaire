@@ -49,8 +49,11 @@ const itemsBackground = ['#fdf1ec', '#f2f7e7', '#f8ebe6'] // 'aliceblue', 'honey
     <DesignSystemPageSectionHeading :isTitleH2="true" title="Tous les articles" sectionSpacing="mt-8 mb-12" />
     <DesignSystemCardGridList
       :items="blogArticles"
-      :itemsBackground="itemsBackground"
       :itemIcons="blogIcons"
+      :asItemIcons="false"
+      :buttonText="'Lire l\'article'"
+      buttonType="link"
+      :isBlog="true"
     />
   </section>  
 </template>

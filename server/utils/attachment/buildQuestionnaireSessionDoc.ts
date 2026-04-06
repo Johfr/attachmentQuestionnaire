@@ -2,18 +2,12 @@ import type {
   AttachmentQuestionnaireResults,
   QuestionResult,
 } from '../../../app/types/attachmentQuestionnaireResults'
-import globalProfilesData from '../../data/globalProfiles.json'
-import regulationProfilesData from '../../data/attachment/regulationProfiles.json'
-
 const SCORING_VERSION = '1.0'
 
 type RelationContext = {
   partnerFirstName: string | null
   partnerAge: number | null
 }
-
-const findLabel = (key: string, list: Array<{ key: string; label: string }>) =>
-  list.find(p => p.key === key)?.label ?? key
 
 /**
  * Maps computed questionnaire results to the Firestore QuestionnaireSession document shape.
@@ -41,17 +35,9 @@ export const buildQuestionnaireSessionDoc = (
     }
   }
 
-  const globalProfiles = (globalProfilesData.globalProfiles ?? []) as Array<{ key: string; label: string }>
-  const regProfiles = (regulationProfilesData.regulationProfiles ?? []) as Array<{ key: string; label: string }>
-
   const globalProfileKey = attachmentProfilesByDimension.globalStyle
   const anxietySubKey = attachmentProfilesByDimension.anxiety
   const avoidanceSubKey = attachmentProfilesByDimension.avoidance
-
-  const title = findLabel(globalProfileKey, globalProfiles)
-  const anxietyLabel = anxietySubKey === 'notSignificant' ? null : findLabel(anxietySubKey, regProfiles)
-  const avoidanceLabel = avoidanceSubKey === 'notSignificant' ? null : findLabel(avoidanceSubKey, regProfiles)
-  const subtitle = [anxietyLabel, avoidanceLabel].filter(Boolean).join(' · ') || title
 
   return {
     uid,
@@ -78,16 +64,11 @@ export const buildQuestionnaireSessionDoc = (
       triggers,
     },
 
-    summary: {
-      title,
-      subtitle,
-      hasPaidResult: false,
-      hasPaidAi: false,
-    },
-
-    access: {
-      paidResultUnlocked: false,
-      paidAiUnlocked: false,
+    billingInfo: {
+      hasPaidResults: false,
+      hasPaidIa: false,
+      hasPaidMembership: false,
+      hasPaidFormation: false,
     },
 
     persist: {

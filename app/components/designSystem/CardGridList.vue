@@ -34,11 +34,11 @@ const { items, itemsBackground } = toRefs(props)
       class="rounded-3xl shadow-lg mb-3 last:mb-0 bg-white transition-all duration-500 md:mb-0 md:shadow-none md:border md:hover:shadow-lg md:hover:scale-[1.01] md:hover:z-10 relative overflow-hidden"
       :class="[
         `bg-${itemsBackground?.[itemId]}`,
-        !isBlog && itemId === 0 ? 'md:max-w-[59%]' : '',
-        !isBlog && itemId === 1 ? 'md:max-w-[40%]' : '',
-        !isBlog && itemId > 1 ? 'md:max-w-[33%]' : '',
+        // !isBlog && itemId === 0 ? 'md:max-w-[59%]' : '',
+        // !isBlog && itemId === 1 ? 'md:max-w-[40%]' : '',
+        // !isBlog && itemId > 1 ? 'md:max-w-[33%]' : '',
+        !isBlog ? 'md:max-w-[49%]' : 'md:max-w-[33%] bg-white',
         { 'opacity-50 pointer-events-none cursor-not-allowed': !item.isActive },
-        isBlog ? 'md:max-w-[33%] bg-white' : ''
       ]"
       :style="item.image ? { backgroundImage: `url(${item.image})` } : {}"
     >

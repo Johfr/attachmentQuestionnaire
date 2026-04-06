@@ -199,9 +199,7 @@ Store `attachmentQuestionnaireResultsDb` (adaptateur in-memory) :
 - Upsert : update d'un existant vs création d'un nouveau
 
 ### `test/unit/billingStore.test.ts`
-Store `billing` :
-- `hasPremiumAccess` reflète `billingInfo.hasPremiumAccess`
-- **Bug documenté** : `hasAccessToContent()` retourne `false` même si `hasPremiumAccess=true` (logique cassée, Stripe en cours)
+Store `billing`
 
 ### `test/nuxt/pages.userResults.edgeStates.test.ts` *(optionnel)*
 - `loadingError` affiché quand `$fetch` lève une exception

@@ -91,7 +91,8 @@ onBeforeRouteLeave((to, from, next) => {
       <p v-if="loadingError" class="text-red-600">{{ loadingError }}</p>
 
       <AttachmentQuestionnaireResults
-        v-if="computedResults"
+        v-if="computedResults && session"
+        :docId="session.id"
         :computed-results="computedResults"
         :tags-results="computedResults.tagsResults"
         :tag-data="computedResults.tagData"

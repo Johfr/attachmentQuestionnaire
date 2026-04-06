@@ -61,16 +61,11 @@ export type QuestionnaireSession = {
     }>
   }
 
-  summary: {
-    title: string
-    subtitle: string
-    hasPaidResult: boolean
-    hasPaidAi: boolean
-  }
-
-  access: {
-    paidResultUnlocked: boolean
-    paidAiUnlocked: boolean
+  billingInfo: {
+    hasPaidResults: boolean
+    hasPaidIa: boolean
+    hasPaidMembership: boolean
+    hasPaidFormation: boolean
   }
 
   persist: {

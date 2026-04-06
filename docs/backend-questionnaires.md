@@ -62,7 +62,7 @@ Ne pas partager des fonctions metier entre questionnaires tant que le besoin com
 
 ### Collections
 
-- `questionnaireSessions/{sessionId}`: contexte relationnel, reponses, resultats calcules, summary et flags d'acces
+- `questionnaireSessions/{sessionId}`: contexte relationnel, reponses, resultats calcules, billingInfo (acces payes par le user)
 - `questionnaireSessions/{sessionId}/aiExchange/result`: entree user, sortie IA, statut de generation
 
 ### Flow recommande (cas 1)

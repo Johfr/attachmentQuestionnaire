@@ -6,14 +6,19 @@ import type {
   PolarTagDataItem,
   TagsResultsByDimension
 } from '~/types/attachmentQuestionnaireResults'
+import type { EntitySubType, EntityType, AccessType } from '~/types/billing'
 import DoughnutChart from "~/components/attachmentQuestionnaire/DoughnutChart.vue"
 import PolarChart from "~/components/attachmentQuestionnaire/PolarChart.vue"
-import regulationProfilesData from '~/assets/data/regulationProfiles.json'
-import globalProfilesData from '~/assets/data/globalProfiles.json'
 import Accordeon from '~/utils/Accordeon.vue'
 import { useBillingStore } from '~/stores/billing'
+import Popin from '~/utils/Popin.vue'
+import { getProfileLabel } from '~/utils/attachmentProfileTranslations'
+import regulationProfilesData from '~/assets/data/regulationProfiles.json'
+import globalProfilesData from '~/assets/data/globalProfiles.json'
+// import Questionnaire from '~/layouts/questionnaire.vue'
 
 const props = defineProps<{
+  docId: string,
   computedResults: AttachmentQuestionnaireResults
   tagsResults: TagsResultsByDimension
   tagData: PolarTagDataItem[]
@@ -23,7 +28,7 @@ const props = defineProps<{
   avoidanceDatasets: DoughnutDataset[]
 }>()
 
-const questionnaireId = 'attachmentQuestionnaire' // à centraliser dans un fichier de constantes si besoin
+// const questionnaireId = 'attachmentQuestionnaire' // à centraliser dans un fichier de constantes si besoin
 
 const graphData = computed(() => props.computedResults)
 const tagsResults = computed(() => props.tagsResults)
@@ -32,30 +37,29 @@ const anxietyAverageScore = computed(() => props.anxietyAverageScore)
 const avoidanceAverageScore = computed(() => props.avoidanceAverageScore)
 const anxietyDatasets = computed(() => props.anxietyDatasets)
 const avoidanceDatasets = computed(() => props.avoidanceDatasets)
+// Billing access
 const billingStore = useBillingStore()
-const hasResultsAccess = computed(() => {
-  // type AccessType = 'results' | 'ia'
-  return billingStore.hasAccessToContent(questionnaireId, 'results')
+const hasResultsAccess = computed(() => billingStore.hasPaidResults)
+const hasIaAccess = computed(() => billingStore.hasPaidIa)
+const hasMembershipAccess = computed(() => billingStore.hasPaidMembership)
+const hasFormationAccess = computed(() => billingStore.hasPaidFormation)
+// Access
+const hasBasicAccess = computed(() => {
+  return (
+    hasResultsAccess.value ||
+    hasIaAccess.value ||
+    hasMembershipAccess.value ||
+    hasFormationAccess.value
+  )
 })
-const hasIaAccess = computed(() => billingStore.hasAccessToContent(questionnaireId, 'ia'))
 
-const regulationProfileTranslations = Object.fromEntries(
-  ((regulationProfilesData.regulationProfiles || []) as Array<{ key: string; label: string }>)
-    .map(profile => [profile.key, profile.label])
-) as Record<string, string>
-
-const globalProfileTranslations = Object.fromEntries(
-  ((globalProfilesData.globalProfiles || []) as Array<{ key: string; label: string }>)
-    .map(profile => [profile.key, profile.label])
-) as Record<string, string>
-
-const profileTranslations: Record<string, string> = {
-  ...regulationProfileTranslations,
-  ...globalProfileTranslations,
-  notSignificant: 'Non significatif'
-}
-
-const getProfileLabel = (profileKey: string) => profileTranslations[profileKey] || profileKey
+const hasFullAccess = computed(() => {
+  return (
+    hasIaAccess.value ||
+    hasMembershipAccess.value ||
+    hasFormationAccess.value
+  )
+})
 
 const anxietyLabel = ['Anxiety']
 const avoidanceLabel = ['Avoidance']
@@ -106,6 +110,7 @@ const profilExplanations = computed(() => {
 
 // ProfileExplanationKey est utilisé pour les dimensions et les tags
 type ProfileExplanationKey = 'global' | 'anxiety' | 'avoidance' | string
+type PopinKey = 'results' | 'ia' | 'membership' | string
 
 const profileExplanationOpen = ref<Record<ProfileExplanationKey, boolean>>({
   global: false,
@@ -119,6 +124,46 @@ const isProfileExplanationOpen = (key: ProfileExplanationKey) => {
 
 const toggleProfileExplanation = (key: ProfileExplanationKey) => {
   profileExplanationOpen.value[key] = !profileExplanationOpen.value[key]
+}
+
+
+const showPopin = ref(false)
+const togglePopin = () => {
+  showPopin.value = !showPopin.value
+}
+const popinType = ref<PopinKey>('')
+const openPopin = (key: PopinKey) => {
+  // log event analytics ouverture popin avec clé
+  togglePopin()
+  
+  popinType.value = key
+}
+
+// IA
+const textarea = ref('')
+const minTextareaRequired = 750
+const checkTextareaFilled = computed(() => textarea.value.trim().length > minTextareaRequired)
+const textareaLength = computed(() => textarea.value.trim().length)
+
+/****** */
+// BILLING 
+/****** */
+await billingStore.checkUserPermissions()
+const loading = ref(false)
+const errorMessage = ref('')
+// goToCheckout('questionnaire', 'attachment', 'results', 'attachment-questionnaire', 'docId')
+const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType, accessType: AccessType) => {
+  loading.value = true
+  try {
+    await billingStore.goToCheckout(entityType, entitySubType, accessType, 'v1', 'attachment-questionnaire', props.docId)
+  } catch (error) {
+    errorMessage.value =
+      error instanceof Error
+        ? error.message
+        : 'Une erreur est survenue lors de la redirection vers le paiement.'
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -188,12 +233,12 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
         <div class="relative">
           <div
             class="mb-3 p-5 rounded-3xl"
-            :class="[ dimension === 'anxiety' ? 'bg-primary' : 'bg-secondary', !hasResultsAccess ? 'opacity-50 blur-[5px]' : '' ]"
+            :class="[ dimension === 'anxiety' ? 'bg-primary' : 'bg-secondary', !hasBasicAccess ? 'opacity-50 blur-[5px]' : '' ]"
           >
             <h3 class="text-md mb-3 font-bold">
               <component :is="getProfileIcon(getSubProfile(dimension))" :size="20" class="inline-block mr-2" />
               Sous profil :
-              <span v-if="!hasResultsAccess">
+              <span v-if="!hasBasicAccess">
                 Débloque l'accès
               </span>
               <span v-else>
@@ -204,7 +249,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
               class="max-h-36 overflow-hidden mb-3 text-sm text-gray-600 line-clamp-4"
               :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen(dimension) }"
             >
-              <span v-if="!hasResultsAccess">
+              <span v-if="!hasBasicAccess">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat reiciendis quos temporibus voluptatem repudiandae! Enim, aspernatur cupiditate optio possimus necessitatibus dicta iste laborum eligendi perferendis. Veniam quod neque ullam ducimus!
               </span>
               <span v-else>
@@ -218,7 +263,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
 
           <!-- Overlay de paiement non premium -->
           <div
-            v-if="!hasResultsAccess"
+            v-if="!hasBasicAccess"
             class="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm flex items-center justify-center rounded-3xl cursor-pointer"
             @click.prevent.stop=""
           >
@@ -292,7 +337,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
   </div>
 
   <!-- Polar chart -->
-  <section class="my-8" v-if="hasResultsAccess">
+  <section class="my-8" v-if="hasBasicAccess">
     <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left">Répartition détaillée des déclencheurs</h2>
     <div class="my-12 justify-center md:w-144 md:h-144 mx-auto flex">
       <PolarChart :tags="tagData" :width="'600px'" :height="'600px'" />
@@ -315,13 +360,14 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
           :class="[
             dimension === 'anxiety' ?  'border-primary' : 'border-secondary', 
             {'max-h-full md:max-h-full': isProfileExplanationOpen(tag.trigger)},
-            { 'relative h-[100px]': !hasResultsAccess && tagId != 0 }
+            { 'relative h-[100px]': !hasBasicAccess && tagId != 0 }
           ]"
         >
           <div
             class="flex justify-between"
             @click.prevent.stop="toggleProfileExplanation(tag.trigger)"
-            :class="[!hasResultsAccess && tagId != 0 ? 'cursor-not-allowed pointer-events-none' : 'cursor-pointer']"
+            :class="[!hasBasicAccess && tagId != 0 ? 'cursor-not-allowed pointer-events-none' : 'cursor-pointer']"
+            :title="isProfileExplanationOpen(tag.trigger) ? 'Réduire' : 'Déplier'"
           >
             <p :class="tag.regulationLevel === 'high' ? 'text-red-600' : tag.regulationLevel === 'medium' ? 'text-yellow-600' : 'text-green-600'" class="p-1 rounded-md text-xs">
               <LucideMinusCircle :size="14" class="inline-block mr-1" v-if="isProfileExplanationOpen(tag.trigger)"/>
@@ -333,7 +379,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
             </p>
           </div>
 
-          <div v-if="hasResultsAccess || (!hasResultsAccess && tagId === 0)">
+          <div v-if="hasBasicAccess || (!hasBasicAccess && tagId === 0)">
             <h3
               class="text-md font-bold mt-3 mb-5 cursor-pointer"
               @click.prevent.stop="toggleProfileExplanation(tag.trigger)"
@@ -359,7 +405,11 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
                 class="pl-5 max-h-16 overflow-hidden text-sm text-gray-600 line-clamp-2"
                 :class="{ 'max-h-full line-clamp-none md:max-h-full': isProfileExplanationOpen(tag.label) }"
               >
-                <li v-for="(behavior, index) in tag.associatedBehaviors" :key="index" class="mb-3 text-sm text-gray-600 list-disc list-inside first-letter:uppercase">
+                <li
+                  v-for="(behavior, index) in tag.associatedBehaviors"
+                  :key="index"
+                  class="mb-3 text-sm text-gray-600 list-disc list-inside first-letter:uppercase"
+                >
                   {{ behavior }}
                 </li>
               </ul>
@@ -395,7 +445,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
 
           <!-- Overlay de paiement non premium -->
           <div
-            v-if="!hasResultsAccess && tagId != 0"
+            v-if="!hasBasicAccess && tagId != 0"
             class="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm flex items-center justify-center rounded-3xl cursor-pointer"
             @click.prevent.stop=""
           >
@@ -419,19 +469,20 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
       <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left">
         Aller plus loin
       </h2>
-
+      
       <div class="md:flex md:items-start md:gap-8">
+        <!-- Accès à tous les résultats -->
         <div
-          v-if="!hasResultsAccess"
+          v-if="!hasBasicAccess"
           class="p-5 rounded-3xl bg-blue-700 text-white bg-gradient-to-tr from-blue-700 to-blue-500 md:max-w-[48%] "
         >
           <div class="flex justify-between items-center mb-5 font-semibold tracking-[.13rem]">
             <h3 class="text-lg">
               Accès complets aux résultats
             </h3>
-            <span class="text-xl">
+            <!-- <span class="text-xl">
               1.99€
-            </span>
+            </span> -->
           </div>
 
           <p class="mb-2 text-sm">
@@ -451,21 +502,29 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
               Tes 5 Déclencheurs évitants
             </li>
             <li class="mb-1">
-              Obtiens des conseils personnalisés pour chacun d'eux ainsi que des recommandations pour travailler sur tes mécanismes d'attachement.
+              Des conseils personnalisés ainsi que des recommandations pour travailler sur tes mécanismes d'attachement
             </li>
           </ul>
-          
-          <button class="py-4 rounded-3xl w-full bg-white text-blue-700" @click="">Débloquer !</button>
+          <button
+            class="py-4 rounded-3xl w-full bg-white text-blue-700 transition-all duration-[400ms] shadow-xl hover:bg-gray-200 hover:shadow-none"
+            @click="openPopin('results')"
+          >
+            Débloquer !            
+          </button>
         </div>
         
-        <div class="mt-8 p-5 border-l-4 rounded-3xl md:m-0 bg-white md:max-w-[48%]">
+        <!-- Accès aux résultats et à l'ia -->
+        <div
+          v-if="!hasFullAccess"
+          class="mt-8 p-5 border-l-4 rounded-3xl md:m-0 bg-white md:max-w-[48%]"
+        >
           <div class="md:flex md:justify-between md:items-center mb-5 font-semibold tracking-[.13rem]">
             <h3 class="text-md">
               Analyse sur mesure
             </h3>
-            <span class="text-xl">
+            <!-- <span class="text-xl">
               4.99€ (tout inclus)
-            </span>
+            </span> -->
           </div>
 
           <p class="mb-5 text-sm">
@@ -473,7 +532,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
           </p>
           
           <ul class="list-disc text-sm pl-4 mb-5">
-            <li class="mb-1">
+            <li v-if="!hasResultsAccess" class="mb-1">
               L'ensemble de tes résultats débloqués
             </li>
             <li class="mb-1">
@@ -491,10 +550,167 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
           </ul>
           <span class="text-xs text-gray-500">* Ne transmets aucunes données sensibles telles que nom, adresse, numéro de téléphone, etc.</span>
 
-          <textarea
-            class="w-full mb-5 p-3 rounded-lg border text-sm h-40" rows="4" placeholder="Parle-moi un peu de ta situation amoureuse actuelle..."></textarea>
-          <button class="py-4 rounded-3xl w-full bg-blue-700 text-white bg-gradient-to-tr from-blue-700 to-blue-500">Envoyer !</button>
+          <div class="mb-5">
+            <textarea
+              class="w-full h-60 p-3 rounded-lg border text-sm md:h-40" rows="4" placeholder="Parle-moi un peu de ta situation amoureuse actuelle... Sois le plus explicite et honnête possible pour que mon analyse soit la plus précise possible !"
+              v-model="textarea"
+            ></textarea>
+
+            <span v-if="textareaLength < minTextareaRequired">
+              Minimum : {{ minTextareaRequired - textareaLength }}
+            </span>
+            <span
+              v-if="textareaLength < minTextareaRequired "
+              class="text-xs text-gray-500"
+            >
+              Caractères : {{ textareaLength }}
+            </span>
+          </div>
+          <button
+            class="py-4 rounded-3xl w-full bg-blue-700 text-white bg-gradient-to-tr from-blue-700 to-blue-500 transition-all duration-[400ms] shadow-xl"
+            :class="[!checkTextareaFilled ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'hover:opacity-90 hover:cursor-pointer hover:shadow-none']"
+            @click="openPopin('ia')"
+          >
+            Envoyer !
+          </button>
         </div>
       </div>
+      <!-- POPIN -->
+      <Popin v-model="showPopin">
+        <!-- Results -->
+        <div v-if="popinType === 'results'" class="md:flex md:justify-between md:gap-5">
+          <div class="flex-1 mb-6 border p-5 rounded-3xl md:mb-0">
+            <h3 class="text-lg font-bold mb-5">
+              <span class="block">Accès aux résultats</span>
+              <span class="mr-1">1.99€</span>
+              <span class="text-xs">(paiement unique)</span>
+            </h3>
+            <p class="mb-5 text-sm">
+              En cliquant sur le bouton ci-dessous, tu seras redirigé vers la page de paiement. Une fois ton paiement validé, tu auras un accès immédiat à : 
+            </p>
+            <ul class="list-disc list-inside mb-5">
+              <li class="mb-1 text-sm">Tous les résultats détaillés de ton questionnaire d'attachement</li>
+              <li class="mb-1 text-sm">Y compris tes sous-profils anxieux et évitants</li>
+              <li class="mb-1 text-sm">La répartition détaillée de tes déclencheurs</li>
+              <li class="mb-1 text-sm">Des conseils personnalisés pour travailler sur tes mécanismes d'attachement</li>
+            </ul>
+
+            <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">
+              Une erreur est survenue : {{ errorMessage }}
+            </p>
+            
+            <button
+              class="py-4 rounded-3xl w-full bg-blue-700 text-white shadow-xl hover:shadow-none transition-shadow duration-300" @click="goToCheckout('questionnaire', 'attachment', 'results')"
+              :class="[errorMessage ? 'hidden cursor-not-allowed opacity-50' : '']"
+            >
+              <span v-if="loading">
+                <LucideLoader class="animate-spin inline-block" :size="20" />
+              </span>
+              <span v-else>Débloquer mes résultats</span>
+            </button>
+          </div>
+          <!-- membership -->
+          <div class="flex-1 p-5 border rounded-3xl bg-gradient-to-tr from-yellow-700 to-yellow-200 text-black shadow-xl">
+            <h3 class="text-lg font-bold">
+              Abonnement Membership - 6.99€/mois
+              <span class="text-xs">(annulable à tout moment)</span>
+            </h3>
+            <!-- tag : recommandé. le parent a déjà un dégradé yellow. adapter les couleurs du tag -->
+            <span class="inline-block text-xs px-2 py-1 rounded-full mb-2 bg-yellow-700 text-white">Recommandé</span>
+
+            <p class="mt-5 mb-5 text-sm">
+              En souscrivant à notre abonnement, tu auras :
+            </p>
+            <ul class="list-disc list-inside mb-5">
+              <li class="mb-1 text-sm">Un accès total (résultats détaillés, sous profils, répartition des déclencheurs, conseils personnalisés)</li>
+              <li class="mb-1 text-sm">L'accès aux analyses sur mesure personnalisées</li>
+              <li class="mb-1 text-sm">Un accès total aux résultats de tous les questionnaires du site</li>
+              <li class="mb-1 text-sm">Un accès total et prioritaire à tous les articles du site</li>
+            </ul>
+
+            <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">
+              Une erreur est survenue : {{ errorMessage }}
+            </p>
+
+            <button
+              class="py-4 rounded-3xl w-full bg-white text-blue-700 shadow-xl hover:shadow-none transition-shadow duration-300" @click="goToCheckout('questionnaire', 'attachment', 'membership')"
+              :class="[errorMessage ? 'hidden cursor-not-allowed opacity-50' : '']"
+            >
+              <span v-if="loading">
+                <LucideLoader class="animate-spin inline-block" :size="20" />
+              </span>
+              <span v-else>Je m'abonne !</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Ia  -->
+        <div v-else class="md:flex md:justify-between md:gap-5">
+         <div class="flex-1 mb-6 border p-5 rounded-3xl md:mb-0">
+            <h3 class="text-lg font-bold mb-5">
+              <span class="block">Analyse sur mesure</span>
+              <span class="mr-1">5.99€</span>
+              <span class="text-xs">(paiement unique)</span>
+            </h3>
+            <p class="mb-5 text-sm">
+              En cliquant sur le bouton ci-dessous, tu seras redirigé vers la page de paiement. Une fois ton paiement validé, tu auras un accès immédiat à : 
+            </p>
+            
+            <ul class="list-disc text-sm pl-4 mb-5">
+              <li class="mb-1">Une analyse personnalisée de ta situation amoureuse actuelle basée sur tes résultats au questionnaire d'attachement</li>
+              <li class="mb-1">Des conseils sur mesure pour avancer vers plus de sécurité dans ta relation actuelle</li>
+                <li class="mb-1">Une grille de lecture et un plan d'action concret</li>
+            </ul>
+
+            <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">
+              Une erreur est survenue : {{ errorMessage }}
+            </p>
+
+            <button
+              class="py-4 rounded-3xl w-full bg-blue-700 text-white shadow-xl hover:shadow-none transition-shadow duration-300" @click="goToCheckout('questionnaire', 'attachment', 'ia')"
+              :class="[errorMessage ? 'hidden cursor-not-allowed opacity-50' : '']"
+            >
+              <span v-if="loading">
+                <LucideLoader class="animate-spin inline-block" :size="20" />
+              </span>
+              <span v-else>Recevoir mon analyse personnalisée</span>
+            </button>
+          </div>
+
+          <!-- membership -->
+          <div class="flex-1 p-5 border rounded-3xl bg-gradient-to-tr from-yellow-700 to-yellow-200 text-black shadow-xl">
+            <h3 class="text-lg font-bold">
+              Abonnement Membership - 6.99€/mois
+              <span class="text-xs">(annulable à tout moment)</span>
+            </h3>
+            <!-- tag : recommandé. le parent a déjà un dégradé yellow. adapter les couleurs du tag -->
+            <span class="inline-block text-xs px-2 py-1 rounded-full mb-2 bg-yellow-700 text-white">Recommandé</span>
+
+            <p class="mt-5 mb-5 text-sm">
+              En souscrivant à notre abonnement, tu auras :
+            </p>
+            <ul class="list-disc list-inside mb-5">
+              <li class="mb-1 text-sm">Un accès total (résultats détaillés, sous profils, répartition des déclencheurs, conseils personnalisés)</li>
+              <li class="mb-1 text-sm">L'accès aux analyses sur mesure personnalisées</li>
+              <li class="mb-1 text-sm">Un accès total aux résultats de tous les questionnaires du site</li>
+              <li class="mb-1 text-sm">Un accès total et prioritaire à tous les articles du site</li>
+            </ul>
+
+            <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">
+              Une erreur est survenue : {{ errorMessage }}
+            </p>
+            
+            <button
+              class="py-4 rounded-3xl w-full bg-white text-blue-700 shadow-xl hover:shadow-none transition-shadow duration-300" @click="goToCheckout('questionnaire', 'attachment', 'membership')"
+              :class="[errorMessage ? 'hidden cursor-not-allowed opacity-50' : '']"
+            >
+              <span v-if="loading">
+                <LucideLoader class="animate-spin inline-block" :size="20" />
+              </span>
+              <span v-else>Je m'abonne !</span>
+            </button>
+          </div>
+        </div>
+      </Popin>
     </section>
 </template>
