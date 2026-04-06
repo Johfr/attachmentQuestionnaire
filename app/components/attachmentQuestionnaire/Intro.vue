@@ -70,24 +70,32 @@ const nextStep = () => {
       Durée estimée : 8-15 minutes
     </p>
     
-    <p class="mt-4 p-6 text-sm text-gray-700 text-center bg-white border border-solid border-gray-300 rounded-3xl">
-      Tu t'apprêtes à passer le test pour définir ton type d'attachement adulte en couple. Il y a 20 questions, chacune avec 5 options de réponse. Choisis celle qui te correspond le mieux pour chaque question. Il n'y a pas de bonnes ou de mauvaises réponses, sois simplement honnête avec toi-même. 
-    </p>
-    <p class="mt-4 p-6 text-sm text-gray-700 text-center bg-white border border-solid border-gray-300 rounded-3xl">
-      Ce test est inspiré des modèles contemporains de l'attachement adulte, notamment les dimensions d'anxiété et d'évitement. Il propose une lecture structurée et utile du fonctionnement relationnel, mais ne constitue pas un diagnostic clinique.
-    </p>
+    <div class="mt-4 p-6 text-sm text-gray-700 text-center bg-white border border-solid border-gray-300 rounded-3xl">
+      <p>
+        Tu t'apprêtes à passer le test pour définir ton type d'attachement adulte en couple. Il y a 20 questions, chacune avec 5 options de réponse. Choisis celle qui te correspond le mieux pour chaque question. Il n'y a pas de bonnes ou de mauvaises réponses, sois simplement honnête avec toi-même. 
+      </p>
+    </div>
+
+    <div class="mt-4 p-6 text-sm text-gray-700 text-center bg-white border border-solid border-gray-300 rounded-3xl">
+      <p class="mb-2">
+        Ce questionnaire explore tes réactions face au silence, à la distance, aux périodes de tension, à la peur de perdre l'autre. Il vise à identifier ton style d'attachement (anxieux, évitant, sécure, désorganisé) et à t'aider à mieux comprendre tes schémas relationnels.
+      </p>
+      <p>
+        Il est inspiré des modèles contemporains de l'attachement adulte, notamment les dimensions d'anxiété et d'évitement. Il propose une lecture structurée et utile du fonctionnement relationnel, mais ne constitue pas un diagnostic clinique.
+      </p>
+    </div>
     
-    <p class="flex flex-col mt-4 p-6 text-sm text-gray-800 text-center bg-red-100 border border-solid border-gray-300 rounded-3xl">
-      <span class="mb-2">
+    <div class="flex flex-col mt-4 p-6 text-sm text-gray-800 text-center bg-red-100 border border-solid border-gray-300 rounded-3xl">
+      <p class="mb-2">
         Attention, tu ne pourras passer ce questionnaire qu'une fois.
-      </span>
-      <span class="mb-2">
-        assure toi d'être dans de bonnes conditions pour y répondre : un moment calme, où tu ne seras pas dérangé, et où tu pourras réfléchir à tes expériences relationnelles passées et présentes.
-      </span>
-      <span class="">
+      </p>
+      <p class="mb-2">
+        Assure toi d'être dans de bonnes conditions pour y répondre : un moment calme, où tu ne seras pas dérangé, et où tu pourras réfléchir à tes expériences relationnelles passées et présentes.
+      </p>
+      <p class="">
         Il n'y a pas de bonnes ou de mauvaises réponses, sois simplement honnête avec toi-même. Prends ton temps pour réfléchir à chaque question et réponds en fonction de tes expériences et sentiments dans tes relations amoureuses passées et présentes. Bonne chance !
-      </span>
-    </p>
+      </p>
+    </div>
     <!-- Prends ton temps pour réfléchir à chaque question et réponds en fonction de tes expériences et sentiments dans tes relations amoureuses passées et présentes. Bonne chance ! -->
     <!-- <p>
       Ce questionnaire est conçu pour évaluer ton style d'attachement adulte en couple, basé sur les dimensions d'anxiété et d'évitement. Il n'est pas destiné à être un diagnostic clinique, mais plutôt un outil de réflexion personnelle pour mieux comprendre tes tendances relationnelles. Les résultats peuvent t'aider à identifier des schémas de comportement dans tes relations amoureuses et à explorer des pistes pour améliorer ton bien-être émotionnel et relationnel.

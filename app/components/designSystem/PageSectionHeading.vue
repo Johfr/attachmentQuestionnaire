@@ -1,12 +1,14 @@
 <script setup lang="ts">
 
 const props = defineProps<{
-  userName?: string,
   sectionSpacing?: string,
   asTag?: boolean,
-  isTitleH1?: boolean,
-  isTitleH2?: boolean,
+  tagText?: string,
+  isHeading?: boolean,
   title: string,
+  titleSize?: string,
+  highlight?: string,
+  highlightSize?: string,
 }>()
 </script>
 
@@ -16,13 +18,17 @@ const props = defineProps<{
       'md:max-w-[60%]', 
       sectionSpacing ?? 'mt-16 mb-8'
   ]">
-    <p v-if="asTag" class="mb-4 text-sm uppercase text-rust">Daily resonance</p>
-    <h1 v-if="isTitleH1" class="text-left mb-5 text-5xl font-serif leading-tight">
-      {{ title }}
-      <em v-if="userName" class="text-rust">{{ userName }}.</em>
-    </h1>
+    <p v-if="asTag" class="mb-4 text-sm uppercase text-rust">{{ tagText ?? 'Daily resonance' }}</p>
 
-    <h2 v-if="isTitleH2" class="text-2xl font-bold">
+    <h2 v-if="isHeading" class="text-left mb-5 font-serif leading-tight">
+      <span class="mr-3" :class="titleSize ?? 'text-5xl'">
+        {{ title }}
+      </span>
+      
+      <em v-if="highlight" :class="highlightSize ?? 'text-5xl'" class="text-rust">{{ highlight }}.</em>
+    </h2>
+
+    <h2 v-else class="text-2xl font-bold">
       {{ title }}
     </h2>
     
@@ -31,6 +37,8 @@ const props = defineProps<{
       <span class="inline-block h-[4px] w-4 mr-2 bg-rust rounded-4xl" />
       <span class="inline-block h-[4px] w-2 mr-2 bg-rust rounded-4xl" />
     </div>
+
+    <slot />
   </section>
 </template>
 

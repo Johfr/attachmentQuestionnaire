@@ -1,3 +1,5 @@
 User-Agent: *
-Disallow:
+Disallow: /user/
+Disallow: /attachment-questionnaire/questionnaire
+Disallow: /attachment-questionnaire/results
 Sitemap: https://relation-anxieux-evitant.web.app/sitemap.xml

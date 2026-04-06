@@ -5,6 +5,19 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: 'slide-up', mode: 'out-in' },
     layoutTransition: { name: 'slide-up', mode: 'out-in' },
+    head: {
+      htmlAttrs: { lang: 'fr' },
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+      titleTemplate: '%s | Relation anxieux-évitant',
+      meta: [
+        { name: 'description', content: 'Comprends l\'attachement adulte et la dynamique anxieux-évitant. Test gratuit, analyses personnalisées et ressources pour mieux vivre tes relations amoureuses.' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: 'Relation anxieux-évitant' },
+        { property: 'og:locale', content: 'fr_FR' },
+        { name: 'twitter:card', content: 'summary' },
+      ],
+    },
   },
   
   css: ['~/assets/css/main.css'],

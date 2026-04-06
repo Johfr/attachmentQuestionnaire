@@ -8,6 +8,8 @@ definePageMeta({
   requiresAuth: true
 })
 
+useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
+
 // const router = useRouter()
 const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore()
 const questionList = questions.questions as unknown as AttachmentQuestion[]

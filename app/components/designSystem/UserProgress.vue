@@ -225,7 +225,7 @@ const toggleProfileExplanation = (key: string) => {
     <Popin v-model="showPopin">
       <div class="mb-8">
         <div class="mb-8">
-          <DesignSystemPageSectionHeading :isTitleH2="true" title="Définitions" sectionSpacing="mt-0 mb-12"/>
+          <DesignSystemPageSectionHeading title="Définitions" sectionSpacing="mt-0 mb-12"/>
         </div>
       </div>
 

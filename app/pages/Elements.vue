@@ -3,8 +3,7 @@
 
 <template>
   <section class="">
-    <h1 class="text-3xl font-bold mb-6">Les éléments</h1>
-
+    <DesignSystemPageSectionHeading :isHeading="true" title="Les éléments" titleSize="text-4xl md:text-3xl" sectionSpacing="mt-8 mb-12" />
     <div class="flex flex-col gap-8">
       
     </div>

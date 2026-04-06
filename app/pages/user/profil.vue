@@ -10,6 +10,8 @@ definePageMeta({
   requiresAuth: true
 })
 
+useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
+
 const authStore = useAuthStore()
 const sessionsStore = useQuestionnaireSessionsStore()
 const isLoggedIn = computed(() => authStore.isLoggedIn)
@@ -76,7 +78,11 @@ const handleAuthAction = async () => {
     <!-- <h2>Réussis ta relation ou mets y fin de façon saine</h2>
     <p>Réduis ta panique et/ou ta fuite en adoptant des comportements sains et protecteurs.</p> -->
     
-    <DesignSystemPageSectionHeading :isTitleH1="true" title="Mon profil" sectionSpacing="mt-8 mb-12" />
+    <!-- <DesignSystemPageSectionHeading :isHeading="true" title="Mon profil" sectionSpacing="mt-8 mb-12" /> -->
+
+    <div class="md:flex justify-between">
+      <DesignSystemPageSectionHeading :asTag="true" :isHeading="true" title="Bienvenue," :highlight="authStore?.user?.name" />
+    </div>
 
     <!-- userInfos flex justify-between items-start -->
     <section class="">
@@ -102,7 +108,7 @@ const handleAuthAction = async () => {
         </button>
       </div>
 
-      <UserProgress />
+      <DesignSystemUserProgress />
     </section>
 
     <section class="md:max-w-[48%]">

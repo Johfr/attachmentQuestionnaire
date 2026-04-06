@@ -42,11 +42,24 @@ const blogArticles = [
 ]
 const itemsBackground = ['#fdf1ec', '#f2f7e7', '#f8ebe6'] // 'aliceblue', 'honeydew', 'lavender', antiquewhite, azure]
 
+useSeoMeta({
+  title: 'Blog | Attachement adulte et relation anxieux-évitant',
+  description: 'Articles de fond sur la relation anxieux-évitant, la peur de l\'abandon, l\'isolement affectif, la jalousie, la dépendance affective, l\'insécurité affective et la théorie de l\'attachement adulte.',
+  keywords: 'blog attachement adulte, relation anxieux évitant articles, peur de l\'abandon, évitement émotionnel, jalousie relation, dépendance affective, insécurité affective, anxiété relationnelle, rupture, silence, distance, théorie de l\'attachement',
+  ogTitle: 'Blog | Attachement adulte et relation anxieux-évitant',
+  ogDescription: 'Articles sur la relation anxieux-évitant : peur de l\'abandon, évitement, jalousie, dépendance affective, insécurité affective.',
+  ogUrl: 'https://relation-anxieux-evitant.web.app/blog',
+})
+
+useHead({
+  link: [{ rel: 'canonical', href: 'https://relation-anxieux-evitant.web.app/blog' }],
+})
+
 </script>
 
 <template>
   <section>
-    <DesignSystemPageSectionHeading :isTitleH2="true" title="Tous les articles" sectionSpacing="mt-8 mb-12" />
+    <DesignSystemPageSectionHeading :isHeading="true" title="Tous les articles" titleSize="text-4xl md:text-3xl" sectionSpacing="mt-8 mb-12" />
     <DesignSystemCardGridList
       :items="blogArticles"
       :itemIcons="blogIcons"

@@ -47,21 +47,64 @@ const blogArticles = [
 ]
 const itemsBackground = ['rust', 'softGreen', 'softPeach']
 
+useSeoMeta({
+  title: 'Test de style d\'attachement adulte gratuit',
+  description: 'Découvre ton style d\'attachement (anxieux, évitant, sécure, désorganisé) avec notre test gratuit. Comprends tes mécanismes relationnels : peur de l\'abandon, silence, distance, anxiété, rupture.',
+  keywords: 'relation anxieux évitant, test attachement adulte gratuit, style d\'attachement, peur de l\'abandon, anxiété relationnelle, attachement anxieux, attachement évitant, insécurité affective, dépendance affective, rupture, abandon, distance, silence, attachement désorganisé, attachement sécure, théorie de l\'attachement, jalousie, fuite émotionnelle, besoin de réassurance',
+  ogTitle: 'Test de style d\'attachement adulte gratuit',
+  ogDescription: 'Découvre ton style d\'attachement et comprends tes comportements en relation : peur de l\'abandon, silence, distance, anxiété relationnelle.',
+  ogUrl: 'https://relation-anxieux-evitant.web.app/',
+  twitterTitle: 'Test de style d\'attachement adulte gratuit',
+  twitterDescription: 'Découvre ton style d\'attachement et comprends tes mécanismes relationnels.',
+})
+
+useHead({
+  link: [{ rel: 'canonical', href: 'https://relation-anxieux-evitant.web.app/' }],
+  script: [{
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Relation anxieux-évitant',
+      url: 'https://relation-anxieux-evitant.web.app/',
+      description: 'Comprends l\'attachement adulte et la dynamique anxieux-évitant. Test gratuit et ressources pour mieux vivre tes relations.',
+      inLanguage: 'fr-FR',
+    }),
+  }],
+})
+
 
 </script>
 
 <template>
   <div>
-    <!-- <h1>Home</h1>
-    <h2>Réussis ta relation ou mets y fin de façon saine</h2>
-    <p>Réduis ta panique et/ou ta fuite en adoptant des comportements sains et protecteurs.</p> -->
+
     <div class="md:flex justify-between mt-10 mb-16">
-      <DesignSystemPageSectionHeading :asTag="true" :isTitleH1="true" title="Bienvenue," :userName="authStore?.user?.name" />
+      <DesignSystemPageSectionHeading
+        :isHeading="true"
+        title="Relation"
+        :highlight="'anxieux-évitant'"
+        sectionSpacing="my-10"
+      >
+        <p class="mt-6 text-sm text-gray-700 max-w-[75%]">
+          Comprends l'attachement adulte et la dynamique anxieux-évitant. Construis ta relation de rêve. Reconnais tes schémas et ceux de ta partenaire. Apprends à dissocier l'évitement des comportements toxiques.
+        </p>
+        <p class="mt-2 text-sm text-gray-700 max-w-[75%]">
+          Passe le questionnaire d'attachement adulte gratuit pour découvrir ton style (anxieux, évitant, sécure, désorganisé) et reçois des conseils personnalisés pour mieux comprendre tes schémas relationnels.
+        </p>
+
+      </DesignSystemPageSectionHeading>
+      
+      <!-- user Progress -->
       <DesignSystemUserProgress />
     </div>
     
+    <!-- <h2 class="text-2xl font-bold mb-2">Réussis ta relation ou mets y fin de façon saine</h2>
+    <p class="text-lg">Réduis ta panique et/ou ta fuite en adoptant des comportements sains et protecteurs.</p> -->
+
+
     <div class="mb-14">
-      <DesignSystemPageSectionHeading :isTitleH2="true" title="Les derniers questionnaires" />
+      <DesignSystemPageSectionHeading title="Les derniers questionnaires" />
 
       <DesignSystemCardGridList
         :items="questionnaires"
@@ -72,8 +115,24 @@ const itemsBackground = ['rust', 'softGreen', 'softPeach']
     </div>
     
     
+    <section class="mb-14 p-6 bg-white rounded-3xl">
+      <h2 class="text-xl font-semibold mb-4">La dynamique anxieux-évitant</h2>
+      <p class="text-sm text-gray-700 mb-3">
+        Dans de nombreuses relations, un schéma se répète : l'un cherche plus de proximité, l'autre prend de la distance. Ce n'est pas une incompatibilité de caractère — c'est souvent la signature d'une dynamique anxieux-évitant, l'une des configurations relationnelles les plus répandues et les moins comprises.
+      </p>
+      <p class="text-sm text-gray-700 mb-3">
+        La personne avec un attachement anxieux ressent intensément le silence, l'absence de réponse, le retrait. Elle interprète ces signaux comme les preuves d'un désengagement imminent et cherche à rétablir la connexion — parfois au point d'aggraver la situation. De son côté, la personne avec un attachement évitant valorise son espace intérieur, perçoit les demandes de connexion comme oppressantes et se replie davantage. Ce cycle d'activation-fuite peut durer des années sans que ni l'un ni l'autre ne comprenne vraiment ce qui se joue.
+      </p>
+      <p class="text-sm text-gray-700 mb-3">
+        La peur de l'abandon, la jalousie, le besoin de réassurance, la distance émotionnelle, les ruptures à répétition : ces comportements ne sont pas des défauts de caractère. Ils sont souvent le fruit d'un style d'attachement construit tôt, en réponse à ce que l'environnement a appris au système nerveux sur la fiabilité de l'autre.
+      </p>
+      <p class="text-sm text-gray-700">
+        Comprendre son profil d'attachement — anxieux activé, anxieux régulé, évitant rigide, évitant flexible, sécure ou désorganisé — est la première étape concrète pour sortir de ces schémas. Ce n'est pas une condamnation. C'est une clé.
+      </p>
+    </section>
+
     <div class="mb-4">
-      <DesignSystemPageSectionHeading :isTitleH2="true" title="Les derniers articles" />
+      <DesignSystemPageSectionHeading title="Les derniers articles" />
       
       <DesignSystemCardGridList
         :items="blogArticles"

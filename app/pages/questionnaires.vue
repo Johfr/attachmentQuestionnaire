@@ -54,11 +54,24 @@ const questionnaires = [
   }
 ]
 const itemsBackground = ['#fdf1ec', '#f2f7e7', '#f8ebe6'] // 'aliceblue', 'honeydew', 'lavender', antiquewhite, azure]
+
+useSeoMeta({
+  title: 'Questionnaires d\'attachement adulte',
+  description: 'Explore nos questionnaires sur l\'attachement adulte : style anxieux, évitant, sécure et désorganisé. Identifie tes schémas relationnels et comprends tes réactions face à la distance, l\'abandon ou le silence.',
+  keywords: 'questionnaire attachement adulte, test style attachement gratuit, attachement anxieux, attachement évitant, compatibilité couple, anxiété relationnelle, peur de l\'abandon, conscience émotionnelle, test relation amoureuse',
+  ogTitle: 'Questionnaires d\'attachement adulte',
+  ogDescription: 'Identifie ton style d\'attachement (anxieux, évitant, sécure, désorganisé) et comprends tes schémas relationnels.',
+  ogUrl: 'https://relation-anxieux-evitant.web.app/questionnaires',
+})
+
+useHead({
+  link: [{ rel: 'canonical', href: 'https://relation-anxieux-evitant.web.app/questionnaires' }],
+})
 </script>
 
 <template>
   <div>
-    <DesignSystemPageSectionHeading :isTitleH2="true" title="Tous les questionnaires" sectionSpacing="mt-8 mb-12" />
+    <DesignSystemPageSectionHeading :isHeading="true" title="Tous les questionnaires" titleSize="text-4xl md:text-3xl" sectionSpacing="mt-8 mb-12" />
     <DesignSystemCardGridList
       :items="questionnaires"
       :itemsBackground="itemsBackground"
