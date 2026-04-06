@@ -80,7 +80,7 @@ server/                 → backend Nuxt (à la racine, PAS dans app/)
     (autres utilitaires métier)
 
 functions/              → Cloud Functions custom Firebase (JS, codebase "custom")
-  index.js              → quasi-vide, Cloud Function paiement→session à implémenter
+  index.js              → onPaymentWritten + onSubscriptionWritten (voir docs/cloud-functions.md)
 
 docs/                   → documentation (ce dossier)
 ```
@@ -253,12 +253,14 @@ export const useBillingStore = defineStore('billing', () => {
 |---|---|
 | `docs/backend-questionnaires.md` | Convention multi-questionnaires, namespacing API/data/utils, flow persistance Firestore, retry idempotent |
 | `docs/tests.md` | Architecture tests Vitest/Nuxt, mock Firebase global, règles absolues (ne pas mocker useRouter/useNuxtApp), patterns par type de test |
+| `docs/cloud-functions.md` | Cloud Functions Stripe : `onPaymentWritten`, `onSubscriptionWritten`, propagation metadata, note V2 formation |
 
 ---
 
 ## Statut et tâches en attente
 
-- [ ] **Cloud Function** paiement → mise à jour `billingInfo` dans `questionnaireSessions` (`functions/index.js`)
+- [x] **Cloud Functions** `onPaymentWritten` + `onSubscriptionWritten` — voir `docs/cloud-functions.md`
+- [ ] **Cloud Function formation** `hasPaidFormation` via `onSubscriptionWritten` — V2, voir note dans `docs/cloud-functions.md`
 - [ ] **Intégration OpenAI** : génération de l'analyse IA des résultats
 - [ ] **Finaliser Stripe** end-to-end (checkout → webhook → déblocage contenu)
 - [ ] **Blog v2** : pages articles individuelles avec SEO (JSON-LD `Article`, og:article:*)

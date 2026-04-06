@@ -94,6 +94,20 @@ export const useBillingStore = defineStore('billing', () => {
         successUrl,
         docId,
       },
+      // Mirror metadata onto the PaymentIntent (payment mode) or Subscription (subscription mode)
+      // so the Stripe Extension propagates it to customers/{uid}/payments or /subscriptions.
+      // Without this, the Cloud Functions cannot read docId / accessType from those documents.
+      ...(products[accessType].mode === 'payment'
+        ? {
+            payment_intent_data: {
+              metadata: { entityType, entitySubType, accessType, entityVersion, successUrl, docId },
+            },
+          }
+        : {
+            subscription_data: {
+              metadata: { entityType, entitySubType, accessType, entityVersion, successUrl, docId },
+            },
+          }),
       success_url: `${window.location.origin}/user/${successUrl}/results?sessionId=${docId}`,
       cancel_url: `${window.location.origin}/user/profile/`,
     })
