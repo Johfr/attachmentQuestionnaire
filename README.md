@@ -204,9 +204,20 @@ npm run serve
 ```bash
 # dev
 npm run dev
+```
 
-# build + deploy complet
+```powershell
+# build + deploy complet (PowerShell)
 npm run build
-cd .output/server && npm install --legacy-peer-deps && cd ../..
+nvm use 20.19.5
+npm install --no-save --no-package-lock firebase-functions firebase-admin
 firebase deploy
 ```
+
+> **Note** : Ne pas faire `cd .output/server && npm install` — le postbuild gère `.output/server` automatiquement.
+> `firebase-functions` et `firebase-admin` ne sont pas dans le `package.json` racine, d'où l'install temporaire avant deploy (sans `--no-package-lock` = lock modifié = `npm ci` Cloud Run en échec).
+
+> **⚠️ Si `firebase deploy` échoue (exit code 1 sur les fonctions)** : les fichiers hosting sont uploadés mais la release n'est pas finalisée. La version live garde les anciens fichiers → mismatch de hash CSS → CSS 404. Fix :
+> ```powershell
+> firebase deploy --only hosting
+> ```

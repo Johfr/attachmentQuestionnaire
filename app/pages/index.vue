@@ -89,7 +89,7 @@ const showMore = ref(false)
         <p class="mt-6 text-sm text-gray-700 md:max-w-[75%]">
           Comprends l'attachement adulte et la dynamique anxieux-évitant. Construis ta relation de rêve. Reconnais tes schémas et ceux de ta partenaire. Apprends à dissocier l'évitement des comportements toxiques.
         </p>
-        <p class="mt-2 text-sm text-gray-700 md:max-w-[75%] hidd en md:block">
+        <p class="mt-2 text-sm text-gray-700 md:max-w-[75%] hidden md:block">
           Passe le questionnaire d'attachement adulte gratuit pour découvrir ton style (anxieux, évitant, sécure, désorganisé) et reçois des conseils personnalisés pour mieux comprendre tes schémas relationnels.
         </p>
 

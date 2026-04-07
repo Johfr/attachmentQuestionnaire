@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
 import { firebaseFunctions } from '~/composables/firebase/init'
 import { collection, query, where, addDoc, getDocs, onSnapshot } from "firebase/firestore"
-import type { EntitySubType, EntityType, AccessType, EntityVersion } from '~/types/billing'
+import type { EntitySubType, EntityType, AccessType, EntityVersion, UserPayment, UserSubscription } from '~/types/billing'
 
 export const useBillingStore = defineStore('billing', () => {
   const authStore = useAuthStore()
@@ -16,7 +16,10 @@ export const useBillingStore = defineStore('billing', () => {
   // L'achat du user doit permettre de savoir à quel contenu il a accès, et de lui donner accès à ce contenu dans son profil et dans les articles premium
   // utiliser un id par page ?
 
-  // ref ou reactive ?
+  const payments = ref<UserPayment[]>([])
+  const subscriptions = ref<UserSubscription[]>([])
+  const isLoadingHistory = ref(false)
+
   const billingInfo = ref({
     hasPaidResults: false,
     hasPaidIa: false,
@@ -66,6 +69,58 @@ export const useBillingStore = defineStore('billing', () => {
       hasPaidMembership: activeSubProductIds.has('prod_UFEDIkXmyJC4xO'),
       hasPaidFormation: activeSubProductIds.has('prod_xxx'),
     }
+  }
+
+  const loadPurchaseHistory = async () => {
+    if (!user.value) {
+      payments.value = []
+      subscriptions.value = []
+      return
+    }
+
+    isLoadingHistory.value = true
+    const uid = user.value.id ?? 'unknown_user'
+
+    try {
+      const paymentsSnap = await getDocs(query(
+        collection(firebaseFunctions.db, 'customers', uid, 'payments'),
+        where('status', '==', 'succeeded'),
+      ))
+      payments.value = paymentsSnap.docs.map((d) => ({
+        id: d.id,
+        status: d.data().status,
+        amount: d.data().amount ?? 0,
+        currency: d.data().currency ?? 'eur',
+        created: d.data().created,
+        metadata: d.data().metadata ?? {},
+      })) as UserPayment[]
+
+      const subsSnap = await getDocs(
+        collection(firebaseFunctions.db, 'customers', uid, 'subscriptions'),
+      )
+      subscriptions.value = subsSnap.docs.map((d) => ({
+        id: d.id,
+        status: d.data().status,
+        created: d.data().created,
+        current_period_end: d.data().current_period_end,
+        cancel_at_period_end: d.data().cancel_at_period_end ?? false,
+        metadata: d.data().metadata ?? {},
+      })) as UserSubscription[]
+    } finally {
+      isLoadingHistory.value = false
+    }
+  }
+
+  const openCustomerPortal = async () => {
+    const functionsInstance = firebaseFunctions.getFunctions(firebaseFunctions.app)
+    const createPortalLink = firebaseFunctions.httpsCallable(
+      functionsInstance,
+      'ext-firestore-stripe-payments-createPortalLink',
+    )
+    const { data } = await createPortalLink({
+      returnUrl: window.location.origin + '/user/profil',
+    })
+    window.location.assign((data as { url: string }).url)
   }
 
   const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType, accessType: AccessType, entityVersion: EntityVersion, successUrl: string, docId: string) => {
@@ -146,10 +201,15 @@ export const useBillingStore = defineStore('billing', () => {
 
 
   return {
+    payments,
+    subscriptions,
+    isLoadingHistory,
     hasPaidResults,
     hasPaidIa,
     hasPaidMembership,
     hasPaidFormation,
+    loadPurchaseHistory,
+    openCustomerPortal,
     goToCheckout,
     checkUserPermissions,
   }

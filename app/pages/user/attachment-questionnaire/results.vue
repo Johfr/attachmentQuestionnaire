@@ -93,6 +93,7 @@ onBeforeRouteLeave((to, from, next) => {
       <AttachmentQuestionnaireResults
         v-if="computedResults && session"
         :docId="session.id"
+        :session-billing-info="session.billingInfo"
         :computed-results="computedResults"
         :tags-results="computedResults.tagsResults"
         :tag-data="computedResults.tagData"

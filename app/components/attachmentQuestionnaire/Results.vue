@@ -19,6 +19,12 @@ import globalProfilesData from '~/assets/data/globalProfiles.json'
 
 const props = defineProps<{
   docId: string,
+  sessionBillingInfo?: {
+    hasPaidResults: boolean
+    hasPaidIa: boolean
+    hasPaidMembership: boolean
+    hasPaidFormation: boolean
+  }
   computedResults: AttachmentQuestionnaireResults
   tagsResults: TagsResultsByDimension
   tagData: PolarTagDataItem[]
@@ -38,11 +44,14 @@ const avoidanceAverageScore = computed(() => props.avoidanceAverageScore)
 const anxietyDatasets = computed(() => props.anxietyDatasets)
 const avoidanceDatasets = computed(() => props.avoidanceDatasets)
 // Billing access
+// hasPaidResults and hasPaidIa are per-session: use the session's billingInfo (already loaded),
+// NOT the global billing store (which would grant access to ALL sessions if any one was paid).
+// hasPaidMembership and hasPaidFormation are user-level so the billing store remains correct.
 const billingStore = useBillingStore()
-const hasResultsAccess = computed(() => billingStore.hasPaidResults)
-const hasIaAccess = computed(() => billingStore.hasPaidIa)
-const hasMembershipAccess = computed(() => billingStore.hasPaidMembership)
-const hasFormationAccess = computed(() => billingStore.hasPaidFormation)
+const hasResultsAccess = computed(() => props.sessionBillingInfo?.hasPaidResults ?? false)
+const hasIaAccess = computed(() => props.sessionBillingInfo?.hasPaidIa ?? false)
+const hasMembershipAccess = computed(() => (props.sessionBillingInfo?.hasPaidMembership ?? false) || billingStore.hasPaidMembership)
+const hasFormationAccess = computed(() => (props.sessionBillingInfo?.hasPaidFormation ?? false) || billingStore.hasPaidFormation)
 // Access
 const hasBasicAccess = computed(() => {
   return (
@@ -138,6 +147,36 @@ const openPopin = (key: PopinKey) => {
   
   popinType.value = key
 }
+
+
+// si le user est premium (membership ou formation) il a accès à tous les résultats et à l'ia. Le block d'achat de résultats ne doit plus apparaitre. En revanche le block d'utilisation de l'ia doit toujours apparaître afin qu'il puisse utiliser la fonctionnalité.
+// une fois qu'il a utilisé l'ia en revanche le block doit disparaitre uniquement pour la session concernée.
+// il me faut une condition qui vérifie que le user à utiliser l'ia ou pas. hasFullAccess ne peut pas être utilisé pour ça car il me faut différencier les accès résultats et ia. Je vais donc créer une nouvelle computed property hasUsedIa qui vérifie si la session a utilisé l'ia ou pas, et je vais l'utiliser pour afficher ou non le block d'ia.
+// Si le user est membership ou formation, le block d'achat disparait. Le block ia reste. Au click sur "envoyer !" ce n'est pas la popin qui doit s'afficher mais directement l'envoi de la requête vers l'api openAi.
+// En clair : membership ou formation = accès à tous les résultats + accès à l'ia sans popin. BLock résultat disparait, block ia reste. Si le user a déjà utilisé l'ia alors le block disparait et seule la réponse de l'ia doit rester.
+const checkUserStatus = (actionType: 'ia' | 'results') => {
+  if (actionType === 'ia') {
+    if (hasIaAccess.value || hasMembershipAccess.value || hasFormationAccess.value) {
+      // accès direct à l'ia sans popin car membership
+      alert('Accès à l\'IA') // à remplacer par l'appel direct à l'IA
+    } else {
+      // popin d'incitation à l'achat
+      openPopin('ia')
+    }
+  } else if (actionType === 'results') {
+    if (hasResultsAccess.value || hasMembershipAccess.value || hasFormationAccess.value) {
+      // accès direct aux résultats sans popin
+      openPopin('results')
+    } else {
+      // popin d'incitation à l'achat
+      openPopin('results')
+    }
+  }
+}
+
+const hasUsedIa = computed(() => {
+  return props.sessionBillingInfo?.hasPaidIa ?? false
+})
 
 // IA
 const textarea = ref('')
@@ -515,7 +554,7 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
         
         <!-- Accès aux résultats et à l'ia -->
         <div
-          v-if="!hasFullAccess"
+          v-if="!hasUsedIa && (hasIaAccess || hasMembershipAccess || hasFormationAccess)"
           class="mt-8 p-5 border-l-4 rounded-3xl md:m-0 bg-white md:max-w-[48%]"
         >
           <div class="md:flex md:justify-between md:items-center mb-5 font-semibold tracking-[.13rem]">
@@ -569,7 +608,7 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
           <button
             class="py-4 rounded-3xl w-full bg-blue-700 text-white bg-gradient-to-tr from-blue-700 to-blue-500 transition-all duration-[400ms] shadow-xl"
             :class="[!checkTextareaFilled ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'hover:opacity-90 hover:cursor-pointer hover:shadow-none']"
-            @click="openPopin('ia')"
+            @click="checkUserStatus('ia')"
           >
             Envoyer !
           </button>

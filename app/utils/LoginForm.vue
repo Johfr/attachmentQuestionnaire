@@ -142,9 +142,14 @@ defineExpose({
 
 <template>
   <form class="flex flex-col bg-white">
-    <div class="mb-3">
-      <button type="button" @click="switchLoginForm" class="text-blue-700 text-sm" v-if="!user">
-        {{ loginFormButtonText }}
+    <div class="flex justify-between w-full md:max-w-[75%] mb-3 mx-auto rounded-3xl border border-solid border-gray-300">
+      <button v-if="!user" type="button" @click="switchLoginForm" class="w-full px-3 py-2 text-gray-700 text-sm rounded-3xl transition-all" :class="{ 'bg-blue-400 text-white': currentForm === 'signup' }">
+        Créer un compte
+        <!-- {{ loginFormButtonText }} -->
+      </button>
+      <button v-if="!user" type="button" @click="switchLoginForm" class="w-full px-3 py-2 text-gray-700 text-sm rounded-3xl transition-all" :class="{ 'bg-blue-400 text-white': currentForm === 'login' }">
+        Me connecter
+        <!-- {{ loginFormButtonText }} -->
       </button>
     </div>
 

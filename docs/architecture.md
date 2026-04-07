@@ -60,12 +60,12 @@ app/                    → tout le front (pages, composants, stores, utils)
     attachmentQuestionnaireResults.ts
     attachmentQuestionnaireResultsDb.ts
     questionnaireSessions.ts → lecture Firestore des sessions
-    billing.ts          → Stripe checkout + checkUserPermissions
+    billing.ts          → Stripe checkout, checkUserPermissions, loadPurchaseHistory, openCustomerPortal
   utils/
     attachmentProfileTranslations.ts → dictionnaire FR des profils (voir section Profils)
   types/
     questionnaireSessions.ts → type QuestionnaireSession (source de vérité)
-    billing.ts          → EntityType, EntitySubType, AccessType, EntityVersion
+    billing.ts          → EntityType, EntitySubType, AccessType, EntityVersion, PaymentMetadata, UserPayment, UserSubscription
 
 server/                 → backend Nuxt (à la racine, PAS dans app/)
   api/attachment/
@@ -187,12 +187,24 @@ Relit les subcollections Stripe côté client pour peupler `billingInfo` :
 - `payments` où `status == 'succeeded'` → mappe product IDs → `hasPaidResults`/`hasPaidIa`
 - `subscriptions` où `status in ['active', 'trialing']` → `hasPaidMembership`
 
-### ⏳ Cloud Function à implémenter (`functions/index.js`)
+### `loadPurchaseHistory()`
 
-Trigger : `onDocumentWritten('customers/{uid}/payments/{paymentId}')` (v2)  
-Rôle : quand `after.status === 'succeeded'`, lire le `metadata.docId` (= sessionId) et `metadata.accessType` depuis le checkout_session associé, puis mettre à jour `questionnaireSessions/{docId}/billingInfo.hasPaidResults` ou `hasPaidResults` selon `accessType`.  
-Idempotence : vérifier que le champ n'est pas déjà `true` avant d'écrire.  
-Note : `membership` et `formation` ne mettent pas à jour une session spécifique — `checkUserPermissions()` les relit côté client.
+Charge l'historique côté client depuis Firestore :
+- `customers/{uid}/payments` (status `succeeded`) → `payments` ref
+- `customers/{uid}/subscriptions` (tous statuts) → `subscriptions` ref
+
+Utilisé dans `profil.vue` pour afficher les sections "Mes achats" et "Gérer mon abonnement".
+
+### `openCustomerPortal()`
+
+Appelle la callable `ext-firestore-stripe-payments-createPortalLink` et redirige vers le portail Stripe.
+Permet au user de gérer/annuler ses abonnements.
+
+### Cloud Functions (`functions/index.js`) — ✅ implémentées
+
+Voir `docs/cloud-functions.md` pour le détail.
+- `onPaymentWritten` : met à jour `billingInfo` sur la session liée au paiement one-time
+- `onSubscriptionWritten` : propage le statut membership à toutes les sessions du user
 
 ---
 
@@ -260,8 +272,10 @@ export const useBillingStore = defineStore('billing', () => {
 ## Statut et tâches en attente
 
 - [x] **Cloud Functions** `onPaymentWritten` + `onSubscriptionWritten` — voir `docs/cloud-functions.md`
+- [x] **Billing per-session** : `Results.vue` utilise `sessionBillingInfo` (prop) au lieu du store global pour `hasPaidResults`/`hasPaidIa`
+- [x] **Profil : historique achats & abonnements** — sections subscriptions (+ portail Stripe) et achats one-shot dans `profil.vue`
+- [x] **Profil : tags membership/formation** — badges affichés sous les infos utilisateur si abonnement actif
 - [ ] **Cloud Function formation** `hasPaidFormation` via `onSubscriptionWritten` — V2, voir note dans `docs/cloud-functions.md`
 - [ ] **Intégration OpenAI** : génération de l'analyse IA des résultats
-- [ ] **Finaliser Stripe** end-to-end (checkout → webhook → déblocage contenu)
 - [ ] **Blog v2** : pages articles individuelles avec SEO (JSON-LD `Article`, og:article:*)
 - [ ] Mise à jour Node 20 → version suivante quand Firebase la proposera en prod
