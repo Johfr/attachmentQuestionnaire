@@ -196,7 +196,7 @@ npm run serve
 ## Notes importantes
 
 - Runtime Node.js 20 est actuellement utilisé pour les fonctions.
-- Firebase affiche un avertissement de fin de support future de Node 20: prévoir une montée de version quand Firebase proposera la version suivante en production.
+- **⚠️ Node.js 20 sera déprécié le 2026-04-30 et décommissionné le 2026-10-31.** Prévoir une montée de version avant ces dates.
 - Si une route API Nuxt renvoie 404 après ajout/déplacement de fichier, redémarrer `npm run dev`.
 
 ## Commandes rapides (copier/coller)

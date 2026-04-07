@@ -278,4 +278,4 @@ export const useBillingStore = defineStore('billing', () => {
 - [ ] **Cloud Function formation** `hasPaidFormation` via `onSubscriptionWritten` — V2, voir note dans `docs/cloud-functions.md`
 - [ ] **Intégration OpenAI** : génération de l'analyse IA des résultats
 - [ ] **Blog v2** : pages articles individuelles avec SEO (JSON-LD `Article`, og:article:*)
-- [ ] Mise à jour Node 20 → version suivante quand Firebase la proposera en prod
+- [ ] Mise à jour Node 20 → version suivante (**dépréciation 2026-04-30, décommission 2026-10-31**)
