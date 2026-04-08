@@ -13,13 +13,9 @@ export type User = {
   authProvider: 'password' | 'google' | 'anonymous'
   emailVerified: boolean
 
-  // profileCompleted: boolean
-  // onboardingStep: 'signup' | 'intro' | 'questionnaire' | 'done'
-
   currentPartnerContext: {
     firstName: string | null
     age: number | null
-    relationDate: Timestamp | null
   } | null
 
   settings: {

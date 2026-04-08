@@ -51,12 +51,13 @@ const handleDesktopPowerAction = async () => {
           Blog
         </span>
       </routerLink>
-      <RouterLink to="/attachment-questionnaire/results" class="flex flex-wrap justify-center">
+      
+      <!-- <RouterLink to="/attachment-questionnaire/results" class="flex flex-wrap justify-center">
         <LucideBarChart2 :size="20" class="mb-3 md:mr-1 text-rust md:hidden md:mb-0" />
         <span class="text-xs md:text-md">
           Formation
         </span>
-      </RouterLink>
+      </RouterLink> -->
     </div>
 
     <!-- User -->

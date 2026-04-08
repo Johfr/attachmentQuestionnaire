@@ -3,6 +3,7 @@ import type {
   QuestionResult,
 } from '../../../app/types/attachmentQuestionnaireResults'
 const SCORING_VERSION = '1.0'
+const roundStoredTriggerScore = (value: number) => Math.round(value * 10000) / 10000
 
 type RelationContext = {
   partnerFirstName: string | null
@@ -30,7 +31,8 @@ export const buildQuestionnaireSessionDoc = (
   const triggers: Record<string, { score: number; level: 'low' | 'medium' | 'high' }> = {}
   for (const [dim, indexes] of Object.entries(regulationIndexByDimension)) {
     for (const idx of indexes) {
-      const score = idx.maxTagScore > 0 ? idx.tagTotalValues / idx.maxTagScore : 0
+      const rawScore = idx.maxTagScore > 0 ? idx.tagTotalValues / idx.maxTagScore : 0
+      const score = roundStoredTriggerScore(rawScore)
       triggers[`${dim}_${idx.tag}`] = { score, level: idx.regulationLevel }
     }
   }

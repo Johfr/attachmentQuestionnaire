@@ -1,19 +1,47 @@
 import { FieldValue } from 'firebase-admin/firestore'
-import type { ComputeAttachmentQuestionnaireResultsRequest } from '../../../app/types/attachmentQuestionnaireResults'
+import type { AttachmentQuestion, ComputeAttachmentQuestionnaireResultsRequest } from '../../../app/types/attachmentQuestionnaireResults'
 import { computeAttachmentQuestionnaireResults } from '../../utils/attachment/computeAttachmentQuestionnaireResults'
 import { buildAttachmentQuestionnaireDisplayResult } from '../../utils/attachment/buildAttachmentQuestionnaireDisplayResult'
 import { buildQuestionnaireSessionDoc } from '../../utils/attachment/buildQuestionnaireSessionDoc'
 import { adminAuth, adminDb } from '../../utils/firebaseAdmin'
+import { AttachmentValidationError, validateAttachmentResults, validateQuestionsMatchCanonical } from '../../utils/attachment/validateAttachmentResults'
+import questionsData from '../../../app/assets/data/questions.json'
+
+// Questions canoniques chargées côté serveur — jamais remplacées par le payload client.
+const CANONICAL_QUESTIONS = (questionsData as { questions: AttachmentQuestion[] }).questions
 
 export default defineEventHandler(async event => {
   // — Input validation --------------------------------------------------------------
   const body = await readBody<ComputeAttachmentQuestionnaireResultsRequest>(event)
-  if (!body?.results?.length || !body?.questions?.length) {
-    throw createError({ statusCode: 400, statusMessage: 'results and questions are required' })
+  if (!body?.results?.length) {
+    throw createError({ statusCode: 400, statusMessage: 'results are required' })
   }
 
-  // — Compute -----------------------------------------------------------------------
-  const computedResults = computeAttachmentQuestionnaireResults(body.results, body.questions)
+  // Si le client envoie questions, vérifier qu'ils n'ont pas été falsifiés.
+  // On utilise toujours CANONICAL_QUESTIONS pour le calcul, quoi qu'il arrive.
+  if (body.questions?.length) {
+    try {
+      validateQuestionsMatchCanonical(body.questions, CANONICAL_QUESTIONS)
+    } catch (err) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: err instanceof AttachmentValidationError ? err.message : 'Invalid questions payload',
+      })
+    }
+  }
+
+  // Valider les résultats contre les questions canoniques serveur.
+  try {
+    validateAttachmentResults(body.results, CANONICAL_QUESTIONS)
+  } catch (err) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: err instanceof AttachmentValidationError ? err.message : 'Invalid results payload',
+    })
+  }
+
+  // — Compute (avec les questions canoniques serveur, jamais celles du client) ------
+  const computedResults = computeAttachmentQuestionnaireResults(body.results, CANONICAL_QUESTIONS)
   const displayResults = buildAttachmentQuestionnaireDisplayResult(computedResults)
 
   // — Auth: verify Firebase ID token ------------------------------------------------
@@ -33,6 +61,9 @@ export default defineEventHandler(async event => {
   }
 
   // — Persist to Firestore ----------------------------------------------------------
+  // Etat actuel : persistance par add() a chaque succes.
+  // L'idempotence/retry ciblee reste documentee, mais n'est pas encore
+  // implementee sur cet endpoint.
   let sessionId: string | null = null
   let persisted = false
   let persistErrorCode: string | undefined

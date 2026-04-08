@@ -14,6 +14,19 @@ const sessionsStore = useQuestionnaireSessionsStore()
 const session = ref<QuestionnaireSession | null>(null)
 const loadingError = ref<string | null>(null)
 const computedResults = ref<AttachmentQuestionnaireDisplayResults | null>(null)
+let billingRefreshTimer: ReturnType<typeof setTimeout> | null = null
+let billingRefreshStopped = false
+
+const hasUnlockedSessionAccess = (currentSession: QuestionnaireSession | null) => {
+  if (!currentSession) return false
+
+  return Boolean(
+    currentSession.billingInfo?.hasPaidResults ||
+    currentSession.billingInfo?.hasPaidIa ||
+    currentSession.billingInfo?.hasPaidMembership ||
+    currentSession.billingInfo?.hasPaidFormation,
+  )
+}
 
 const loadSession = async () => {
   try {
@@ -42,15 +55,16 @@ const loadSession = async () => {
       }
     }
 
-    if (!session.value?.answers?.length) {
-      loadingError.value = 'Cette session ne contient pas de réponses exploitables.'
+    if (!session.value?.result) {
+      loadingError.value = 'Cette session ne contient pas de résultats exploitables.'
       return
     }
 
     computedResults.value = await $fetch<AttachmentQuestionnaireDisplayResults>('/api/attachment/display-from-session', {
       method: 'POST',
       body: {
-        answers: session.value.answers,
+        storedResult: session.value.result,
+        completedAt: session.value.completedAt,
       },
     })
   } catch (error) {
@@ -62,6 +76,35 @@ const loadSession = async () => {
 
 await loadSession()
 
+const scheduleBillingRefresh = (attempt = 0) => {
+  const requestedSessionId = typeof route.query.sessionId === 'string' ? route.query.sessionId : null
+  const MAX_ATTEMPTS = 5
+  const RETRY_DELAY_MS = 2000
+
+  if (!import.meta.client || !requestedSessionId || billingRefreshStopped) return
+  if (!session.value || hasUnlockedSessionAccess(session.value) || attempt >= MAX_ATTEMPTS) return
+
+  billingRefreshTimer = setTimeout(async () => {
+    if (billingRefreshStopped) return
+
+    try {
+      await sessionsStore.loadSessions(true)
+      const refreshedSession = sessionsStore.getSessionById(requestedSessionId)
+      if (refreshedSession?.questionnaireType === 'attachment') {
+        session.value = refreshedSession
+      }
+    } finally {
+      if (!billingRefreshStopped && !hasUnlockedSessionAccess(session.value)) {
+        scheduleBillingRefresh(attempt + 1)
+      }
+    }
+  }, RETRY_DELAY_MS)
+}
+
+if (import.meta.client) {
+  scheduleBillingRefresh()
+}
+
 const goBack = async () => {
   await navigateTo('/user/profil')
 }
@@ -71,6 +114,14 @@ onBeforeRouteLeave((to, from, next) => {
     next(false)
   } else {
     next()
+  }
+})
+
+onBeforeUnmount(() => {
+  billingRefreshStopped = true
+  if (billingRefreshTimer) {
+    clearTimeout(billingRefreshTimer)
+    billingRefreshTimer = null
   }
 })
 </script>

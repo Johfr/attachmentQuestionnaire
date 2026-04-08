@@ -18,7 +18,7 @@ const colorTypeClass = computed(() => props.colorType)
 
 <template>
   <div :class="['mt-5 p-5 rounded-lg', colorTypeClass]">
-    <h3 @click="toggle" class="flex font-bold cursor-pointer text-md">
+    <h3 @click="toggle" class="flex mb-4 font-bold cursor-pointer text-md">
       {{ props.title }}
       <LucideChevronRight :class="['transition-transform', { 'rotate-90': isOpen }]" />
     </h3>
@@ -32,21 +32,6 @@ const colorTypeClass = computed(() => props.colorType)
 </template>
 
 <style lang="scss" scoped>
-div {
-  padding: 15px;
-  border-radius: 15px;
-  // color :#91B852;
-  // background-color: #f8fafc; // #1d4266 - 1b3753
-
-  // &.anxiety {
-  //   color: #f8fafc; // #1d4266 - 
-  //   background-color: var(--primary-color); 
-  // }
-  // &.avoidance {
-  //   color: #f8fafc; // #1d4266 - 
-  //   background-color: var(--secondary-color); 
-  // }
-}
 .accordion-transition-enter-active, .accordion-transition-leave-active {
   transition: all 0.3s ease;
 }

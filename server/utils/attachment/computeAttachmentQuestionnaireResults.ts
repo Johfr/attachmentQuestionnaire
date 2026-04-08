@@ -14,6 +14,7 @@ import type {
   Trigger
 } from '../../../app/types/attachmentQuestionnaireResults'
 import regulationProfilesData from '../../data/attachment/regulationProfiles.json'
+import { validateAttachmentResults } from './validateAttachmentResults'
 
 type IntensityByDimension = Record<'anxiety' | 'avoidance', RegulationLevel>
 
@@ -315,6 +316,11 @@ export const computeAttachmentQuestionnaireResults = (
   results: QuestionResult[],
   questions: AttachmentQuestion[]
 ): AttachmentQuestionnaireResults => {
+  // Filet de sécurité : valider avant tout calcul.
+  // L'endpoint valide déjà en amont ; ce guard protège les appels directs
+  // (tests unitaires, futurs appelants internes).
+  validateAttachmentResults(results, questions)
+
   const dimensionsCount = new Set(questions.map(q => q.dimension)).size
   const maxQuestionsScoreByDimension = dimensionsCount > 0
     ? (questions.length / dimensionsCount) * 4

@@ -21,6 +21,7 @@ const user = computed(() => authStore.user)
 const isSubmitting = ref(false)
 const portalError = ref<string | null>(null)
 const isPortalLoading = ref(false)
+const dashboardLoadError = ref<string | null>(null)
 
 const historySessions = computed(() => {
   return sessionsStore.sortedSessions.filter(session => session.status === 'completed')
@@ -48,13 +49,19 @@ watch(
   () => authStore.isLoggedIn,
   async (loggedIn) => {
     if (loggedIn) {
-      await Promise.all([
-        sessionsStore.loadSessions(),
-        billingStore.loadPurchaseHistory(),
-      ])
+      dashboardLoadError.value = null
+      try {
+        await Promise.all([
+          sessionsStore.loadSessions(),
+          billingStore.loadPurchaseHistory(),
+        ])
+      } catch {
+        dashboardLoadError.value = 'Certaines donnees de ton espace perso sont temporairement indisponibles.'
+      }
       return
     }
 
+    dashboardLoadError.value = null
     sessionsStore.reset()
   },
   { immediate: true },
@@ -160,6 +167,10 @@ const handleAuthAction = async () => {
       <h2 class="text-xl font-bold my-8">
         Informations personnelles
       </h2>
+
+      <p v-if="dashboardLoadError" class="mb-4 text-xs text-amber-700">
+        {{ dashboardLoadError }}
+      </p>
 
       <div class="flex items-center flex-wrap">
         <div class="flex flex-col items-center">

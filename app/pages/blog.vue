@@ -16,8 +16,8 @@ const blogArticles = [
     description: 'Découvre les raisons profondes de ce comportement et comment y remédier pour construire une relation plus saine.',
     image: '',
     link: '/blog',
-    duration: '8-15 min',
-    isActive: true,
+    duration: '5-10 min',
+    isActive: false,
   },
   {
     id: 2,
@@ -26,7 +26,7 @@ const blogArticles = [
     description: 'Découvre des stratégies efficaces pour apaiser ta panique et renforcer ta relation.',
     image: '',
     link: '/blog',
-    duration: '8-15 min',
+    duration: '5-10 min',
     isActive: false,
   },
   {
@@ -36,7 +36,7 @@ const blogArticles = [
     description: 'Apprends à reconnaître les signes de la fuite et découvre des conseils pour y faire face.',
     image: '',
     link: '/blog',
-    duration: '8-15 min',
+    duration: '5-10 min',
     isActive: false,
   },
 ]

@@ -204,13 +204,14 @@ describe('user/attachment-questionnaire/results page', () => {
     expect(wrapper.text()).toContain('Aucune session attachement disponible')
   })
 
-  // ── Session without answers ───────────────────────────────────────────────
+  // ── Session without result ────────────────────────────────────────────────
 
-  it('shows an error when the matched session has no answers', async () => {
-    const emptySession = makeSession('session-empty')
-    emptySession.answers = []
-    mockSessionsState.sessions = [emptySession]
-    mockQuery.sessionId = 'session-empty'
+  it('shows an error when the matched session has no result', async () => {
+    const noResultSession = makeSession('session-no-result')
+    // @ts-expect-error — intentionally crafting an invalid session to test the guard
+    noResultSession.result = undefined
+    mockSessionsState.sessions = [noResultSession]
+    mockQuery.sessionId = 'session-no-result'
 
     const wrapper = await mountSuspended(UserResultsPage)
 

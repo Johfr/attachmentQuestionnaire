@@ -6,12 +6,12 @@ Application Nuxt 4 en SSR pour le questionnaire d'attachement, avec:
 - store Pinia
 - style Tailwind
 - routes API serveur Nuxt (dossier `server/api`)
-- hébergement et exécution SSR sur Firebase (Hosting + Cloud Functions)
+- hebergement et execution SSR sur Firebase (Hosting + Cloud Functions)
 - Firestore (rules + indexes)
 
 ## Stack technique
 
-- Node.js: 20 (recommandé)
+- Node.js: 20 (recommande)
 - Nuxt: 4
 - Firebase:
 	- Hosting
@@ -19,7 +19,7 @@ Application Nuxt 4 en SSR pour le questionnaire d'attachement, avec:
 	- Firestore
 	- Emulators
 
-## Prérequis
+## Prerequis
 
 1. Installer Node.js 20
 2. Installer Firebase CLI
@@ -28,7 +28,7 @@ Application Nuxt 4 en SSR pour le questionnaire d'attachement, avec:
 npm install -g firebase-tools
 ```
 
-3. Se connecter à Firebase
+3. Se connecter a Firebase
 
 ```bash
 firebase login
@@ -42,7 +42,7 @@ Depuis la racine du projet:
 npm install
 ```
 
-Installer aussi les dépendances des fonctions custom:
+Installer aussi les dependances des fonctions custom:
 
 ```bash
 cd functions
@@ -50,7 +50,7 @@ npm install
 cd ..
 ```
 
-## Lancer en développement
+## Lancer en developpement
 
 ```bash
 npm run dev
@@ -61,16 +61,25 @@ Application disponible sur http://localhost:3000
 ## Tests
 
 ```bash
-npm run test
+# Lancer tous les tests (unit + nuxt) une seule fois
+npm run test -- --run
+
+# Mode watch (relance sur modification)
 npm run test:watch
-npm run test:unit
-npm run test:nuxt
+
+# Tests unitaires uniquement (server utils, stores, helpers)
+npm run test:unit -- --run
+
+# Tests d'integration Nuxt uniquement (pages, middlewares, billing flow)
+npm run test:nuxt -- --run
 ```
 
 ## Documentation backend
 
 - Convention multi-questionnaires: `docs/backend-questionnaires.md`
-- Persistance Firestore des sessions + retry idempotent: `docs/backend-questionnaires.md` (section "Persistance Firestore des resultats")
+- Persistance Firestore des sessions + cible de retry idempotent: `docs/backend-questionnaires.md` (section "Persistance Firestore des resultats")
+
+> **Note doc** : ces fichiers servent aussi de memoire projet. Ils conservent des erreurs deja rencontrees, des pieges de build/deploy et des procedures de resolution qui evitent de tourner en boucle sur des problemes connus. En les mettant a jour, preferer des corrections ciblees plutot qu'une simplification qui ferait perdre ce contexte.
 
 ## Persistance des resultats
 
@@ -79,11 +88,11 @@ Flow cible en production:
 1. Le front envoie les reponses au endpoint Nuxt.
 2. Nuxt calcule les resultats et tente l'ecriture Firestore.
 3. Nuxt renvoie les resultats chauds + meta de persistance (`persisted`, `sessionId`, `persistErrorCode`).
-4. Si la persistance echoue, le front lance un retry cible idempotent (sans recalcul).
+4. Si la persistance echoue, le front relance actuellement le meme endpoint `/api/attachment/results`. Le retry idempotent sans recalcul reste la cible documentee.
 
 Structure BDD:
 
-- `questionnaireSessions/{sessionId}`: reponses, scores, summary, acces
+- `questionnaireSessions/{sessionId}`: reponses, scores, result, billingInfo, persist
 - `questionnaireSessions/{sessionId}/aiExchange/result`: input user, output IA, statut
 
 ## Build production
@@ -92,12 +101,12 @@ Structure BDD:
 npm run build
 ```
 
-Ce build génère:
+Ce build genere:
 
 - `.output/public` pour Firebase Hosting
 - `.output/server` pour la Function SSR
 
-Le script `postbuild` retire automatiquement la dépendance Windows `@img/sharp-win32-x64` du package SSR généré pour éviter l'erreur de plateforme au déploiement Linux Firebase.
+Le script `postbuild` retire automatiquement la dependance Windows `@img/sharp-win32-x64` du package SSR genere pour eviter l'erreur de plateforme au deploiement Linux Firebase.
 
 ## Preview local du build
 
@@ -105,22 +114,22 @@ Le script `postbuild` retire automatiquement la dépendance Windows `@img/sharp-
 npm run preview
 ```
 
-## Déploiement Firebase (SSR + Hosting + Firestore + custom functions)
+## Deploiement Firebase (SSR + Hosting + Firestore + custom functions)
 
-Ordre recommandé:
+Ordre recommande:
 
 ```bash
 # 1) Build Nuxt SSR
 npm run build
 
-# 2) Déployer
+# 2) Deployer
 firebase deploy
 ```
 
-Le build génère maintenant un `.output/server/package.json` déterministe et son `package-lock.json`.
-Il ne faut pas installer manuellement des dépendances dans `.output/server` avant le déploiement.
+Le build genere maintenant un `.output/server/package.json` deterministe et son `package-lock.json`.
+Il ne faut pas installer manuellement des dependances dans `.output/server` avant le deploiement.
 
-Si un déploiement SSR échoue après une modification de dépendances, la bonne remise à plat est:
+Si un deploiement SSR echoue apres une modification de dependances, la bonne remise a plat est:
 
 ```bash
 rm -rf .output
@@ -136,7 +145,7 @@ npm run build
 firebase deploy
 ```
 
-## Déploiements ciblés utiles
+## Deploiements cibles utiles
 
 ```bash
 # Hosting + function SSR Nuxt
@@ -163,13 +172,13 @@ firebase deploy --only firestore
 
 ## Emulators
 
-Ports configurés:
+Ports configures:
 
 - Auth: 9099
 - Functions: 5001
 - Firestore: 8080
 - Hosting: 5000
-- Emulator UI: activée
+- Emulator UI: activee
 
 Lancement standard:
 
@@ -190,14 +199,14 @@ npm run serve
 - `server/api/`: endpoints backend Nuxt (SSR)
 - `functions/`: Cloud Functions custom Firebase
 - `test/unit/`: tests unitaires
-- `firebase.json`: config déploiement Firebase
-- `firestore.rules` / `firestore.indexes.json`: sécurité/index Firestore
+- `firebase.json`: config deploiement Firebase
+- `firestore.rules` / `firestore.indexes.json`: securite/index Firestore
 
 ## Notes importantes
 
-- Runtime Node.js 20 est actuellement utilisé pour les fonctions.
-- **⚠️ Node.js 20 sera déprécié le 2026-04-30 et décommissionné le 2026-10-31.** Prévoir une montée de version avant ces dates.
-- Si une route API Nuxt renvoie 404 après ajout/déplacement de fichier, redémarrer `npm run dev`.
+- Runtime Node.js 20 est actuellement utilise pour les fonctions.
+- **Node.js 20 sera deprecie le 2026-04-30 et decommissionnee le 2026-10-31.** Prevoir une montee de version avant ces dates.
+- Si une route API Nuxt renvoie 404 apres ajout/deplacement de fichier, redemarrer `npm run dev`.
 
 ## Commandes rapides (copier/coller)
 
@@ -214,10 +223,10 @@ npm install --no-save --no-package-lock firebase-functions firebase-admin
 firebase deploy
 ```
 
-> **Note** : Ne pas faire `cd .output/server && npm install` — le postbuild gère `.output/server` automatiquement.
-> `firebase-functions` et `firebase-admin` ne sont pas dans le `package.json` racine, d'où l'install temporaire avant deploy (sans `--no-package-lock` = lock modifié = `npm ci` Cloud Run en échec).
+> **Note** : Ne pas faire `cd .output/server && npm install` - le postbuild gere `.output/server` automatiquement.
+> Historiquement, `firebase-functions` et `firebase-admin` ont pose probleme au deploy quand ils n'etaient pas correctement presents dans le package SSR. Ils sont maintenant bien declares dans le `package.json` racine, mais cette note reste utile comme memoire de debug si un probleme similaire reapparait.
 
-> **⚠️ Si `firebase deploy` échoue (exit code 1 sur les fonctions)** : les fichiers hosting sont uploadés mais la release n'est pas finalisée. La version live garde les anciens fichiers → mismatch de hash CSS → CSS 404. Fix :
+> **Si `firebase deploy` echoue (exit code 1 sur les fonctions)** : les fichiers hosting sont uploades mais la release n'est pas finalisee. La version live garde les anciens fichiers -> mismatch de hash CSS -> CSS 404. Fix :
 > ```powershell
 > firebase deploy --only hosting
 > ```

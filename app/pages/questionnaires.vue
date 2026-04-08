@@ -18,7 +18,7 @@ const questionnaires = [
     title: 'Questionnaire d\'attachement adulte',
     description: 'Découvre ton style d\'attachement et reçois des conseils personnalisés pour mieux comprendre comment tu fonctionnes dans tes relations.',
     image: '',
-    link: '',
+    link: '/attachment-questionnaire/introduction',
     duration: '8-15 min',
     isActive: true,
   },

@@ -43,6 +43,14 @@ const anxietyAverageScore = computed(() => props.anxietyAverageScore)
 const avoidanceAverageScore = computed(() => props.avoidanceAverageScore)
 const anxietyDatasets = computed(() => props.anxietyDatasets)
 const avoidanceDatasets = computed(() => props.avoidanceDatasets)
+const FALLBACK_PROFILE_KEY = 'notSignificant'
+const attachmentProfiles = computed(() => {
+  return graphData.value?.attachmentProfilesByDimension ?? {
+    anxiety: FALLBACK_PROFILE_KEY,
+    avoidance: FALLBACK_PROFILE_KEY,
+    globalStyle: FALLBACK_PROFILE_KEY,
+  }
+})
 // Billing access
 // hasPaidResults and hasPaidIa are per-session: use the session's billingInfo (already loaded),
 // NOT the global billing store (which would grant access to ALL sessions if any one was paid).
@@ -100,8 +108,9 @@ const getProfileIcon = (profileKey: string) => profileIcons[profileKey] || fallb
 const getTagIcon = (tagKey: string) => tagsIcons[tagKey] || fallbackTagIcon
 const profileDimensions: Array<'anxiety' | 'avoidance'> = ['anxiety', 'avoidance']
 const getSubProfile = (dimension: 'anxiety' | 'avoidance') => {
-  return graphData.value.attachmentProfilesByDimension[dimension]
+  return attachmentProfiles.value[dimension] ?? FALLBACK_PROFILE_KEY
 }
+const globalProfileKey = computed(() => attachmentProfiles.value.globalStyle ?? FALLBACK_PROFILE_KEY)
 
 const profilExplanations = computed(() => {
   const explanations: Record<string, string> = {}
@@ -181,13 +190,18 @@ const hasUsedIa = computed(() => {
 // IA
 const textarea = ref('')
 const minTextareaRequired = 750
-const checkTextareaFilled = computed(() => textarea.value.trim().length > minTextareaRequired)
+const checkTextareaFilled = computed(() => textarea.value.trim().length >= minTextareaRequired)
 const textareaLength = computed(() => textarea.value.trim().length)
 
 /****** */
 // BILLING 
 /****** */
-await billingStore.checkUserPermissions()
+const billingAccessWarning = ref('')
+try {
+  await billingStore.checkUserPermissions()
+} catch {
+  billingAccessWarning.value = 'La verification de tes acces premium est temporairement indisponible. Tes resultats restent consultables.'
+}
 const loading = ref(false)
 const errorMessage = ref('')
 // goToCheckout('questionnaire', 'attachment', 'results', 'attachment-questionnaire', 'docId')
@@ -207,6 +221,12 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
 </script>
 
 <template>
+  <p v-if="billingAccessWarning" class="mb-4 text-xs text-amber-700 text-center">
+    {{ billingAccessWarning }}
+  </p>
+  <p v-if="graphData.completionDate" class="sr-only">
+    {{ graphData.completionDate }}
+  </p>
   <div class="donuts-container flex justify-evenly bg-white py-8 rounded-3xl md:justify-center md:gap-20">
     <div class="w-[125px] h-[125px] md:w-[250px] md:h-[250px]">
       <DoughnutChart
@@ -245,15 +265,15 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
         class="mb-3 bg-white p-5 rounded-3xl border-l-4 border-blue-700 md:flex-1 md:max-w-[48%]"
       >
         <h3 class="text-md mb-3 font-bold">
-          <component :is="getProfileIcon(graphData.attachmentProfilesByDimension.globalStyle)" :size="20" class="inline-block mr-2" />
+          <component :is="getProfileIcon(globalProfileKey)" :size="20" class="inline-block mr-2" />
           <!-- Style :  -->
-          {{ getProfileLabel(graphData.attachmentProfilesByDimension.globalStyle) }}
+          {{ getProfileLabel(globalProfileKey) }}
         </h3>
         <p
           class="max-h-36 overflow-hidden mb-3 text-sm text-gray-600 line-clamp-4"
           :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen('global') }"
         >
-          {{ profilExplanations[graphData.attachmentProfilesByDimension.globalStyle] }}
+          {{ profilExplanations[globalProfileKey] ?? '' }}
         </p>
         <span class="block w-full p-3 text-right text-xs cursor-pointer" @click="toggleProfileExplanation('global')">
           {{ isProfileExplanationOpen('global') ? 'Réduire...' : 'Lire la suite...' }}          
@@ -324,48 +344,52 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
   <!-- Explication des résultats -->
   <div class="mb-3 bg-white rounded-3xl border-l-4 text-gray-600 border-gray-200 md:flex-1 md:max-w-[340%]">
     <Accordeon title="Explication des résultats" >
-      <p class="mb-3 text-sm text-gray-600">
-        Le type global repose sur deux dimensions principales : l'anxiété et l'évitement. Les réponses au questionnaire permettent d'évaluer le niveau de chacun de ces deux axes, puis de situer le profil général de la personne parmi les grands styles d'attachement : sécure, anxieux, évitant ou désorganisé, comme l'illustre le graphique ci-dessous.
-      </p>
+      <div class="md:flex md:flex-row-reverse md:justify-between md:items-center">
+        <div class="md:max-w-[48%]">
+          <p class="mb-3 text-sm text-gray-600">
+            Le type global repose sur deux dimensions principales : l'anxiété et l'évitement. Les réponses au questionnaire permettent d'évaluer le niveau de chacun de ces deux axes, puis de situer le profil général de la personne parmi les grands styles d'attachement : sécure, anxieux, évitant ou désorganisé, comme l'illustre le graphique ci-dessous.
+          </p>
+          
+          <p class="mb-3 text-sm">
+            A partir de là on peut définir :
+          </p>
 
-      <img
-        src="~/assets/img/dimension-anxiety-avoidance-graphique2.png"
-        alt="Graphique des dimensions anxiété et évitement"
-        class="mb-3 rounded-lg border"
-      />
-      
-      <p class="mb-3 text-sm">
-        A partir de là on peut définir :
-      </p>
+          <ul>
+            <li class="mb-1 pl-3 text-sm list-disc list-inside">
+              Sécure = anxiété low + évitement low
+            </li>
+            <li class="mb-1 pl-3 text-sm list-disc list-inside">
+              Anxieux = anxiété high + évitement low
+            </li>
+            <li class="mb-1 pl-3 text-sm list-disc list-inside">
+              Évitant = anxiété low + évitement high
+            </li>
+            <li class="mb-1 pl-3 text-sm list-disc list-inside">
+              Désorganisé = anxiété high + évitement high
+            </li>
+          </ul>
+          
+          <p class="mt-3 mb-3 text-sm">
+            Mais ce profil global ne suffit pas toujours à décrire précisément le fonctionnement relationnel d'un individu. C'est pourquoi le questionnaire prend aussi en compte des <strong>déclencheurs spécifiques</strong> : 5 liés à l'anxiété et 5 liés à l'évitement. Ce sont ces déclencheurs, ainsi que leurs associations qui permettent d'identifier des sous-profils plus nuancés, comme par exemple un profil anxieux-régulé ou évitant-adaptatif.
+          </p>
+          
+          <p class="mt-3 mb-3 text-sm">
+            L'objectif principal n'est donc pas de coller une étiquette mais de mieux comprendre ce qui active concrètement le système d'attachement. 
+          </p>
+            
+          <p class="mt-3 mb-3 text-sm">
+            Une personne globalement sécure peut d'ailleurs présenter des scores modérés sur certains déclencheurs, ce qui montre que certaines situations la touchent malgré tout. Lire ses résultats de cette manière permet surtout d'identifier les mécanismes à travailler pour gagner en stabilité relationnelle.
+          </p>
+        </div>
 
-      <ul>
-        <li class="mb-1 pl-3 text-sm list-disc list-inside">
-          Sécure = anxiété low + évitement low
-        </li>
-        <li class="mb-1 pl-3 text-sm list-disc list-inside">
-          Anxieux = anxiété high + évitement low
-        </li>
-        <li class="mb-1 pl-3 text-sm list-disc list-inside">
-          Évitant = anxiété low + évitement high
-        </li>
-        <li class="mb-1 pl-3 text-sm list-disc list-inside">
-          Désorganisé = anxiété high + évitement high
-        </li>
-      </ul>
-      
-      <p class="mt-3 mb-3 text-sm">
-        Mais ce profil global ne suffit pas toujours à décrire précisément le fonctionnement relationnel d'un individu. C'est pourquoi le questionnaire prend aussi en compte des <strong>déclencheurs spécifiques</strong> : 5 liés à l'anxiété et 5 liés à l'évitement. Ce sont ces déclencheurs, ainsi que leurs associations qui permettent d'identifier des sous-profils plus nuancés, comme par exemple un profil anxieux-régulé ou évitant-adaptatif.
-      </p>
-      
-      <p class="mt-3 mb-3 text-sm">
-        L'objectif principal n'est donc pas de coller une étiquette mais de mieux comprendre ce qui active concrètement le système d'attachement. 
-      </p>
+        <img
+          src="~/assets/img/dimension-anxiety-avoidance-graphique2.png"
+          alt="Graphique des dimensions anxiété et évitement"
+          class="md:max-w-[48%] h-full mb-3 rounded-lg border md:hover:shadow-lg md:hover:scale-[1.51] md:hover:z-10 md:hover:relative md:hover:left-1/2 transition-transform duration-700 "
+        />
+      </div>
         
-      <p class="mt-3 mb-3 text-sm">
-        Une personne globalement sécure peut d'ailleurs présenter des scores modérés sur certains déclencheurs, ce qui montre que certaines situations la touchent malgré tout. Lire ses résultats de cette manière permet surtout d'identifier les mécanismes à travailler pour gagner en stabilité relationnelle.
-      </p>        
-        
-      <div class="bg-white p-5 rounded-3xl border-l-4 border-gray-500 md:flex-1">
+      <div class="bg-white mt-8 p-5 rounded-3xl border-l-4 border-gray-500 md:mt-5">
         <LucideLightbulb :size="20" class="inline-block mr-2" />
         <strong>Note importante</strong>
         <p class="mt-3 text-sm text-gray-600">

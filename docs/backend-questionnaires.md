@@ -4,6 +4,8 @@
 
 Ce document pose la convention backend pour supporter plusieurs questionnaires sans collisions de noms ni duplication de logique.
 
+> Note: cette doc sert aussi de memoire projet. Elle peut volontairement conserver des flux cibles, des pieges deja rencontres et des strategies de resolution tant que cela est clairement distingue de l'etat actuel du code.
+
 ## Principe de separation
 
 Chaque questionnaire doit avoir son namespace propre dans:
@@ -66,6 +68,8 @@ Ne pas partager des fonctions metier entre questionnaires tant que le besoin com
 - `questionnaireSessions/{sessionId}/aiExchange/result`: entree user, sortie IA, statut de generation
 
 ### Flow recommande (cas 1)
+
+Le flux ci-dessous decrit la cible architecturale. A date, le front relance encore le meme endpoint `POST /api/attachment/results` et il n'y a pas encore de statut `pending_retry` expose dans le type `QuestionnaireSession`.
 
 1. Le front envoie les reponses au endpoint Nuxt.
 2. Nuxt calcule les resultats et construit le payload de session.

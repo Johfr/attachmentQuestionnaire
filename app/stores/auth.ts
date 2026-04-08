@@ -77,7 +77,9 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       const partnerContext = buildPartnerContext(partnerData)
-      if (!partnerContext) return true
+      if (!partnerContext) {
+        return true
+      }
 
       await setDoc(
         doc(firebaseFunctions.db, 'users', currentUser.uid),
@@ -216,13 +218,18 @@ export const useAuthStore = defineStore('auth', () => {
         }
         currentPartnerContext.value = partnerContext
       } else {
+        const loginDocPayload: Record<string, unknown> = {
+          updatedAt: serverTimestamp(),
+          lastLoginAt: serverTimestamp(),
+        }
+
+        if (partnerContext) {
+          loginDocPayload.currentPartnerContext = partnerContext
+        }
+
         await setDoc(
           doc(firebaseFunctions.db, 'users', firebaseUser.uid),
-          {
-            updatedAt: serverTimestamp(),
-            lastLoginAt: serverTimestamp(),
-            ...(partnerContext ? { currentPartnerContext: partnerContext } : {}),
-          },
+          loginDocPayload,
           { merge: true },
         )
 

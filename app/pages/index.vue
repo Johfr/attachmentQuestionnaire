@@ -41,8 +41,8 @@ const blogArticles = [
     description: 'Découvre les raisons profondes de ce comportement et comment y remédier pour construire une relation plus saine.',
     image: '',
     link: '/blog',
-    duration: '8-15 min',
-    isActive: true,
+    duration: '5-8 min',
+    isActive: false,
   }
 ]
 const itemsBackground = ['rust', 'softGreen', 'softPeach']

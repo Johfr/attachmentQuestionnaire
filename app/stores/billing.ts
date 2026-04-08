@@ -164,16 +164,21 @@ export const useBillingStore = defineStore('billing', () => {
             },
           }),
       success_url: `${window.location.origin}/user/${successUrl}/results?sessionId=${docId}`,
-      cancel_url: `${window.location.origin}/user/profile/`,
+      cancel_url: `${window.location.origin}/user/profil/`,
     })
 
     return await new Promise<void>((resolve, reject) => {
+      // Initialisé à un no-op pour éviter la temporal dead zone si onSnapshot
+      // appelle le callback synchroniquement (cas des mocks de test).
+      // En production, Firestore appelle toujours le callback de manière async.
+      let unsubscribe: () => void = () => {}
+
       const timeout = setTimeout(() => {
         unsubscribe()
         reject(new Error('Impossible de joindre la page de paiement. Réessaie.'))
       }, 15000)
 
-      const unsubscribe = onSnapshot(docRef, (snap) => {
+      unsubscribe = onSnapshot(docRef, (snap) => {
         const data = snap.data()
         if (data?.error) {
           clearTimeout(timeout)

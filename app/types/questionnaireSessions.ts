@@ -3,7 +3,7 @@ import type { Timestamp } from "firebase/firestore"
 export type QuestionnaireType = 'attachment'
 export type QuestionnaireVersion = 'v1'
 export type QuestionnaireSessionStatus = 'draft' | 'completed' | 'archived'
-export type QuestionnairePersistStatus = 'persisted' | 'pending_retry'
+export type QuestionnairePersistStatus = 'persisted'
 
 export type QuestionnaireSession = {
   id: string
