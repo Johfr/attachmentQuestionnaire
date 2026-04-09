@@ -128,7 +128,7 @@ onBeforeUnmount(() => {
 
 <template>
   <section>
-    <button @click="goBack" class="light-button">
+    <button @click="goBack" class="text-blue-700 text-xs md:text-sm flex items-center">
       <LucideArrowLeft :size="16" />
       Retour au profil
     </button>

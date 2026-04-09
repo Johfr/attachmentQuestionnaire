@@ -38,7 +38,7 @@ onBeforeRouteLeave((to, from, next) => {
 
 <template>
   <section>
-    <button @click="goHome" class="light-button">
+    <button @click="goHome" class="text-blue-700 text-xs md:text-sm flex items-center">
       <LucideArrowLeft :size="16" />
       Retour a l'accueil
     </button>

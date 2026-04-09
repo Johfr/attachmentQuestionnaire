@@ -342,11 +342,11 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
   </section>
 
   <!-- Explication des résultats -->
-  <div class="mb-3 bg-white rounded-3xl border-l-4 text-gray-600 border-gray-200 md:flex-1 md:max-w-[340%]">
-    <Accordeon title="Explication des résultats" >
+  <div class="mb-3 bg-white rounded-3xl border-l-4 text-gray-800 border-gray-200 md:flex-1 md:max-w-[340%]">
+    <Accordeon title="Explication des résultats">
       <div class="md:flex md:flex-row-reverse md:justify-between md:items-center">
         <div class="md:max-w-[48%]">
-          <p class="mb-3 text-sm text-gray-600">
+          <p class="mb-3 text-sm">
             Le type global repose sur deux dimensions principales : l'anxiété et l'évitement. Les réponses au questionnaire permettent d'évaluer le niveau de chacun de ces deux axes, puis de situer le profil général de la personne parmi les grands styles d'attachement : sécure, anxieux, évitant ou désorganisé, comme l'illustre le graphique ci-dessous.
           </p>
           
@@ -368,27 +368,29 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
               Désorganisé = anxiété high + évitement high
             </li>
           </ul>
-          
-          <p class="mt-3 mb-3 text-sm">
-            Mais ce profil global ne suffit pas toujours à décrire précisément le fonctionnement relationnel d'un individu. C'est pourquoi le questionnaire prend aussi en compte des <strong>déclencheurs spécifiques</strong> : 5 liés à l'anxiété et 5 liés à l'évitement. Ce sont ces déclencheurs, ainsi que leurs associations qui permettent d'identifier des sous-profils plus nuancés, comme par exemple un profil anxieux-régulé ou évitant-adaptatif.
-          </p>
-          
-          <p class="mt-3 mb-3 text-sm">
-            L'objectif principal n'est donc pas de coller une étiquette mais de mieux comprendre ce qui active concrètement le système d'attachement. 
-          </p>
-            
-          <p class="mt-3 mb-3 text-sm">
-            Une personne globalement sécure peut d'ailleurs présenter des scores modérés sur certains déclencheurs, ce qui montre que certaines situations la touchent malgré tout. Lire ses résultats de cette manière permet surtout d'identifier les mécanismes à travailler pour gagner en stabilité relationnelle.
-          </p>
         </div>
 
         <img
           src="~/assets/img/dimension-anxiety-avoidance-graphique2.png"
           alt="Graphique des dimensions anxiété et évitement"
-          class="md:max-w-[48%] h-full mb-3 rounded-lg border md:hover:shadow-lg md:hover:scale-[1.51] md:hover:z-10 md:hover:relative md:hover:left-1/2 transition-transform duration-700 "
+          class="md:max-w-[48%] h-full my-5 md:my-0 rounded-lg border md:hover:shadow-lg md:hover:scale-[2.1] md:hover:z-10 md:hover:relative md:hover:left-[26%] transition-transform duration-700 "
         />
       </div>
         
+      <div class="my-8">
+        <p class="mt-3 mb-3 text-sm">
+          Ce profil global ne suffit pas toujours à décrire précisément le fonctionnement relationnel d'un individu. C'est pourquoi le questionnaire prend aussi en compte des <strong>déclencheurs spécifiques</strong> : 5 liés à l'anxiété et 5 liés à l'évitement. Ce sont ces déclencheurs, ainsi que leurs associations qui permettent d'identifier des sous-profils plus nuancés, comme par exemple un profil anxieux-régulé ou évitant-adaptatif.
+        </p>
+        
+        <p class="mt-3 mb-3 text-sm">
+          L'objectif principal n'est donc pas de coller une étiquette mais de mieux comprendre ce qui active concrètement le système d'attachement. 
+        </p>
+          
+        <p class="mt-3 mb-3 text-sm">
+          Une personne globalement sécure peut d'ailleurs présenter des scores modérés sur certains déclencheurs, ce qui montre que certaines situations la touchent malgré tout. Lire ses résultats de cette manière permet surtout d'identifier les mécanismes à travailler pour gagner en stabilité relationnelle.
+        </p>
+      </div>
+
       <div class="bg-white mt-8 p-5 rounded-3xl border-l-4 border-gray-500 md:mt-5">
         <LucideLightbulb :size="20" class="inline-block mr-2" />
         <strong>Note importante</strong>
@@ -577,8 +579,11 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
         </div>
         
         <!-- Accès aux résultats et à l'ia -->
+        <!-- {{ !hasUsedIa }}
+        {{ (hasIaAccess || hasMembershipAccess || hasFormationAccess) }}
+         {{ !hasUsedIa && (hasIaAccess || hasMembershipAccess || hasFormationAccess) }} -->
         <div
-          v-if="!hasUsedIa && (hasIaAccess || hasMembershipAccess || hasFormationAccess)"
+          v-if="!hasUsedIa"
           class="mt-8 p-5 border-l-4 rounded-3xl md:m-0 bg-white md:max-w-[48%]"
         >
           <div class="md:flex md:justify-between md:items-center mb-5 font-semibold tracking-[.13rem]">

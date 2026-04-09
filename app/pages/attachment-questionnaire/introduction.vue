@@ -88,7 +88,7 @@ useHead({
 
 <template>
   <main>
-    <button @click="goHome" class="text-blue-500 text-xs md:text-sm flex items-center">
+    <button @click="goHome" class="text-blue-700 text-xs md:text-sm flex items-center">
       <LucideArrowLeft :size="16" />
       Retour à l'accueil
     </button>

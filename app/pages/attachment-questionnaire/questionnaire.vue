@@ -23,7 +23,7 @@ if (!questionnaireWizardStore.hasStarted) {
 }
 
 const handleComplete = async (result: QuestionResult[]) => {
-  console.log(result)
+  // console.log(result)
   questionnaireWizardStore.complete(result)
   await navigateTo('/attachment-questionnaire/results')
 }
@@ -56,7 +56,7 @@ const goHome = async () => {
 
 <template>
   <section>
-    <button @click="goHome" class="text-blue-500 text-xs md:text-sm flex items-center">
+    <button @click="goHome" class="text-blue-700 text-xs md:text-sm flex items-center">
       <LucideArrowLeft :size="16" />
       Retour à l'accueil
     </button>
