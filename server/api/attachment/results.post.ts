@@ -1,4 +1,4 @@
-import { FieldValue } from 'firebase-admin/firestore'
+import { FieldValue, Timestamp } from 'firebase-admin/firestore'
 import type { AttachmentQuestion, ComputeAttachmentQuestionnaireResultsRequest } from '../../../app/types/attachmentQuestionnaireResults'
 import { computeAttachmentQuestionnaireResults } from '../../utils/attachment/computeAttachmentQuestionnaireResults'
 import { buildAttachmentQuestionnaireDisplayResult } from '../../utils/attachment/buildAttachmentQuestionnaireDisplayResult'
@@ -9,6 +9,8 @@ import questionsData from '../../../app/assets/data/questions.json'
 
 // Questions canoniques chargées côté serveur — jamais remplacées par le payload client.
 const CANONICAL_QUESTIONS = (questionsData as { questions: AttachmentQuestion[] }).questions
+const QUESTIONNAIRE_TYPE = 'attachment'
+const QUESTIONNAIRE_COOLDOWN_DAYS = 30
 
 export default defineEventHandler(async event => {
   // — Input validation --------------------------------------------------------------
@@ -85,6 +87,21 @@ export default defineEventHandler(async event => {
         updatedAt: FieldValue.serverTimestamp(),
         completedAt: FieldValue.serverTimestamp(),
       })
+
+      const nowMs = Date.now()
+      const nextAllowedAtMs = nowMs + (QUESTIONNAIRE_COOLDOWN_DAYS * 24 * 60 * 60 * 1000)
+
+      await adminDb.collection('users').doc(uid).set({
+        updatedAt: FieldValue.serverTimestamp(),
+        questionnaireAccess: {
+          [QUESTIONNAIRE_TYPE]: {
+            lastCompletedAt: Timestamp.fromMillis(nowMs),
+            nextAllowedAt: Timestamp.fromMillis(nextAllowedAtMs),
+            cooldownDays: QUESTIONNAIRE_COOLDOWN_DAYS,
+          },
+        },
+      }, { merge: true })
+
       sessionId = docRef.id
       persisted = true
     } catch (err) {

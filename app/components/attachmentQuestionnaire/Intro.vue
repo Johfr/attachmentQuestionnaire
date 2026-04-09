@@ -6,6 +6,7 @@ import type { AuthFormPayload } from '~/types/User'
 const props = defineProps<{
   authErrorMessage?: string | null
   isSubmitting?: boolean
+  accessBlockedMessage?: string | null
   initialPartnerName?: string | null
   initialPartnerAge?: number | null
 }>()
@@ -97,7 +98,11 @@ const nextStep = () => {
       </p>
     </div>
 
-    <section v-if="!user" class="mt-8 p-4 rounded-3xl bg-white">
+    <p v-if="accessBlockedMessage" class="mt-6 p-4 text-sm text-amber-800 text-center bg-amber-100 border border-amber-200 rounded-3xl">
+      {{ accessBlockedMessage }}
+    </p>
+
+    <section v-if="!user && !accessBlockedMessage" class="mt-8 p-4 rounded-3xl bg-white">
       <h2 class="mb-3">Personnalise ton experience</h2>
 
       <h3 class="mt-0 mb-2 text-xs font-semibold uppercase">A propos de toi</h3>
@@ -105,7 +110,7 @@ const nextStep = () => {
       <LoginForm v-if="!user" ref="loginFormData"/>
     </section>
 
-    <section class="mt-4 mb-4 p-4 rounded-3xl bg-white">
+    <section v-if="!accessBlockedMessage" class="mt-4 mb-4 p-4 rounded-3xl bg-white">
       <div class="my-2 leading-6 rounded-3xl bg-white">
         <h3 class="mt-0 text-xs font-semibold uppercase">
           A propos de ton/ta partenaire
@@ -126,7 +131,7 @@ const nextStep = () => {
       {{ authErrorMessage }}
     </p>
 
-    <button type="button" :disabled="isSubmitting" @click="nextStep" class="submit-button flex items-center justify-center gap-2 disabled:opacity-60">
+    <button v-if="!accessBlockedMessage" type="button" :disabled="isSubmitting" @click="nextStep" class="submit-button flex items-center justify-center gap-2 disabled:opacity-60">
       <LucideLoader v-if="isSubmitting" :size="16" class="loader-spin" />
       <span>Valider et commencer le questionnaire</span>
       <LucideMoveRight v-if="!isSubmitting" :size="16" />

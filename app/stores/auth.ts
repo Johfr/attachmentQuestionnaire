@@ -3,7 +3,13 @@ import { defineStore } from 'pinia'
 import { firebaseFunctions } from "~/composables/firebase/init.js"
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { createUserAccountWithEmailAndPassword, signInUserWithEmailAndPassword, signOutUser } from '~/composables/firebase/Authentification.js'
-import type { AuthFormPayload, CurrentPartnerContext, UserLoginForm } from '~/types/User'
+import type {
+  AuthFormPayload,
+  CurrentPartnerContext,
+  QuestionnaireAccessEntry,
+  QuestionnaireAccessMap,
+  UserLoginForm,
+} from '~/types/User'
 
 type PartnerContextPayload = {
   partnerName?: string | null
@@ -22,6 +28,7 @@ let _clientInitDone = false
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<UserLoginForm | null>(null)
   const currentPartnerContext = ref<CurrentPartnerContext | null>(null)
+  const questionnaireAccess = ref<QuestionnaireAccessMap>({})
   const isLoginModalOpen = ref(false)
   const redirectAfterLogin = ref<string | null>(null)
   const hasInitialized = ref(false)
@@ -69,6 +76,45 @@ export const useAuthStore = defineStore('auth', () => {
       firstName,
       age,
     }
+  }
+
+  const normalizeQuestionnaireAccess = (value: unknown): QuestionnaireAccessMap => {
+    if (!value || typeof value !== 'object') {
+      return {}
+    }
+
+    const normalized: QuestionnaireAccessMap = {}
+
+    for (const [questionnaireType, rawEntry] of Object.entries(value as Record<string, unknown>)) {
+      if (!rawEntry || typeof rawEntry !== 'object') continue
+
+      const candidate = rawEntry as Record<string, unknown>
+      const cooldownDays = typeof candidate.cooldownDays === 'number' ? candidate.cooldownDays : null
+      if (cooldownDays === null) continue
+
+      normalized[questionnaireType] = {
+        lastCompletedAt: candidate.lastCompletedAt as QuestionnaireAccessEntry['lastCompletedAt'] ?? null,
+        nextAllowedAt: candidate.nextAllowedAt as QuestionnaireAccessEntry['nextAllowedAt'] ?? null,
+        cooldownDays,
+      }
+    }
+
+    return normalized
+  }
+
+  const getTimestampMs = (value: unknown): number => {
+    if (!value || typeof value !== 'object') return 0
+
+    const candidate = value as { toMillis?: () => number; seconds?: number }
+    if (typeof candidate.toMillis === 'function') {
+      return candidate.toMillis()
+    }
+
+    if (typeof candidate.seconds === 'number') {
+      return candidate.seconds * 1000
+    }
+
+    return 0
   }
 
   const savePartnerContext = async (partnerData: PartnerContextPayload) => {
@@ -136,6 +182,7 @@ export const useAuthStore = defineStore('auth', () => {
         password: '',
       } as UserLoginForm,
       partnerContext: normalizeStoredPartnerContext(data?.currentPartnerContext),
+      questionnaireAccess: normalizeQuestionnaireAccess(data?.questionnaireAccess),
     }
   }
 
@@ -151,10 +198,50 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const profile = await getUserProfileFromFirestore(uid, fallbackEmail)
       currentPartnerContext.value = profile.partnerContext
+      questionnaireAccess.value = profile.questionnaireAccess
       return profile.partnerContext
     } catch (error) {
       console.error('Error while loading partner context:', error)
       return null
+    }
+  }
+
+  const getQuestionnaireAccessEntry = (questionnaireType: string) => {
+    return questionnaireAccess.value[questionnaireType] ?? null
+  }
+
+  const getQuestionnaireCooldownStatus = (questionnaireType: string) => {
+    const entry = getQuestionnaireAccessEntry(questionnaireType)
+    if (!entry) {
+      return {
+        blocked: false,
+        remainingDays: 0,
+        nextAllowedAt: null,
+      }
+    }
+
+    const nextAllowedAtMs = getTimestampMs(entry.nextAllowedAt)
+    if (!nextAllowedAtMs) {
+      return {
+        blocked: false,
+        remainingDays: 0,
+        nextAllowedAt: entry.nextAllowedAt,
+      }
+    }
+
+    const remainingMs = nextAllowedAtMs - Date.now()
+    if (remainingMs <= 0) {
+      return {
+        blocked: false,
+        remainingDays: 0,
+        nextAllowedAt: entry.nextAllowedAt,
+      }
+    }
+
+    return {
+      blocked: true,
+      remainingDays: Math.ceil(remainingMs / (1000 * 60 * 60 * 24)),
+      nextAllowedAt: entry.nextAllowedAt,
     }
   }
 
@@ -217,6 +304,7 @@ export const useAuthStore = defineStore('auth', () => {
           password: '',
         }
         currentPartnerContext.value = partnerContext
+        questionnaireAccess.value = {}
       } else {
         const loginDocPayload: Record<string, unknown> = {
           updatedAt: serverTimestamp(),
@@ -239,6 +327,7 @@ export const useAuthStore = defineStore('auth', () => {
         )
         user.value = profile.localUser
         currentPartnerContext.value = profile.partnerContext
+        questionnaireAccess.value = profile.questionnaireAccess
       }
 
       isLoginModalOpen.value = false
@@ -266,6 +355,7 @@ export const useAuthStore = defineStore('auth', () => {
       await signOutUser()
       user.value = null
       currentPartnerContext.value = null
+      questionnaireAccess.value = {}
       return { success: true }
     } catch (error) {
       console.error('Error while signing out:', error)
@@ -297,9 +387,11 @@ export const useAuthStore = defineStore('auth', () => {
             const profile = await getUserProfileFromFirestore(firebaseUser.uid, firebaseUser.email || '')
             user.value = profile.localUser
             currentPartnerContext.value = profile.partnerContext
+            questionnaireAccess.value = profile.questionnaireAccess
           } else {
             user.value = null
             currentPartnerContext.value = null
+            questionnaireAccess.value = {}
           }
           resolve()
         }
@@ -311,6 +403,7 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     user,
     currentPartnerContext,
+    questionnaireAccess,
     isLoggedIn,
     isLoginModalOpen,
     redirectAfterLogin,
@@ -319,6 +412,8 @@ export const useAuthStore = defineStore('auth', () => {
     closeLoginModal,
     authenticateForQuestionnaire,
     loadCurrentPartnerContext,
+    getQuestionnaireAccessEntry,
+    getQuestionnaireCooldownStatus,
     savePartnerContext,
     login,
     logout,

@@ -40,6 +40,10 @@ Utilisateur non connecte ou connecte, arrive sur :
 - Les reponses du wizard ne sont pas sauvegardees en cours de route.
 - Les resultats du premier passage doivent s'afficher meme si `sessionId` est temporairement absent.
 - Une erreur de lecture billing ne doit pas casser l'affichage des resultats deja calcules.
+- L'acces au questionnaire peut etre soumis a un cooldown par type de questionnaire.
+- Le check de cooldown se fait au clic sur le bouton de lancement, avec loader.
+- Si le user est bloque, on masque formulaires et bouton, puis on affiche un message du type :
+  `Encore X jours avant de pouvoir passer de nouveau le formulaire.`
 
 ---
 
@@ -50,6 +54,10 @@ Utilisateur non connecte ou connecte, arrive sur :
 Le contexte partenaire est stocke dans :
 
 `users/{uid}.currentPartnerContext`
+
+Le droit de repasser un questionnaire est mirror dans :
+
+`users/{uid}.questionnaireAccess`
 
 Champs utiles aujourd'hui :
 
@@ -73,6 +81,7 @@ Champs utiles aujourd'hui :
 - Champ vide sur un user deja connu ne veut pas dire "effacer automatiquement le partenaire".
 - Le pre-remplissage doit fonctionner au retour sur l'introduction.
 - Le store auth peut charger le contexte partenaire depuis Firestore, mais l'intro doit toujours refleter la valeur du store une fois disponible.
+- Le store auth peut aussi charger `questionnaireAccess` depuis Firestore des la connexion pour eviter de relire tout l'historique des sessions au clic.
 
 ---
 
@@ -87,6 +96,7 @@ Champs utiles aujourd'hui :
 1. Cette page n'est accessible qu'apres completion du wizard.
 2. Elle consomme les resultats du wizard, appelle l'API serveur, puis affiche les resultats.
 3. Elle ne depend pas d'un query `sessionId` pour le premier affichage.
+4. En cas de persistance reussie, le miroir `users/{uid}.questionnaireAccess.{questionnaireType}` est mis a jour.
 
 ### Regles a ne pas casser
 
@@ -233,11 +243,13 @@ Regle metier importante :
 
 - Firestore indisponible pendant `checkUserPermissions()`
 - Firestore indisponible pendant le chargement du profil
+- Firestore indisponible pendant le chargement du miroir `questionnaireAccess`
 - Persistance session echouee mais calcul des resultats reussi
 - Retour Stripe avec propagation billingInfo retardee
 - User deja connecte qui relance le questionnaire
 - User deja connecte avec ancien partenaire deja renseigne
 - Retour manuel via historique navigateur sur la page hot results
+- User bloque par cooldown au clic sur l'introduction
 - User qui a achete une fois les resultats d'un questionnaire puis cree une nouvelle session de ce meme questionnaire
 - User qui perd son membership mais doit conserver ses achats one-shot
 - User avec achat results durable mais sans acces IA durable
@@ -258,12 +270,14 @@ Regle metier importante :
 - affichage maintenu si la persistance echoue
 - fallback non bloquant si billing/profile Firestore echoue
 - reset du wizard en quittant la page results
+- blocage de l'introduction questionnaire si `questionnaireAccess.nextAllowedAt` est dans le futur
 
 ### E2E / parcours
 
 - questionnaire -> results -> achat -> retour Stripe -> acces direct a `/user/.../results`
 - refresh sur route protegee avec user deja connecte
 - re-passage du questionnaire avec partenaire pre-rempli
+- user connecte avec cooldown actif -> blocage sur l'introduction avec message et sans bouton
 - achat one-shot des resultats d'un questionnaire -> nouvelle session du meme questionnaire automatiquement accessible
 - fin d'abonnement membership -> perte des acces globaux mais conservation des achats one-shot
 

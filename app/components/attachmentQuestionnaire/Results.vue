@@ -661,6 +661,7 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
               <li class="mb-1 text-sm">Y compris tes sous-profils anxieux et évitants</li>
               <li class="mb-1 text-sm">La répartition détaillée de tes déclencheurs</li>
               <li class="mb-1 text-sm">Des conseils personnalisés pour travailler sur tes mécanismes d'attachement</li>
+              <li class="mb-1 text-sm"><strong>Un accès à vie</strong> aux futurs passages du questionnaire</li>
             </ul>
 
             <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">
@@ -677,8 +678,8 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
               <span v-else>Débloquer mes résultats</span>
             </button>
           </div>
-          <!-- membership -->
-          <div class="flex-1 p-5 border rounded-3xl bg-gradient-to-tr from-yellow-700 to-yellow-200 text-black shadow-xl">
+          <!-- membership V2-V3 uniquement -->
+          <div v-if="false" class="flex-1 p-5 border rounded-3xl bg-gradient-to-tr from-yellow-700 to-yellow-200 text-black shadow-xl">
             <h3 class="text-lg font-bold">
               Abonnement Membership - 6.99€/mois
               <span class="text-xs">(annulable à tout moment)</span>
@@ -725,9 +726,13 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
             </p>
             
             <ul class="list-disc text-sm pl-4 mb-5">
+              <li v-if="!hasResultsAccess" class="mb-1">
+                L'ensemble de tes résultats débloqués
+              </li>
               <li class="mb-1">Une analyse personnalisée de ta situation amoureuse actuelle basée sur tes résultats au questionnaire d'attachement</li>
               <li class="mb-1">Des conseils sur mesure pour avancer vers plus de sécurité dans ta relation actuelle</li>
                 <li class="mb-1">Une grille de lecture et un plan d'action concret</li>
+                <li class="mb-1 text-sm"><strong>Un accès à vie</strong> aux futurs passages du questionnaire</li>
             </ul>
 
             <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">
@@ -745,8 +750,8 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
             </button>
           </div>
 
-          <!-- membership -->
-          <div class="flex-1 p-5 border rounded-3xl bg-gradient-to-tr from-yellow-700 to-yellow-200 text-black shadow-xl">
+          <!-- membership V2-V3 uniquement -->
+          <div v-if="false" class="flex-1 p-5 border rounded-3xl bg-gradient-to-tr from-yellow-700 to-yellow-200 text-black shadow-xl">
             <h3 class="text-lg font-bold">
               Abonnement Membership - 6.99€/mois
               <span class="text-xs">(annulable à tout moment)</span>

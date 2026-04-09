@@ -54,6 +54,13 @@ describe('useAuthStore partner context persistence', () => {
           firstName: 'Camille',
           age: 30,
         },
+        questionnaireAccess: {
+          attachment: {
+            lastCompletedAt: { seconds: 1700000000 },
+            nextAllowedAt: { seconds: Math.floor(Date.now() / 1000) + (5 * 24 * 60 * 60) },
+            cooldownDays: 30,
+          },
+        },
       }),
     })
   })
@@ -77,5 +84,16 @@ describe('useAuthStore partner context persistence', () => {
       firstName: 'Camille',
       age: 30,
     })
+  })
+
+  it('computes questionnaire cooldown status from the mirrored user document', async () => {
+    const store = useAuthStore()
+
+    await store.loadCurrentPartnerContext()
+
+    const cooldown = store.getQuestionnaireCooldownStatus('attachment')
+
+    expect(cooldown.blocked).toBe(true)
+    expect(cooldown.remainingDays).toBeGreaterThan(0)
   })
 })

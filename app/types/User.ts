@@ -1,5 +1,13 @@
 import type { Timestamp } from "firebase/firestore"
 
+export type QuestionnaireAccessEntry = {
+  lastCompletedAt: Timestamp | null
+  nextAllowedAt: Timestamp | null
+  cooldownDays: number
+}
+
+export type QuestionnaireAccessMap = Record<string, QuestionnaireAccessEntry>
+
 export type User = {
   uid: string
   email: string
@@ -17,6 +25,8 @@ export type User = {
     firstName: string | null
     age: number | null
   } | null
+
+  questionnaireAccess?: QuestionnaireAccessMap | null
 
   settings: {
     locale: 'fr'

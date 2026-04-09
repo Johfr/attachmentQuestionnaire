@@ -8,6 +8,7 @@ const authStore = useAuthStore()
 const user = computed(() => authStore.user)
 const currentPartnerContext = computed(() => authStore.currentPartnerContext)
 const authErrorMessage = ref<string | null>(null)
+const accessBlockedMessage = ref<string | null>(null)
 const isSubmitting = ref(false)
 
 onMounted(async () => {
@@ -15,12 +16,26 @@ onMounted(async () => {
   await authStore.loadCurrentPartnerContext()
 })
 
+const buildCooldownMessage = (remainingDays: number) => {
+  const unit = remainingDays > 1 ? 'jours' : 'jour'
+  return `Encore ${remainingDays} ${unit} avant de pouvoir passer de nouveau le formulaire.`
+}
+
 const startSurvey = async (userData: { authPayload: AuthFormPayload | null, partnerName: string | null, partnerAge: number | null }) => {
+  await authStore.initAuth()
   authErrorMessage.value = null
+  accessBlockedMessage.value = null
   isSubmitting.value = true
 
   try {
     if (user.value) {
+      await authStore.loadCurrentPartnerContext()
+      const cooldown = authStore.getQuestionnaireCooldownStatus('attachment')
+      if (cooldown.blocked) {
+        accessBlockedMessage.value = buildCooldownMessage(cooldown.remainingDays)
+        return
+      }
+
       await authStore.savePartnerContext({
         partnerName: userData.partnerName,
         partnerAge: userData.partnerAge,
@@ -40,6 +55,12 @@ const startSurvey = async (userData: { authPayload: AuthFormPayload | null, part
 
     if (!result.success) {
       authErrorMessage.value = result.errorMessage || 'Impossible de continuer pour le moment.'
+      return
+    }
+
+    const cooldown = authStore.getQuestionnaireCooldownStatus('attachment')
+    if (cooldown.blocked) {
+      accessBlockedMessage.value = buildCooldownMessage(cooldown.remainingDays)
       return
     }
 
@@ -94,6 +115,7 @@ useHead({
     </button>
     <AttachmentQuestionnaireIntro
       :auth-error-message="authErrorMessage"
+      :access-blocked-message="accessBlockedMessage"
       :is-submitting="isSubmitting"
       :initial-partner-name="currentPartnerContext?.firstName || null"
       :initial-partner-age="currentPartnerContext?.age ?? null"
