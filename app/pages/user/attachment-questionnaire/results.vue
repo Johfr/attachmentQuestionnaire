@@ -109,11 +109,9 @@ const goBack = async () => {
   await navigateTo('/user/profil')
 }
 
-onBeforeRouteLeave((to, from, next) => {
+onBeforeRouteLeave((to) => {
   if (to.path === '/attachment-questionnaire/questionnaire' || to.path === '/attachment-questionnaire/introduction') {
-    next(false)
-  } else {
-    next()
+    return false
   }
 })
 

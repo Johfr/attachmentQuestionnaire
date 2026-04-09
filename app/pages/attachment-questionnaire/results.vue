@@ -26,13 +26,12 @@ const goHome = async () => {
 // Depuis les resultats chauds, on interdit le retour direct vers
 // l'introduction / questionnaire et on nettoie le wizard au depart
 // pour eviter les doublons de session en navigation SPA.
-onBeforeRouteLeave((to, from, next) => {
+onBeforeRouteLeave((to) => {
   if (to.path === '/attachment-questionnaire/questionnaire' || to.path === '/attachment-questionnaire/introduction') {
-    next(false)
-  } else {
-    resetStore()
-    next()
+    return false
   }
+
+  resetStore()
 })
 </script>
 

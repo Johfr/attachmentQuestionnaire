@@ -1,7 +1,14 @@
 <script setup>
-import { computed } from 'vue'
-import { PolarArea } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, PolarAreaController, RadialLinearScale, ArcElement } from 'chart.js'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import {
+  ArcElement,
+  Chart as ChartJS,
+  Legend,
+  PolarAreaController,
+  RadialLinearScale,
+  Title,
+  Tooltip,
+} from 'chart.js'
 
 const insideLabelPlugin = {
   id: 'insideLabels',
@@ -21,13 +28,9 @@ const insideLabelPlugin = {
       const label = chart.data.labels[index] || ''
       const value = dataset.data[index]
       const text = `${label}\n${value}%`
-
-      // Calculer l'angle moyen du secteur
       const startAngle = arc.startAngle
       const endAngle = arc.endAngle
       const midAngle = (startAngle + endAngle) / 2
-
-      // Positionner à l'extrémité du secteur
       const x = centerX + Math.cos(midAngle) * maxRadius
       const y = centerY + Math.sin(midAngle) * maxRadius
 
@@ -49,7 +52,15 @@ const insideLabelPlugin = {
   }
 }
 
-ChartJS.register(PolarAreaController, RadialLinearScale, ArcElement, Title, Tooltip, Legend, insideLabelPlugin)
+ChartJS.register(
+  PolarAreaController,
+  RadialLinearScale,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  insideLabelPlugin,
+)
 
 const props = defineProps({
   tags: {
@@ -70,6 +81,9 @@ const props = defineProps({
     default: '400px'
   }
 })
+
+const canvasRef = ref(null)
+const chartInstance = ref(null)
 
 const chartData = computed(() => ({
   labels: props.tags.map((t) => t.label),
@@ -97,23 +111,48 @@ const chartOptions = computed(() => ({
     }
   }
 }))
+
+const canvasStyle = computed(() => ({
+  width: typeof props.width === 'number' ? `${props.width}px` : props.width,
+  height: typeof props.height === 'number' ? `${props.height}px` : props.height,
+}))
+
+const destroyChart = () => {
+  chartInstance.value?.destroy()
+  chartInstance.value = null
+}
+
+const renderChart = () => {
+  if (!import.meta.client || !canvasRef.value) return
+
+  destroyChart()
+
+  chartInstance.value = new ChartJS(canvasRef.value, {
+    type: 'polarArea',
+    data: chartData.value,
+    options: chartOptions.value,
+  })
+}
+
+watch([chartData, chartOptions], async () => {
+  await nextTick()
+  renderChart()
+}, { deep: true })
+
+onMounted(() => {
+  renderChart()
+})
+
+onBeforeUnmount(() => {
+  destroyChart()
+})
 </script>
 
 <template>
-  <!-- <div class="chart-container" :style="{ '--chart-width': props.width, '--chart-height': props.height }"> -->
-    <PolarArea :data="chartData" :options="chartOptions" />
-  <!-- </div> -->
+  <canvas
+    ref="canvasRef"
+    :style="canvasStyle"
+    :width="typeof props.width === 'number' ? props.width : undefined"
+    :height="typeof props.height === 'number' ? props.height : undefined"
+  />
 </template>
-
-<style lang="scss" scoped>
-// .chart-container {
-//   width: var(--chart-width);
-//   height: var(--chart-height);
-//   margin: 0 auto;
-  
-//   @media screen and (min-width: 768px) {
-//     width: 600px !important;
-//     height: 600px !important;
-//   }
-// }
-</style>

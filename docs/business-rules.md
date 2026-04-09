@@ -193,6 +193,24 @@ Autrement dit :
 - l'achat IA ne transforme pas toutes les sessions du meme questionnaire en sessions avec IA debloquee
 - l'achat IA reste lie a la session / demande concernee
 
+### Matrice UI - section "Aller plus loin"
+
+Pour la section `GoDeeper` / "Aller plus loin", le rendu attendu est :
+
+- user limite :
+  bloc resultats visible + bloc IA visible
+- achat one-shot des resultats uniquement :
+  bloc resultats masque + bloc IA visible
+- achat IA deja utilise sur la session :
+  les 2 blocs d'achat sont masques
+- membership ou formation actif :
+  bloc resultats masque + bloc IA visible tant que l'IA n'a pas deja ete utilisee
+
+Point important :
+
+- si les resultats detailles sont deja accessibles via `results`, `membership`, `formation` ou `ia`,
+  le bloc IA ne doit plus promettre "L'ensemble de tes resultats debloques"
+
 ---
 
 ## Ce qu'il ne faut pas casser

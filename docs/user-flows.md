@@ -194,6 +194,12 @@ Regle metier importante :
 - `hasPaidMembership` et `hasPaidFormation` sont des droits temporaires, dependants du statut d'abonnement
 - `hasPaidResults` peut etre un droit durable pour un type de questionnaire si l'achat one-shot l'accorde a toutes les sessions de ce type
 - `hasPaidIa` ne doit jamais etre promu en droit global durable par type de questionnaire
+- dans la section "Aller plus loin" :
+  `results only` masque le bloc achat resultats mais laisse le bloc IA
+- dans la section "Aller plus loin" :
+  `membership` / `formation` masquent le bloc achat resultats mais laissent le bloc IA tant qu'il n'a pas deja ete utilise
+- dans la section "Aller plus loin" :
+  si les resultats sont deja accessibles par un autre droit, le bloc IA ne doit plus annoncer qu'il va "debloquer les resultats"
 
 ---
 

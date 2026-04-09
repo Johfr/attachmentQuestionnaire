@@ -1,7 +1,15 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { Doughnut } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale } from 'chart.js'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import {
+  ArcElement,
+  CategoryScale,
+  Chart as ChartJS,
+  DoughnutController,
+  Legend,
+  LinearScale,
+  Title,
+  Tooltip,
+} from 'chart.js'
 
 const props = defineProps({
   labels: {
@@ -56,9 +64,9 @@ const textCenterPlugin = {
     const { width, height, ctx } = chart
     ctx.restore()
 
-    const text = chart.config._config.options.plugins.textCenter?.text || ''
-    const fontSize = chart.config._config.options.plugins.textCenter?.fontSize || 16
-    const fontColor = chart.config._config.options.plugins.textCenter?.fontColor || '#000'
+    const text = chart.config.options.plugins.textCenter?.text || ''
+    const fontSize = chart.config.options.plugins.textCenter?.fontSize || 16
+    const fontColor = chart.config.options.plugins.textCenter?.fontColor || '#000'
 
     ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto`
     ctx.textBaseline = 'middle'
@@ -67,7 +75,7 @@ const textCenterPlugin = {
     const lines = text.split('\n')
     const lineHeight = fontSize + 8
     const totalHeight = lineHeight * lines.length
-    let startY = height / 2 - (totalHeight / 2) + fontSize / 2
+    let startY = height / 2 - totalHeight / 2 + fontSize / 2
 
     lines.forEach((line) => {
       const textWidth = ctx.measureText(line).width
@@ -79,7 +87,19 @@ const textCenterPlugin = {
   }
 }
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale, textCenterPlugin)
+ChartJS.register(
+  DoughnutController,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  textCenterPlugin,
+)
+
+const canvasRef = ref(null)
+const chartInstance = ref(null)
 
 const chartData = computed(() => ({
   labels: props.labels,
@@ -103,38 +123,54 @@ const chartOptions = computed(() => ({
           if (!props.showSecondaryTooltip && context.dataIndex > 0) {
             return ''
           }
-          return context.parsed + '%'
+          return `${context.parsed}%`
         }
       }
     }
   }
 }))
+
+const canvasStyle = computed(() => ({
+  width: typeof props.width === 'number' ? `${props.width}px` : props.width,
+  height: typeof props.height === 'number' ? `${props.height}px` : props.height,
+}))
+
+const destroyChart = () => {
+  chartInstance.value?.destroy()
+  chartInstance.value = null
+}
+
+const renderChart = () => {
+  if (!import.meta.client || !canvasRef.value) return
+
+  destroyChart()
+
+  chartInstance.value = new ChartJS(canvasRef.value, {
+    type: 'doughnut',
+    data: chartData.value,
+    options: chartOptions.value,
+  })
+}
+
+watch([chartData, chartOptions], async () => {
+  await nextTick()
+  renderChart()
+}, { deep: true })
+
+onMounted(() => {
+  renderChart()
+})
+
+onBeforeUnmount(() => {
+  destroyChart()
+})
 </script>
 
 <template>
-  <!-- <div :style="{ width: props.width, height: props.height }" class="chart-container"> -->
-    <Doughnut
-      id="my-chart-id"
-      :options="chartOptions"
-      :data="chartData"
-    />
-  <!-- </div> -->
+  <canvas
+    ref="canvasRef"
+    :style="canvasStyle"
+    :width="typeof props.width === 'number' ? props.width : undefined"
+    :height="typeof props.height === 'number' ? props.height : undefined"
+  />
 </template>
-
-<style lang="scss" scoped>
-/*  */
-/* .chart-container {
-  width: var(--chart-width);
-  height: var(--chart-height);
-
-  canvas {
-    width: 100% !important;
-    height: 100% !important;
-  }
-  
-  @media screen and (min-width: 768px) {
-    width: 200px !important;
-    height: 200px !important;
-  }
-} */
-</style>
