@@ -40,6 +40,28 @@ Ce test couvre :
 - membership / formation -> bloc resultats masque, bloc IA visible
 - absence de promesse "resultats debloques" dans le bloc IA quand les resultats sont deja accessibles par un autre droit
 
+## IA flow
+
+Fichiers de test :
+
+- `test/unit/attachmentAi.prepare.test.ts`
+- `test/unit/attachmentAi.generate.test.ts`
+- `test/nuxt/pages.userResults.aiFlow.test.ts`
+
+Objectif :
+
+- verrouiller le pipeline minimal `prepare -> paiement -> pending -> generation -> generated`
+
+Ces tests couvrent :
+
+- validation serveur de l'input IA avant checkout
+- stockage de `aiExchange.userInput` sur la session
+- refus des cas limites critiques : texte trop court, texte trop long, session d'un autre user, IA deja debloquee
+- demarrage de la generation serveur apres retour sur la page user results quand la session est `pending` sans `requestId`
+- absence de redemarrage inutile quand une generation est deja en cours
+- stockage du resultat OpenAI et passage en `generated`
+- bascule en `failed` si la generation serveur echoue
+
 ## Memoire projet
 
 Bug deja rencontre :

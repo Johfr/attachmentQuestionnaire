@@ -6,12 +6,14 @@ import type {
   PolarTagDataItem,
   TagsResultsByDimension
 } from '~/types/attachmentQuestionnaireResults'
+import type { AiExchange } from '~/types/questionnaireSessions'
 import DoughnutChart from '~/components/attachmentQuestionnaire/DoughnutChart.vue'
 import PolarChart from '~/components/attachmentQuestionnaire/PolarChart.vue'
 import GoDeeper from '~/components/GoDeeper.vue'
 import Accordeon from '~/utils/Accordeon.vue'
 import { useBillingStore } from '~/stores/billing'
 import { getProfileLabel } from '~/utils/attachmentProfileTranslations'
+import { normalizeAiExchange } from '~/utils/aiExchange'
 import regulationProfilesData from '~/assets/data/regulationProfiles.json'
 import globalProfilesData from '~/assets/data/globalProfiles.json'
 
@@ -24,6 +26,7 @@ const props = defineProps<{
     hasPaidFormation: boolean
   }
   computedResults: AttachmentQuestionnaireResults
+  aiExchange?: AiExchange | null
   tagsResults: TagsResultsByDimension
   tagData: PolarTagDataItem[]
   anxietyAverageScore: number
@@ -130,6 +133,7 @@ const toggleProfileExplanation = (key: ProfileExplanationKey) => {
 const hasUsedIa = computed(() => {
   return props.sessionBillingInfo?.hasPaidIa ?? false
 })
+const aiExchange = computed(() => normalizeAiExchange(props.aiExchange))
 
 const billingAccessWarning = ref('')
 try {
@@ -458,5 +462,6 @@ const scrollToPremiumZone = () => {
     :has-membership-access="hasMembershipAccess"
     :has-formation-access="hasFormationAccess"
     :has-used-ia="hasUsedIa"
+    :ai-exchange="aiExchange"
   />
 </template>

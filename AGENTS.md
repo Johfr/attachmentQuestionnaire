@@ -25,6 +25,7 @@ Ce fichier capture les regles de collaboration attendues pour les agents qui tra
 ## Git
 
 - ne jamais faire de commit sans accord explicite du user
+- ne jamais faire de commit ou de push sans demande claire et explicite du user
 - ne jamais faire d'amend sans accord explicite du user
 - ne jamais revert des changements non compris ou non demandes
 

@@ -25,6 +25,8 @@ const PAYMENT_FIELD_MAP = {
  * When status becomes 'succeeded':
  *   - reads metadata.docId (= questionnaireSessions/{sessionId}) and metadata.accessType
  *   - sets billingInfo.hasPaidResults or billingInfo.hasPaidIa to true on the linked session
+ *   - for IA purchases, also unlocks detailed results on that same session
+ *     and marks aiExchange as pending
  *
  * Idempotent: skips if the target field is already true.
  *
@@ -67,16 +69,27 @@ exports.onPaymentWritten = onDocumentWritten(
       return
     }
 
+    const sessionData = sessionSnap.data() || {}
+
     // Idempotence guard
-    if (sessionSnap.data()?.billingInfo?.[field] === true) {
+    if (sessionData?.billingInfo?.[field] === true) {
       console.info('[onPaymentWritten] Field already true, skipping', { docId, field })
       return
     }
 
-    await sessionRef.update({
+    const updatePayload = {
       [`billingInfo.${field}`]: true,
       updatedAt: FieldValue.serverTimestamp(),
-    })
+    }
+
+    if (accessType === 'ia') {
+      updatePayload['billingInfo.hasPaidResults'] = true
+      updatePayload['aiExchange.unlocked'] = true
+      updatePayload['aiExchange.purchasedAt'] = FieldValue.serverTimestamp()
+      updatePayload['aiExchange.status'] = 'pending'
+    }
+
+    await sessionRef.update(updatePayload)
 
     console.info('[onPaymentWritten] Session updated', { docId, field, uid: event.params.uid })
   },

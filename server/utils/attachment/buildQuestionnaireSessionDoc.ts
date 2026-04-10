@@ -2,6 +2,7 @@ import type {
   AttachmentQuestionnaireResults,
   QuestionResult,
 } from '../../../app/types/attachmentQuestionnaireResults'
+import { createEmptyAiExchange } from '../../../app/utils/aiExchange'
 const SCORING_VERSION = '1.0'
 const roundStoredTriggerScore = (value: number) => Math.round(value * 10000) / 10000
 
@@ -72,6 +73,8 @@ export const buildQuestionnaireSessionDoc = (
       hasPaidMembership: false,
       hasPaidFormation: false,
     },
+
+    aiExchange: createEmptyAiExchange(),
 
     persist: {
       status: 'persisted' as const,

@@ -64,4 +64,13 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'firebase',
   },
+
+  runtimeConfig: {
+    openAiApiKey: process.env.NUXT_OPENAI_API_KEY,
+    openAiModel: process.env.NUXT_OPENAI_MODEL || 'gpt-5-mini',
+    openAiReasoningEffort: process.env.NUXT_OPENAI_REASONING_EFFORT || 'low',
+    openAiMaxOutputTokens: Number(process.env.NUXT_OPENAI_MAX_OUTPUT_TOKENS || 1800),
+    openAiPromptCacheKey: process.env.NUXT_OPENAI_PROMPT_CACHE_KEY || 'relation-anxieux-evitant:attachment-ai',
+    openAiPromptCacheRetention: process.env.NUXT_OPENAI_PROMPT_CACHE_RETENTION || 'in_memory',
+  },
 })

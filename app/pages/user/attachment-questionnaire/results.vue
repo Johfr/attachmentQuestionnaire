@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useQuestionnaireSessionsStore } from '~/stores/questionnaireSessions'
+import { firebaseFunctions } from '~/composables/firebase/init'
 import type { AttachmentQuestionnaireDisplayResults } from '~/types/attachmentQuestionnaireResults'
 import type { QuestionnaireSession } from '~/types/questionnaireSessions'
+import { normalizeAiExchange } from '~/utils/aiExchange'
 
 definePageMeta({
   middleware: ["auth"],
@@ -9,13 +11,13 @@ definePageMeta({
 })
 
 const route = useRoute()
-const router = useRouter()
 const sessionsStore = useQuestionnaireSessionsStore()
 const session = ref<QuestionnaireSession | null>(null)
 const loadingError = ref<string | null>(null)
 const computedResults = ref<AttachmentQuestionnaireDisplayResults | null>(null)
-let billingRefreshTimer: ReturnType<typeof setTimeout> | null = null
-let billingRefreshStopped = false
+let sessionRefreshTimer: ReturnType<typeof setTimeout> | null = null
+let sessionRefreshStopped = false
+const aiGenerationStarted = ref(false)
 
 const hasUnlockedSessionAccess = (currentSession: QuestionnaireSession | null) => {
   if (!currentSession) return false
@@ -26,6 +28,18 @@ const hasUnlockedSessionAccess = (currentSession: QuestionnaireSession | null) =
     currentSession.billingInfo?.hasPaidMembership ||
     currentSession.billingInfo?.hasPaidFormation,
   )
+}
+
+const hasPendingAiExchange = (currentSession: QuestionnaireSession | null) => {
+  if (!currentSession) return false
+  return normalizeAiExchange(currentSession.aiExchange).status === 'pending'
+}
+
+const refreshCurrentSessionFromStore = (sessionId: string) => {
+  const refreshedSession = sessionsStore.getSessionById(sessionId)
+  if (refreshedSession?.questionnaireType === 'attachment') {
+    session.value = refreshedSession
+  }
 }
 
 const loadSession = async () => {
@@ -74,27 +88,64 @@ const loadSession = async () => {
   }
 }
 
+const maybeStartAiGeneration = async () => {
+  const currentSession = session.value
+  if (!import.meta.client || !currentSession || aiGenerationStarted.value) return
+  if (!currentSession.billingInfo?.hasPaidIa) return
+
+  const aiExchange = normalizeAiExchange(currentSession.aiExchange)
+  if (aiExchange.status !== 'pending' || aiExchange.requestId || aiExchange.output) return
+
+  aiGenerationStarted.value = true
+
+  try {
+    const token = await firebaseFunctions.auth.currentUser?.getIdToken()
+    await $fetch('/api/attachment/ai/generate', {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: {
+        sessionId: currentSession.id,
+      },
+    })
+  } catch (error) {
+    console.error('Error while generating AI attachment analysis:', error)
+  } finally {
+    try {
+      await sessionsStore.loadSessions(true)
+      refreshCurrentSessionFromStore(currentSession.id)
+    } finally {
+      aiGenerationStarted.value = false
+    }
+  }
+}
+
 await loadSession()
 
 const scheduleBillingRefresh = (attempt = 0) => {
   const requestedSessionId = typeof route.query.sessionId === 'string' ? route.query.sessionId : null
-  const MAX_ATTEMPTS = 5
-  const RETRY_DELAY_MS = 2000
+  const refreshSessionId = requestedSessionId ?? session.value?.id ?? null
+  const MAX_ATTEMPTS = 15
+  const RETRY_DELAY_MS = 3000
 
-  if (!import.meta.client || !requestedSessionId || billingRefreshStopped) return
-  if (!session.value || hasUnlockedSessionAccess(session.value) || attempt >= MAX_ATTEMPTS) return
+  if (!import.meta.client || !refreshSessionId || sessionRefreshStopped) return
+  if (!session.value || attempt >= MAX_ATTEMPTS) return
 
-  billingRefreshTimer = setTimeout(async () => {
-    if (billingRefreshStopped) return
+  const needsBillingRefresh = !hasUnlockedSessionAccess(session.value)
+  const needsAiRefresh = hasPendingAiExchange(session.value)
+  if (!needsBillingRefresh && !needsAiRefresh) return
+
+  sessionRefreshTimer = setTimeout(async () => {
+    if (sessionRefreshStopped) return
 
     try {
       await sessionsStore.loadSessions(true)
-      const refreshedSession = sessionsStore.getSessionById(requestedSessionId)
-      if (refreshedSession?.questionnaireType === 'attachment') {
-        session.value = refreshedSession
-      }
+      refreshCurrentSessionFromStore(refreshSessionId)
+      await maybeStartAiGeneration()
     } finally {
-      if (!billingRefreshStopped && !hasUnlockedSessionAccess(session.value)) {
+      const shouldContinue = !sessionRefreshStopped
+        && (!hasUnlockedSessionAccess(session.value) || hasPendingAiExchange(session.value))
+
+      if (shouldContinue) {
         scheduleBillingRefresh(attempt + 1)
       }
     }
@@ -102,6 +153,7 @@ const scheduleBillingRefresh = (attempt = 0) => {
 }
 
 if (import.meta.client) {
+  await maybeStartAiGeneration()
   scheduleBillingRefresh()
 }
 
@@ -116,10 +168,10 @@ onBeforeRouteLeave((to) => {
 })
 
 onBeforeUnmount(() => {
-  billingRefreshStopped = true
-  if (billingRefreshTimer) {
-    clearTimeout(billingRefreshTimer)
-    billingRefreshTimer = null
+  sessionRefreshStopped = true
+  if (sessionRefreshTimer) {
+    clearTimeout(sessionRefreshTimer)
+    sessionRefreshTimer = null
   }
 })
 </script>
@@ -144,6 +196,7 @@ onBeforeUnmount(() => {
         :docId="session.id"
         :session-billing-info="session.billingInfo"
         :computed-results="computedResults"
+        :ai-exchange="session.aiExchange"
         :tags-results="computedResults.tagsResults"
         :tag-data="computedResults.tagData"
         :anxiety-average-score="computedResults.anxietyAverageScore"

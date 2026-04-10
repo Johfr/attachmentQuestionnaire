@@ -1,0 +1,3 @@
+export const ATTACHMENT_AI_MIN_INPUT_CHARS = 600
+export const ATTACHMENT_AI_MAX_INPUT_CHARS = 4500
+export const ATTACHMENT_AI_PROMPT_VERSION = 'attachment-ai-v2'

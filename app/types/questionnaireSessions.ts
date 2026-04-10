@@ -4,6 +4,7 @@ export type QuestionnaireType = 'attachment'
 export type QuestionnaireVersion = 'v1'
 export type QuestionnaireSessionStatus = 'draft' | 'completed' | 'archived'
 export type QuestionnairePersistStatus = 'persisted'
+export type AiExchangeStatus = 'not_purchased' | 'pending' | 'generated' | 'failed'
 
 export type QuestionnaireSession = {
   id: string
@@ -68,6 +69,8 @@ export type QuestionnaireSession = {
     hasPaidFormation: boolean
   }
 
+  aiExchange?: AiExchange
+
   persist: {
     status: QuestionnairePersistStatus
     retryCount: number
@@ -82,9 +85,10 @@ export type AiExchange = {
   userInput: string | null
   output: string | null
   generatedAt: Timestamp | null
-  status: 'not_purchased' | 'pending' | 'generated' | 'failed'
+  status: AiExchangeStatus
   model: string | null
   requestId: string | null
+  promptVersion: string | null
   // not_purchased = pas paye
   // pending = paye mais generation pas encore finie
   // generated = reponse dispo
