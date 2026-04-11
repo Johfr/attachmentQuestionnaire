@@ -85,6 +85,10 @@ export type AiExchange = {
   userInput: string | null
   output: string | null
   generatedAt: Timestamp | null
+  lastAttemptAt: Timestamp | null
+  retryCount: number
+  lastErrorCode: string | null
+  lastErrorMessage: string | null
   status: AiExchangeStatus
   model: string | null
   requestId: string | null

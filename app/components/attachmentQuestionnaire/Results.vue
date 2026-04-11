@@ -12,6 +12,7 @@ import PolarChart from '~/components/attachmentQuestionnaire/PolarChart.vue'
 import GoDeeper from '~/components/GoDeeper.vue'
 import Accordeon from '~/utils/Accordeon.vue'
 import { useBillingStore } from '~/stores/billing'
+import { useAuthStore } from '~/stores/auth'
 import { getProfileLabel } from '~/utils/attachmentProfileTranslations'
 import { normalizeAiExchange } from '~/utils/aiExchange'
 import regulationProfilesData from '~/assets/data/regulationProfiles.json'
@@ -33,6 +34,14 @@ const props = defineProps<{
   avoidanceAverageScore: number
   anxietyDatasets: DoughnutDataset[]
   avoidanceDatasets: DoughnutDataset[]
+  isAiLoading?: boolean
+  aiLoadingMessage?: string
+  isAdmin?: boolean
+}>()
+
+const emit = defineEmits<{
+  (e: 'retryIa'): void
+  (e: 'forceRegenerateIa'): void
 }>()
 
 const graphData = computed(() => props.computedResults)
@@ -53,6 +62,7 @@ const attachmentProfiles = computed(() => {
 })
 
 const billingStore = useBillingStore()
+const authStore = useAuthStore()
 const hasResultsAccess = computed(() => props.sessionBillingInfo?.hasPaidResults ?? false)
 const hasIaAccess = computed(() => props.sessionBillingInfo?.hasPaidIa ?? false)
 const hasMembershipAccess = computed(() => (props.sessionBillingInfo?.hasPaidMembership ?? false) || billingStore.hasPaidMembership)
@@ -463,5 +473,10 @@ const scrollToPremiumZone = () => {
     :has-formation-access="hasFormationAccess"
     :has-used-ia="hasUsedIa"
     :ai-exchange="aiExchange"
+    :is-ai-loading="isAiLoading"
+    :ai-loading-message="aiLoadingMessage"
+    :is-admin="props.isAdmin ?? authStore.isAdmin"
+    @retry-ia="emit('retryIa')"
+    @force-regenerate-ia="emit('forceRegenerateIa')"
   />
 </template>

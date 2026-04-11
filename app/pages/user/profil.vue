@@ -68,6 +68,7 @@ watch(
 )
 
 const accessTypeLabels: Record<string, string> = {
+  ebook: 'Ebook',
   results: 'Résultats détaillés',
   ia: 'Analyse IA personnalisée',
   membership: 'Premium mensuel',
@@ -75,6 +76,7 @@ const accessTypeLabels: Record<string, string> = {
 }
 
 const entitySubTypeLabels: Record<string, string> = {
+  ebook: 'Ebook',
   attachment: 'Attachement adulte',
   conscience: 'Niveau de conscience',
   compatibility: 'Compatibilité',
@@ -114,9 +116,14 @@ const activeSubscriptionTags = computed(() => {
 })
 
 const ONE_SHOT_ACCESS_TYPES = new Set(['results', 'ia'])
+const EBOOK_DOWNLOAD_URL = '/downloads/ebook-anxieux-evitant-v1.pdf'
 
 const oneShotPayments = computed(() => {
   return billingStore.payments.filter(p => ONE_SHOT_ACCESS_TYPES.has(p.metadata.accessType ?? ''))
+})
+
+const ebookPayments = computed(() => {
+  return billingStore.payments.filter(p => p.metadata.accessType === 'ebook')
 })
 
 const handleOpenPortal = async () => {
@@ -260,6 +267,42 @@ const handleAuthAction = async () => {
             </p>
           </div>
         </RouterLink>
+      </div>
+    </section>
+
+    <!-- Mes ebooks -->
+    <section class="md:max-w-[48%]">
+      <h2 class="text-xl font-bold my-8">
+        Mes ebooks
+      </h2>
+
+      <p v-if="billingStore.isLoadingHistory" class="text-sm text-gray-500">Chargement...</p>
+      <p v-else-if="ebookPayments.length === 0" class="text-sm text-gray-500">
+        Tu n'as encore aucun ebook disponible.
+      </p>
+
+      <div v-else class="space-y-3">
+        <div class="p-4 rounded-2xl bg-white border border-gray-200">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="font-bold text-gray-800">
+                Ebook : Tout comprendre sur la relation anxieux-evitant
+              </p>
+              <p class="text-xs text-gray-500 mt-1">
+                Telechargement disponible depuis ton espace perso.
+              </p>
+            </div>
+
+            <a
+              :href="EBOOK_DOWNLOAD_URL"
+              download
+              class="inline-flex items-center gap-2 py-3 px-5 text-sm font-semibold text-white bg-rust rounded-3xl hover:opacity-90 transition-all"
+            >
+              <LucideDownload :size="16" />
+              Telecharger
+            </a>
+          </div>
+        </div>
       </div>
     </section>
 

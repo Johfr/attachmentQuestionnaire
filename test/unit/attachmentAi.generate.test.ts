@@ -39,6 +39,10 @@ const makeSession = (
     userInput: 'Je suis perdue dans cette relation.',
     output: null,
     generatedAt: null,
+    lastAttemptAt: null,
+    retryCount: 0,
+    lastErrorCode: null,
+    lastErrorMessage: null,
     status: 'not_purchased',
     model: null,
     requestId: null,
@@ -61,13 +65,15 @@ describe('POST /api/attachment/ai/generate', () => {
 
   const loadHandler = async (options?: {
     uid?: string
-    body?: { sessionId?: string }
+    isAdmin?: boolean
+    body?: { sessionId?: string, force?: boolean }
     initialSession?: QuestionnaireSession | null
     transactionSession?: QuestionnaireSession | null
     openAiResult?: { requestId: string | null, outputText: string }
     openAiError?: Error
   }) => {
     const uid = options?.uid ?? 'user-123'
+    const isAdmin = options?.isAdmin ?? false
     const body = options?.body ?? { sessionId: 'session-123' }
     const initialSession = options?.initialSession ?? makeSession()
     const transactionSession = options?.transactionSession ?? initialSession
@@ -96,6 +102,15 @@ describe('POST /api/attachment/ai/generate', () => {
         data: () => initialSession,
       }),
       update: updateMock,
+    }
+
+    const userRef = {
+      get: vi.fn().mockResolvedValue({
+        exists: true,
+        data: () => ({
+          admin: isAdmin,
+        }),
+      }),
     }
 
     const transaction = {
@@ -139,15 +154,21 @@ describe('POST /api/attachment/ai/generate', () => {
 
     vi.doMock('../../server/utils/firebaseAdmin', () => ({
       adminDb: {
-        collection: vi.fn(() => ({
-          doc: vi.fn(() => sessionRef),
+        collection: vi.fn((collectionName: string) => ({
+          doc: vi.fn(() => {
+            if (collectionName === 'users') return userRef
+            return sessionRef
+          }),
         })),
         runTransaction: runTransactionMock,
       },
     }))
 
-    vi.doMock('../../server/utils/getAuthenticatedUid', () => ({
-      getAuthenticatedUid: vi.fn().mockResolvedValue(uid),
+    vi.doMock('../../server/utils/getAuthenticatedUser', () => ({
+      getAuthenticatedUser: vi.fn().mockResolvedValue({
+        uid,
+        admin: isAdmin,
+      }),
     }))
 
     vi.doMock('../../server/utils/attachment/buildAttachmentDisplayResultFromStoredSession', () => ({
@@ -182,6 +203,10 @@ describe('POST /api/attachment/ai/generate', () => {
         userInput: 'Mon texte',
         output: 'Analyse deja la',
         generatedAt: { seconds: 1, nanoseconds: 0 } as never,
+        lastAttemptAt: { seconds: 1, nanoseconds: 0 } as never,
+        retryCount: 1,
+        lastErrorCode: null,
+        lastErrorMessage: null,
         status: 'generated',
         model: 'gpt-5',
         requestId: 'existing-req',
@@ -211,6 +236,10 @@ describe('POST /api/attachment/ai/generate', () => {
         userInput: 'Mon texte',
         output: null,
         generatedAt: null,
+        lastAttemptAt: { seconds: 1, nanoseconds: 0 } as never,
+        retryCount: 1,
+        lastErrorCode: null,
+        lastErrorMessage: null,
         status: 'pending',
         model: 'gpt-5',
         requestId: 'existing-req',
@@ -231,6 +260,92 @@ describe('POST /api/attachment/ai/generate', () => {
     expect(updateMock).not.toHaveBeenCalled()
   })
 
+  it('rejects force regeneration for a non-admin user', async () => {
+    const generatedSession = makeSession({
+      aiExchange: {
+        unlocked: true,
+        purchasedAt: null,
+        userInput: 'Mon texte',
+        output: 'Analyse deja la',
+        generatedAt: { seconds: 1, nanoseconds: 0 } as never,
+        lastAttemptAt: { seconds: 1, nanoseconds: 0 } as never,
+        retryCount: 1,
+        lastErrorCode: null,
+        lastErrorMessage: null,
+        status: 'generated',
+        model: 'gpt-5',
+        requestId: 'existing-req',
+        promptVersion: 'attachment-ai-v1',
+      },
+    })
+
+    const { handler, openAiMock, updateMock } = await loadHandler({
+      body: { sessionId: 'session-123', force: true },
+      initialSession: generatedSession,
+      transactionSession: generatedSession,
+      isAdmin: false,
+    })
+
+    await expect(handler({})).rejects.toMatchObject({
+      statusCode: 403,
+      statusMessage: 'La regeneration forcee est reservee a l administration.',
+    })
+    expect(openAiMock).not.toHaveBeenCalled()
+    expect(updateMock).not.toHaveBeenCalled()
+  })
+
+  it('forces a new generation for an admin even if the analysis already exists', async () => {
+    const generatedSession = makeSession({
+      aiExchange: {
+        unlocked: true,
+        purchasedAt: null,
+        userInput: 'Mon texte',
+        output: 'Analyse deja la',
+        generatedAt: { seconds: 1, nanoseconds: 0 } as never,
+        lastAttemptAt: { seconds: 1, nanoseconds: 0 } as never,
+        retryCount: 1,
+        lastErrorCode: null,
+        lastErrorMessage: null,
+        status: 'generated',
+        model: 'gpt-5',
+        requestId: 'existing-req',
+        promptVersion: 'attachment-ai-v1',
+      },
+    })
+
+    const { handler, openAiMock, transactionUpdateMock, updateMock } = await loadHandler({
+      body: { sessionId: 'session-123', force: true },
+      initialSession: generatedSession,
+      transactionSession: generatedSession,
+      isAdmin: true,
+      openAiResult: {
+        requestId: 'openai-force-req',
+        outputText: 'Nouvelle analyse admin',
+      },
+    })
+
+    await expect(handler({})).resolves.toEqual({
+      status: 'generated',
+      output: 'Nouvelle analyse admin',
+      requestId: 'openai-force-req',
+    })
+
+    expect(transactionUpdateMock).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({
+      'aiExchange.status': 'pending',
+      'aiExchange.output': null,
+      'aiExchange.generatedAt': null,
+      'aiExchange.promptVersion': null,
+      'aiExchange.requestId': 'uuid-123',
+    }))
+    expect(openAiMock).toHaveBeenCalledOnce()
+    expect(updateMock).toHaveBeenCalledWith(expect.objectContaining({
+      'aiExchange.status': 'generated',
+      'aiExchange.output': 'Nouvelle analyse admin',
+      'aiExchange.requestId': 'openai-force-req',
+      'aiExchange.promptVersion': 'attachment-ai-v2',
+    }))
+  })
+
   it('generates and stores the IA analysis for a paid session', async () => {
     const baseSession = makeSession({
       aiExchange: {
@@ -239,6 +354,10 @@ describe('POST /api/attachment/ai/generate', () => {
         userInput: 'Je ne comprends pas cette relation.',
         output: null,
         generatedAt: null,
+        lastAttemptAt: null,
+        retryCount: 0,
+        lastErrorCode: null,
+        lastErrorMessage: null,
         status: 'pending',
         model: null,
         requestId: null,
@@ -278,7 +397,7 @@ describe('POST /api/attachment/ai/generate', () => {
       input: 'user prompt',
       reasoningEffort: 'medium',
       maxOutputTokens: 2400,
-      promptCacheKey: 'relation-anxieux-evitant:attachment-ai:attachment-ai-v2:gpt-5',
+      promptCacheKey: 'relation-anxieux-evitant:att:attachment-ai-v2:gpt-5',
       promptCacheRetention: 'in_memory',
     }))
 
@@ -319,6 +438,10 @@ describe('POST /api/attachment/ai/generate', () => {
         userInput: '   ',
         output: null,
         generatedAt: null,
+        lastAttemptAt: null,
+        retryCount: 0,
+        lastErrorCode: null,
+        lastErrorMessage: null,
         status: 'pending',
         model: null,
         requestId: null,

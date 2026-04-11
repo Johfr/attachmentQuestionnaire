@@ -65,6 +65,9 @@ export default defineConfig({
           name: 'nuxt',
           include: ['test/nuxt/*.{test,spec}.ts'],
           environment: 'nuxt',
+          // The Nuxt environment setup can exceed the default 10s when the full
+          // suite boots several app instances in parallel on Windows.
+          hookTimeout: 30000,
           // Mocks Firebase SDK before the Nuxt app initializes so protobufjs/long
           // never runs in happy-dom (which lacks the required native binding).
           setupFiles: ['./test/setup.nuxt.ts'],

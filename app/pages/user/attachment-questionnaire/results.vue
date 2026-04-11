@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { useQuestionnaireSessionsStore } from '~/stores/questionnaireSessions'
-import { firebaseFunctions } from '~/composables/firebase/init'
+import { useAuthStore } from '~/stores/auth'
 import type { AttachmentQuestionnaireDisplayResults } from '~/types/attachmentQuestionnaireResults'
 import type { QuestionnaireSession } from '~/types/questionnaireSessions'
-import { normalizeAiExchange } from '~/utils/aiExchange'
 
 definePageMeta({
   middleware: ["auth"],
@@ -12,12 +11,14 @@ definePageMeta({
 
 const route = useRoute()
 const sessionsStore = useQuestionnaireSessionsStore()
+const authStore = useAuthStore()
 const session = ref<QuestionnaireSession | null>(null)
 const loadingError = ref<string | null>(null)
 const computedResults = ref<AttachmentQuestionnaireDisplayResults | null>(null)
+const isSessionLoading = ref(true)
+const sessionLoadingMessage = ref<string | null>(null)
 let sessionRefreshTimer: ReturnType<typeof setTimeout> | null = null
 let sessionRefreshStopped = false
-const aiGenerationStarted = ref(false)
 
 const hasUnlockedSessionAccess = (currentSession: QuestionnaireSession | null) => {
   if (!currentSession) return false
@@ -30,34 +31,44 @@ const hasUnlockedSessionAccess = (currentSession: QuestionnaireSession | null) =
   )
 }
 
-const hasPendingAiExchange = (currentSession: QuestionnaireSession | null) => {
-  if (!currentSession) return false
-  return normalizeAiExchange(currentSession.aiExchange).status === 'pending'
-}
-
-const refreshCurrentSessionFromStore = (sessionId: string) => {
-  const refreshedSession = sessionsStore.getSessionById(sessionId)
-  if (refreshedSession?.questionnaireType === 'attachment') {
-    session.value = refreshedSession
-  }
-}
+const wait = (delayMs: number) => new Promise(resolve => setTimeout(resolve, delayMs))
+const SESSION_LOOKUP_ATTEMPTS = 10
+const SESSION_LOOKUP_DELAY_MS = 2000
 
 const loadSession = async () => {
   try {
+    isSessionLoading.value = true
     loadingError.value = null
     computedResults.value = null
+    sessionLoadingMessage.value = typeof route.query.sessionId === 'string'
+      ? 'Nous recuperons ta session et tes acces apres le paiement...'
+      : 'Chargement de ta session...'
 
     await sessionsStore.loadSessions()
     const requestedSessionId = typeof route.query.sessionId === 'string' ? route.query.sessionId : null
 
     if (requestedSessionId) {
-      const selectedSession = sessionsStore.getSessionById(requestedSessionId)
+      let selectedSession = sessionsStore.getSessionById(requestedSessionId)
+
+      if (!selectedSession && import.meta.client) {
+        for (let attempt = 1; attempt <= SESSION_LOOKUP_ATTEMPTS; attempt++) {
+          sessionLoadingMessage.value = `Nous recuperons ta session apres le paiement... (${attempt}/${SESSION_LOOKUP_ATTEMPTS})`
+          await wait(SESSION_LOOKUP_DELAY_MS)
+          await sessionsStore.loadSessions(true)
+          selectedSession = sessionsStore.getSessionById(requestedSessionId)
+
+          if (selectedSession) {
+            break
+          }
+        }
+      }
+
       session.value = selectedSession && selectedSession.questionnaireType === 'attachment'
         ? selectedSession
         : null
 
       if (!session.value) {
-        loadingError.value = 'La session demandee est introuvable.'
+        loadingError.value = 'Impossible de recuperer cette session pour le moment. Reessaie dans quelques instants.'
         return
       }
     } else {
@@ -70,7 +81,7 @@ const loadSession = async () => {
     }
 
     if (!session.value?.result) {
-      loadingError.value = 'Cette session ne contient pas de résultats exploitables.'
+      loadingError.value = 'Cette session ne contient pas de resultats exploitables.'
       return
     }
 
@@ -85,41 +96,11 @@ const loadSession = async () => {
     loadingError.value = error instanceof Error
       ? error.message
       : 'Impossible de charger la session pour le moment.'
-  }
-}
-
-const maybeStartAiGeneration = async () => {
-  const currentSession = session.value
-  if (!import.meta.client || !currentSession || aiGenerationStarted.value) return
-  if (!currentSession.billingInfo?.hasPaidIa) return
-
-  const aiExchange = normalizeAiExchange(currentSession.aiExchange)
-  if (aiExchange.status !== 'pending' || aiExchange.requestId || aiExchange.output) return
-
-  aiGenerationStarted.value = true
-
-  try {
-    const token = await firebaseFunctions.auth.currentUser?.getIdToken()
-    await $fetch('/api/attachment/ai/generate', {
-      method: 'POST',
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-      body: {
-        sessionId: currentSession.id,
-      },
-    })
-  } catch (error) {
-    console.error('Error while generating AI attachment analysis:', error)
   } finally {
-    try {
-      await sessionsStore.loadSessions(true)
-      refreshCurrentSessionFromStore(currentSession.id)
-    } finally {
-      aiGenerationStarted.value = false
-    }
+    isSessionLoading.value = false
+    sessionLoadingMessage.value = null
   }
 }
-
-await loadSession()
 
 const scheduleBillingRefresh = (attempt = 0) => {
   const requestedSessionId = typeof route.query.sessionId === 'string' ? route.query.sessionId : null
@@ -131,19 +112,19 @@ const scheduleBillingRefresh = (attempt = 0) => {
   if (!session.value || attempt >= MAX_ATTEMPTS) return
 
   const needsBillingRefresh = !hasUnlockedSessionAccess(session.value)
-  const needsAiRefresh = hasPendingAiExchange(session.value)
-  if (!needsBillingRefresh && !needsAiRefresh) return
+  if (!needsBillingRefresh) return
 
   sessionRefreshTimer = setTimeout(async () => {
     if (sessionRefreshStopped) return
 
     try {
       await sessionsStore.loadSessions(true)
-      refreshCurrentSessionFromStore(refreshSessionId)
-      await maybeStartAiGeneration()
+      const refreshedSession = sessionsStore.getSessionById(refreshSessionId)
+      if (refreshedSession?.questionnaireType === 'attachment') {
+        session.value = refreshedSession
+      }
     } finally {
-      const shouldContinue = !sessionRefreshStopped
-        && (!hasUnlockedSessionAccess(session.value) || hasPendingAiExchange(session.value))
+      const shouldContinue = !sessionRefreshStopped && !hasUnlockedSessionAccess(session.value)
 
       if (shouldContinue) {
         scheduleBillingRefresh(attempt + 1)
@@ -152,8 +133,12 @@ const scheduleBillingRefresh = (attempt = 0) => {
   }, RETRY_DELAY_MS)
 }
 
-if (import.meta.client) {
-  await maybeStartAiGeneration()
+if (import.meta.server) {
+  sessionLoadingMessage.value = typeof route.query.sessionId === 'string'
+    ? 'Nous recuperons ta session et tes acces apres le paiement...'
+    : 'Chargement de ta session...'
+} else {
+  await loadSession()
   scheduleBillingRefresh()
 }
 
@@ -182,17 +167,27 @@ onBeforeUnmount(() => {
       <LucideArrowLeft :size="16" />
       Retour au profil
     </button>
-    <h1 class="text-xl font-bold text-center md:text-4xl md:max-w-144 md:mx-auto">Tes résultats au Questionnaire d'attachement adulte</h1>
-    <p class="text-sm md:text-base text-center text-gray-600">Découvre ton style d'attachement</p>
+    <h1 class="text-xl font-bold text-center md:text-4xl md:max-w-144 md:mx-auto">Tes resultats au Questionnaire d'attachement adulte</h1>
+    <p class="text-sm md:text-base text-center text-gray-600">Decouvre ton style d'attachement</p>
     <p v-if="computedResults" class="text-sm md:text-base text-center text-gray-600">
       {{ computedResults.completionDate }}
     </p>
 
     <div class="my-10">
-      <p v-if="loadingError" class="text-red-600">{{ loadingError }}</p>
+      <div
+        v-if="isSessionLoading"
+        class="p-5 rounded-3xl bg-white border-l-4 border-blue-700"
+      >
+        <div class="flex items-center text-sm text-blue-700">
+          <LucideLoader class="animate-spin inline-block mr-2" :size="18" />
+          {{ sessionLoadingMessage }}
+        </div>
+      </div>
+
+      <p v-else-if="loadingError" class="text-red-600">{{ loadingError }}</p>
 
       <AttachmentQuestionnaireResults
-        v-if="computedResults && session"
+        v-if="!isSessionLoading && computedResults && session"
         :docId="session.id"
         :session-billing-info="session.billingInfo"
         :computed-results="computedResults"
@@ -203,6 +198,7 @@ onBeforeUnmount(() => {
         :avoidance-average-score="computedResults.avoidanceAverageScore"
         :anxiety-datasets="computedResults.anxietyDatasets"
         :avoidance-datasets="computedResults.avoidanceDatasets"
+        :is-admin="authStore.isAdmin"
       />
     </div>
   </section>

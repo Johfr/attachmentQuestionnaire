@@ -59,7 +59,7 @@ export const createOpenAiTextResponse = async ({
   }
 
   if (promptCacheRetention) {
-    body.prompt_cache_retention = { type: promptCacheRetention }
+    body.prompt_cache_retention = promptCacheRetention
   }
 
   const response = await fetch('https://api.openai.com/v1/responses', {

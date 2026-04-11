@@ -29,6 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<UserLoginForm | null>(null)
   const currentPartnerContext = ref<CurrentPartnerContext | null>(null)
   const questionnaireAccess = ref<QuestionnaireAccessMap>({})
+  const isAdmin = ref(false)
   const isLoginModalOpen = ref(false)
   const redirectAfterLogin = ref<string | null>(null)
   const hasInitialized = ref(false)
@@ -172,6 +173,7 @@ export const useAuthStore = defineStore('auth', () => {
     const userDocRef = doc(firebaseFunctions.db, 'users', uid)
     const userDoc = await getDoc(userDocRef)
     const data = userDoc.exists() ? userDoc.data() : {}
+    const isFirestoreAdmin = data?.admin === true
 
     return {
       localUser: {
@@ -179,10 +181,26 @@ export const useAuthStore = defineStore('auth', () => {
         email: (data?.email as string) || fallbackEmail,
         name: (data?.name as string) || '',
         age: (typeof data?.age === 'number' ? data.age : null),
+        admin: isFirestoreAdmin,
         password: '',
       } as UserLoginForm,
       partnerContext: normalizeStoredPartnerContext(data?.currentPartnerContext),
       questionnaireAccess: normalizeQuestionnaireAccess(data?.questionnaireAccess),
+      isAdmin: isFirestoreAdmin,
+    }
+  }
+
+  const loadAuthClaims = async (firebaseUser: { getIdTokenResult: (forceRefresh?: boolean) => Promise<{ claims?: Record<string, unknown> }> } | null) => {
+    if (!firebaseUser) {
+      isAdmin.value = false
+      return
+    }
+
+    try {
+      const tokenResult = await firebaseUser.getIdTokenResult()
+      isAdmin.value = isAdmin.value || tokenResult.claims?.admin === true
+    } catch (error) {
+      console.error('Error while loading auth claims:', error)
     }
   }
 
@@ -199,6 +217,7 @@ export const useAuthStore = defineStore('auth', () => {
       const profile = await getUserProfileFromFirestore(uid, fallbackEmail)
       currentPartnerContext.value = profile.partnerContext
       questionnaireAccess.value = profile.questionnaireAccess
+      isAdmin.value = profile.isAdmin
       return profile.partnerContext
     } catch (error) {
       console.error('Error while loading partner context:', error)
@@ -305,6 +324,8 @@ export const useAuthStore = defineStore('auth', () => {
         }
         currentPartnerContext.value = partnerContext
         questionnaireAccess.value = {}
+        isAdmin.value = false
+        await loadAuthClaims(firebaseUser)
       } else {
         const loginDocPayload: Record<string, unknown> = {
           updatedAt: serverTimestamp(),
@@ -328,6 +349,8 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = profile.localUser
         currentPartnerContext.value = profile.partnerContext
         questionnaireAccess.value = profile.questionnaireAccess
+        isAdmin.value = profile.isAdmin
+        await loadAuthClaims(firebaseUser)
       }
 
       isLoginModalOpen.value = false
@@ -356,6 +379,7 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = null
       currentPartnerContext.value = null
       questionnaireAccess.value = {}
+      isAdmin.value = false
       return { success: true }
     } catch (error) {
       console.error('Error while signing out:', error)
@@ -388,10 +412,13 @@ export const useAuthStore = defineStore('auth', () => {
             user.value = profile.localUser
             currentPartnerContext.value = profile.partnerContext
             questionnaireAccess.value = profile.questionnaireAccess
+            isAdmin.value = profile.isAdmin
+            await loadAuthClaims(firebaseUser)
           } else {
             user.value = null
             currentPartnerContext.value = null
             questionnaireAccess.value = {}
+            isAdmin.value = false
           }
           resolve()
         }
@@ -404,6 +431,7 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     currentPartnerContext,
     questionnaireAccess,
+    isAdmin,
     isLoggedIn,
     isLoginModalOpen,
     redirectAfterLogin,

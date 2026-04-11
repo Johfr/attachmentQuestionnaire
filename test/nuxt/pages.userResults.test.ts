@@ -19,7 +19,7 @@
  *  - Stub chart components (chart.js fails in happy-dom).
  */
 
-import { vi, describe, it, expect, beforeEach } from 'vitest'
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { mountSuspended, registerEndpoint, mockComponent, mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { createPinia, setActivePinia } from 'pinia'
 
@@ -132,6 +132,29 @@ const makeSession = (id: string): QuestionnaireSession =>
 
 const BASE_ROUTE = '/user/attachment-questionnaire/results'
 
+const useImmediateTimeouts = () => {
+  const immediateSetTimeout = ((
+    callback: TimerHandler,
+    _delay?: number,
+    ...args: unknown[]
+  ): ReturnType<typeof setTimeout> => {
+    Promise.resolve().then(() => {
+      if (typeof callback === 'function') {
+        callback(...args)
+        return
+      }
+
+      if (typeof callback === 'string') {
+        Function(callback)()
+      }
+    })
+
+    return 0 as unknown as ReturnType<typeof setTimeout>
+  }) as unknown as typeof setTimeout
+
+  return vi.spyOn(globalThis, 'setTimeout').mockImplementation(immediateSetTimeout)
+}
+
 // ─────────────────────────────────────────────────────────────────────────
 
 describe('user/attachment-questionnaire/results page', () => {
@@ -142,24 +165,34 @@ describe('user/attachment-questionnaire/results page', () => {
     mockSessionsState.loadSessions.mockReset().mockResolvedValue(undefined)
   })
 
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   // ── SessionId isolation ───────────────────────────────────────────────────
 
   it('shows an error when the requested sessionId does not belong to the user', async () => {
+    useImmediateTimeouts()
     mockSessionsState.sessions = [makeSession('session-mine')]
     mockQuery.sessionId = 'session-someone-else'
 
     const wrapper = await mountSuspended(UserResultsPage)
 
-    expect(wrapper.text()).toContain('La session demandee est introuvable')
+    await vi.waitFor(() => {
+      expect(wrapper.text()).toContain('Impossible de recuperer cette session pour le moment')
+    })
   })
 
   it('does not show results data when sessionId is not found', async () => {
+    useImmediateTimeouts()
     mockSessionsState.sessions = [makeSession('session-mine')]
     mockQuery.sessionId = 'session-unknown'
 
     const wrapper = await mountSuspended(UserResultsPage)
 
-    expect(wrapper.text()).toContain('La session demandee est introuvable')
+    await vi.waitFor(() => {
+      expect(wrapper.text()).toContain('Impossible de recuperer cette session pour le moment')
+    })
     expect(wrapper.text()).not.toContain(MOCK_DISPLAY_RESULTS.completionDate)
   })
 

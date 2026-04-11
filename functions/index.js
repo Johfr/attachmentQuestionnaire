@@ -87,6 +87,8 @@ exports.onPaymentWritten = onDocumentWritten(
       updatePayload['aiExchange.unlocked'] = true
       updatePayload['aiExchange.purchasedAt'] = FieldValue.serverTimestamp()
       updatePayload['aiExchange.status'] = 'pending'
+      updatePayload['aiExchange.lastErrorCode'] = null
+      updatePayload['aiExchange.lastErrorMessage'] = null
     }
 
     await sessionRef.update(updatePayload)

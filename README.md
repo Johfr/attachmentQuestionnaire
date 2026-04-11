@@ -126,6 +126,21 @@ npm run build
 firebase deploy
 ```
 
+Pour un deploy plus safe et plus lisible en pratique, preferer souvent les commandes separees :
+
+```bash
+# 1) Build Nuxt SSR
+npm run build
+
+# 2) Deployer les functions
+firebase deploy --only functions:nuxt-ssr,functions:custom
+
+# 3) Deployer Hosting
+firebase deploy --only hosting
+```
+
+Cette sequence evite les longues attentes d'un deploy complet quand seul Hosting ou les Functions doivent etre finalises, et permet aussi de finaliser rapidement Hosting si le deploy global bute sur un sujet operationnel annexe.
+
 Le build genere maintenant un `.output/server/package.json` deterministe et son `package-lock.json`.
 Il ne faut pas installer manuellement des dependances dans `.output/server` avant le deploiement.
 
@@ -157,6 +172,14 @@ firebase deploy --only functions:custom
 # Firestore uniquement
 firebase deploy --only firestore
 ```
+
+Si la CLI remonte un avertissement/erreur sur la cleanup policy Artifact Registry apres un deploy Functions, configurer une policy explicite une fois pour toutes :
+
+```bash
+firebase functions:artifacts:setpolicy --location us-central1
+```
+
+La doc Firebase indique qu'une retention de 1 jour est appliquee par defaut par cette commande, ce qui suffit generalement pour eviter l'accumulation d'images de build.
 
 ## Configuration Firebase actuelle
 

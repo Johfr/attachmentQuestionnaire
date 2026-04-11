@@ -22,7 +22,7 @@ const blogArticles = [
   {
     id: 2,
     icon: 'Link',
-    title: 'Comment gérer la panique dans une relation amoureuse ?',
+    title: 'Comment gérer la panique quand l\'évitant fuit ?',
     description: 'Découvre des stratégies efficaces pour apaiser ta panique et renforcer ta relation.',
     image: '',
     link: '/blog',
@@ -32,7 +32,7 @@ const blogArticles = [
   {
     id: 3,
     icon: 'Link',
-    title: 'Comment gérer la fuite dans une relation amoureuse ?',
+    title: 'Comment gérer la fuite de l\'évitant ?',
     description: 'Apprends à reconnaître les signes de la fuite et découvre des conseils pour y faire face.',
     image: '',
     link: '/blog',

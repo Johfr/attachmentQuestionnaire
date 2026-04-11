@@ -163,7 +163,7 @@ describe('attachment-questionnaire/results (hot / first render)', () => {
   })
 
   it('removes save banner when a retry eventually succeeds', async () => {
-    vi.useFakeTimers()
+    useImmediateTimeouts()
     mockApiHandler
       .mockResolvedValueOnce(FAIL_RESPONSE)
       .mockResolvedValue(SUCCESS_RESPONSE)
@@ -171,12 +171,16 @@ describe('attachment-questionnaire/results (hot / first render)', () => {
     const wrapper = await mountSuspended(HotResultsPage)
     expect(wrapper.text()).toContain('Sauvegarde en cours')
 
-    await vi.advanceTimersByTimeAsync(1)
+    await vi.waitFor(() => {
+      expect(mockApiHandler.mock.calls.length).toBeGreaterThanOrEqual(2)
+    })
     await drainMicrotasks()
     await nextTick()
 
-    expect(wrapper.text()).not.toContain('Sauvegarde en cours')
-    expect(wrapper.text()).not.toContain("n'ont pas pu etre sauvegardes")
+    await vi.waitFor(() => {
+      expect(wrapper.text()).not.toContain('Sauvegarde en cours')
+      expect(wrapper.text()).not.toContain("n'ont pas pu etre sauvegardes")
+    })
   })
 
   it('shows persist error message when all retries have failed', async () => {

@@ -31,7 +31,7 @@ export default defineNuxtConfig({
     // Set layout for multiple routes
     // '/dashboard/**': { appLayout: 'dashboard' },
     '/attachment-questionnaire/**': { appLayout: 'questionnaire' },
-    '/user/attachment-questionnaire/**': { appLayout: 'questionnaire' },
+    '/user/attachment-questionnaire/**': { appLayout: 'results' },
     // Disable layout for a route
     // '/landing': { appLayout: false },
   },

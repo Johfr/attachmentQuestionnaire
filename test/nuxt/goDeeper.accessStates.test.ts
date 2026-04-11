@@ -31,22 +31,22 @@ describe('GoDeeper access states', () => {
     mockBillingStore.goToCheckout.mockClear()
   })
 
-  it('shows both offers for a limited user', async () => {
+  it('shows only the results offer for a limited user while IA is paused', async () => {
     const wrapper = await mountGoDeeper()
 
     expect(wrapper.find('[data-testid="go-deeper-results-offer"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="go-deeper-ia-offer"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="go-deeper-ia-includes-results"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="go-deeper-ia-offer"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="go-deeper-ia-includes-results"]').exists()).toBe(false)
   })
 
-  it('hides the results offer after a one-shot results purchase and keeps the IA offer', async () => {
+  it('hides both purchase blocks after a one-shot results purchase while IA is paused', async () => {
     const wrapper = await mountGoDeeper({
       hasBasicAccess: true,
       hasResultsAccess: true,
     })
 
     expect(wrapper.find('[data-testid="go-deeper-results-offer"]').exists()).toBe(false)
-    expect(wrapper.find('[data-testid="go-deeper-ia-offer"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="go-deeper-ia-offer"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="go-deeper-ia-includes-results"]').exists()).toBe(false)
   })
 
@@ -64,11 +64,11 @@ describe('GoDeeper access states', () => {
   it.each([
     { label: 'membership', props: { hasBasicAccess: true, hasMembershipAccess: true } },
     { label: 'formation', props: { hasBasicAccess: true, hasFormationAccess: true } },
-  ])('keeps only the IA offer for an active $label access', async ({ props }) => {
+  ])('keeps purchase blocks hidden for an active $label access while IA is paused', async ({ props }) => {
     const wrapper = await mountGoDeeper(props)
 
     expect(wrapper.find('[data-testid="go-deeper-results-offer"]').exists()).toBe(false)
-    expect(wrapper.find('[data-testid="go-deeper-ia-offer"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="go-deeper-ia-offer"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="go-deeper-ia-includes-results"]').exists()).toBe(false)
   })
 })

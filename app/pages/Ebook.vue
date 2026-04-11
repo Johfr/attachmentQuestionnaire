@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useBillingStore } from '~/stores/billing'
+import type { EntitySubType, EntityType, AccessType } from '~/types/billing'
+
 useSeoMeta({
   title: 'Ebook : Tout comprendre sur la relation anxieux-évitant',
   description: 'Cet ebook explore en profondeur la dynamique anxieux–évitant, l\'une des plus fréquentes et des plus destructrices si elle n\'est pas comprise. Tu y découvriras comment les peurs inconscientes, les stratégies de survie émotionnelle de chacun et les blessures d\'attachement (inconscientes et apprises) façonnent les comportements de chacun jusqu\'à créer incompréhension, frustration, colère, épuisement et destruction.',
@@ -15,6 +18,26 @@ useHead({
   link: [{ rel: 'canonical', href: 'https://relation-anxieux-evitant.web.app/ebook' }],
 })
 
+const billingStore = useBillingStore()
+const errorMessage = ref('')
+const checkoutType = ref<AccessType | null>(null)
+const docId = 'ebook-anxieux-evitant-v1'
+  
+const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType, accessType: AccessType) => {
+  checkoutType.value = accessType
+
+  try {
+    errorMessage.value = ''
+    await billingStore.goToCheckout(entityType, entitySubType, accessType, 'v1', 'ebook', docId)
+  } catch (error) {
+    errorMessage.value =
+      error instanceof Error
+        ? error.message
+        : 'Une erreur est survenue lors de la redirection vers le paiement.'
+  } finally {
+    checkoutType.value = null
+  }
+}
 </script>
 
 <template>
@@ -34,9 +57,23 @@ useHead({
           Ebook : Tout comprendre sur la relation anxieux-évitant
         </h2>
 
-        <button class="px-4 py-4 bg-blue-500 text-white rounded-full w-full">
-          Acheter maintenant
+        <button
+          class="px-4 py-4 bg-blue-500 text-white rounded-full w-full disabled:opacity-60"
+          :disabled="checkoutType === 'ebook'"
+          @click="goToCheckout('ebook', 'ebook', 'ebook')"
+        >
+          <span v-if="checkoutType === 'ebook'">
+            <LucideLoader class="animate-spin inline-block mr-2" :size="18" />
+            Redirection...
+          </span>
+          <span v-else>
+            Acheter maintenant
+          </span>
         </button>
+
+        <p v-if="errorMessage" class="text-sm text-red-600">
+          {{ errorMessage }}
+        </p>
 
         <!-- encart accroche -->
         <div class="p-6 bg-white rounded-3xl border-l-4 border-solid border-gray-600">

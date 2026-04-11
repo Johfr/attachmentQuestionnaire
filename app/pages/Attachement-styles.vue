@@ -5,11 +5,11 @@ useSeoMeta({
   keywords: 'styles d\'attachement adulte, attachement anxieux, attachement évitant, attachement sécure, attachement désorganisé, préoccupé, craintif, détaché, théorie de l\'attachement, relation amoureuse, blessure enfance',
   ogTitle: 'Les styles d\'attachement adulte',
   ogDescription: 'Découvre les 4 styles d\'attachement adulte et comprends leur origine et leurs manifestations en relation amoureuse.',
-  ogUrl: 'https://relation-anxieux-evitant.web.app/Attachement-styles',
+  ogUrl: 'https://relation-anxieux-evitant.web.app/attachement-styles',
 })
 
 useHead({
-  link: [{ rel: 'canonical', href: 'https://relation-anxieux-evitant.web.app/Attachement-styles' }],
+  link: [{ rel: 'canonical', href: 'https://relation-anxieux-evitant.web.app/attachement-styles' }],
 })
 
 

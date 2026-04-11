@@ -21,6 +21,7 @@ const mockSessionsState = vi.hoisted(() => ({
             output: 'Analyse IA finalisee',
             generatedAt: { seconds: 2, nanoseconds: 0 } as never,
             requestId: 'openai-req-1',
+            retryCount: 1,
           },
         }]
       }
@@ -145,6 +146,10 @@ const makeSession = (overrides: Partial<QuestionnaireSession> = {}): Questionnai
     userInput: 'Je suis perdue dans ma relation.',
     output: null,
     generatedAt: null,
+    lastAttemptAt: null,
+    retryCount: 0,
+    lastErrorCode: null,
+    lastErrorMessage: null,
     status: 'pending',
     model: null,
     requestId: null,
@@ -168,13 +173,13 @@ describe('user/attachment-questionnaire/results IA flow', () => {
     mockSessionsState.sessions = [makeSession()]
   })
 
-  it('starts AI generation after a paid IA return when the session is pending without requestId', async () => {
+  it('does not auto-start AI generation after a paid IA return while the module is paused', async () => {
     const wrapper = await mountSuspended(UserResultsPage)
 
-    expect(generateCalls.count).toBe(1)
-    expect(mockSessionsState.loadSessions).toHaveBeenCalledWith(true)
-    expect(wrapper.find('[data-testid="attachment-ai-status"]').text()).toBe('generated')
-    expect(wrapper.find('[data-testid="attachment-ai-output"]').text()).toContain('Analyse IA finalisee')
+    expect(generateCalls.count).toBe(0)
+    expect(mockSessionsState.loadSessions).not.toHaveBeenCalledWith(true)
+    expect(wrapper.find('[data-testid="attachment-ai-status"]').text()).toBe('pending')
+    expect(wrapper.find('[data-testid="attachment-ai-output"]').text()).toBe('')
   })
 
   it('does not trigger generation again when a requestId already exists', async () => {
@@ -185,6 +190,10 @@ describe('user/attachment-questionnaire/results IA flow', () => {
         userInput: 'Je suis perdue dans ma relation.',
         output: null,
         generatedAt: null,
+        lastAttemptAt: { seconds: 1, nanoseconds: 0 } as never,
+        retryCount: 1,
+        lastErrorCode: null,
+        lastErrorMessage: null,
         status: 'pending',
         model: 'gpt-5',
         requestId: 'existing-req',

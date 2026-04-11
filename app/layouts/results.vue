@@ -15,7 +15,6 @@ const { isLoginModalOpen } = storeToRefs(authStore)
         v-if="isLoginModalOpen"
         @close="authStore.closeLoginModal()"
       />
-      <AttachmentQuestionnaireFooter />
     </div>
   </div>
 </template>

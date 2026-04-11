@@ -48,7 +48,7 @@ app/                    -> tout le front (pages, composants, stores, utils)
     questionnaires.vue  -> catalogue questionnaires
     blog.vue            -> catalogue articles
     glossaire.vue
-    Attachement-styles.vue
+    attachement-styles.vue
     attachment-questionnaire/
       introduction.vue  -> landing + auth avant de commencer
       questionnaire.vue -> wizard (auth requis, noindex)

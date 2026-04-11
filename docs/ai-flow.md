@@ -4,6 +4,24 @@
 > "Analyse sur mesure" du questionnaire d'attachement.
 > Elle complete `user-flows.md` et `business-rules.md` sans les reecrire.
 
+## Statut actuel - module en pause
+
+Au `11/04/2026`, le module IA est volontairement mis en pause pour la V1 / MVP.
+
+Concretement :
+
+- le masquage visuel reste en place dans `GoDeeper.vue`
+- la page `app/pages/user/attachment-questionnaire/results.vue` ne declenche plus automatiquement l'IA
+- la page results ne poll plus l'etat IA
+- un user peut consulter ses results sans appel OpenAI, sans ecriture Firestore liee a l'IA et sans perception visible de ce module
+
+Important :
+
+- le code IA backend et les composants associes sont conserves
+- la doc ci-dessous decrit toujours le flow cible attendu quand le chantier IA reprendra
+- pour reactiver l'IA plus tard, le point d'entree principal a revoir sera `app/pages/user/attachment-questionnaire/results.vue`
+- avant la mise en pause, c'etait cette page results user qui rechargeait la session apres retour Stripe, evaluait l'etat `aiExchange` puis pouvait declencher `/api/attachment/ai/generate`
+
 ---
 
 ## Objectif
@@ -96,6 +114,10 @@ aiExchange: {
   userInput: string | null
   output: string | null
   generatedAt: Timestamp | null
+  lastAttemptAt: Timestamp | null
+  retryCount: number
+  lastErrorCode: string | null
+  lastErrorMessage: string | null
   status: 'not_purchased' | 'pending' | 'generated' | 'failed'
   model: string | null
   requestId: string | null
@@ -162,9 +184,11 @@ Le user revient sur :
 
 La page :
 
+- affiche d'abord un loader de reconciliation plutot qu'un message d'erreur anxiogene
+- reessaie de retrouver la session pendant quelques instants si elle n'apparait pas immediatement
 - recharge la session
 - voit `hasPaidIa = true`
-- voit `aiExchange.status = 'pending'`
+- voit `aiExchange.status = 'pending'` ou un etat intermediaire equivalent
 - declenche l'endpoint Nuxt de generation si aucune requete n'est encore partie
 - affiche un loader / message du type :
   `Analyse sur mesure en cours de generation...`
@@ -195,6 +219,10 @@ Il :
 En cas d'erreur :
 
 - `aiExchange.status = 'failed'`
+- `aiExchange.lastErrorCode`
+- `aiExchange.lastErrorMessage`
+- `aiExchange.lastAttemptAt`
+- incrementation de `aiExchange.retryCount`
 
 ### 6. Rafraichissement UI
 
@@ -202,7 +230,19 @@ La page results user doit :
 
 - poller ou recharger la session pendant que `aiExchange.status === 'pending'`
 - afficher la reponse quand `status === 'generated'`
+- afficher un bloc d'erreur explicite quand `status === 'failed'`
+- proposer un bouton `Relancer`
 - masquer les blocs d'achat quand la reponse est disponible
+- ne jamais laisser une zone vide a la place de l'IA
+
+### 6.b Regeneration admin
+
+Pour les besoins de test interne, l'administration peut disposer d'un bouton de regeneration forcee :
+
+- visible uniquement pour un compte portant la claim Firebase `admin`
+- il doit relancer OpenAI sur une session deja `generated` ou `failed`
+- il ne doit pas etre visible pour les users classiques
+- il ne remplace pas le bouton `Relancer` destine au cas `failed`
 
 ---
 
@@ -245,6 +285,7 @@ La meilleure approche est :
 - definir un comportement de retry si `status = 'failed'`
 - nettoyer le draft `localStorage` quand la generation est terminee
 - ne jamais bloquer l'affichage des resultats classiques si la generation IA echoue
+- stocker une observabilite minimale dans `aiExchange` pour comprendre si l'echec vient de l'acces, du reseau, d'OpenAI ou d'un etat de session incomplet
 
 ---
 

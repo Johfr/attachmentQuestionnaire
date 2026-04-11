@@ -16,7 +16,7 @@ import type { AttachmentQuestionnaireDisplayResults } from '../../app/types/atta
 
 const navigateToMock = vi.hoisted(() => vi.fn())
 const capturedLeaveHook = vi.hoisted(() => ({
-  hook: null as null | ((to: any, from: any, next: (payload?: unknown) => void) => void),
+  hook: null as null | ((to: any, from?: any) => unknown),
 }))
 
 const mockWizardStore = vi.hoisted(() => {
@@ -95,18 +95,15 @@ describe('attachment-questionnaire/results reset on leave', () => {
     expect(mockPersistState.load).toHaveBeenCalledTimes(1)
     expect(capturedLeaveHook.hook).toBeTypeOf('function')
 
-    const next = vi.fn()
-
-    capturedLeaveHook.hook?.(
+    const navigationResult = capturedLeaveHook.hook?.(
       { path: '/user/profil' } as any,
       { path: '/attachment-questionnaire/results' } as any,
-      next,
     )
 
     expect(mockWizardStore.reset).toHaveBeenCalledTimes(1)
     expect(mockWizardStore.isCompleted).toBe(false)
     expect(mockWizardStore.result).toBeNull()
-    expect(next).toHaveBeenCalledWith()
+    expect(navigationResult).toBeUndefined()
 
     await resultsGuard({ path: '/attachment-questionnaire/results' } as any, { path: '/user/profil' } as any)
 

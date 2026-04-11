@@ -18,6 +18,14 @@ const props = defineProps<{
   hasFormationAccess: boolean
   hasUsedIa: boolean
   aiExchange?: AiExchange | null
+  isAiLoading?: boolean
+  aiLoadingMessage?: string
+  isAdmin?: boolean
+}>()
+
+const emit = defineEmits<{
+  (e: 'retryIa'): void
+  (e: 'forceRegenerateIa'): void
 }>()
 
 const checkoutType = ref<AccessType | null>(null)
@@ -34,16 +42,36 @@ const hasDetailedResultsAccess = computed(() => {
   )
 })
 
-const showResultsOffer = computed(() => !props.hasBasicAccess)
-const showIaOffer = computed(() => !props.hasUsedIa && normalizedAiExchange.value.status === 'not_purchased')
+const showResultsOffer = computed(() => !props.hasBasicAccess && !props.isAiLoading)
+const showIaOffer = computed(() => {
+  return !props.hasUsedIa
+    && normalizedAiExchange.value.status === 'not_purchased'
+    && !props.isAiLoading
+})
 const showAiGeneratedState = computed(() => {
   return normalizedAiExchange.value.status === 'generated' && Boolean(normalizedAiExchange.value.output)
+})
+const showAdminForceRegenerate = computed(() => {
+  return Boolean(
+    props.isAdmin
+    && props.hasIaAccess
+    && normalizedAiExchange.value.userInput?.trim()
+    && !showAiPendingState.value,
+  )
 })
 const showAiFailedState = computed(() => {
   return props.hasIaAccess && normalizedAiExchange.value.status === 'failed' && !normalizedAiExchange.value.output
 })
 const showAiPendingState = computed(() => {
-  return normalizedAiExchange.value.status === 'pending'
+  return Boolean(props.isAiLoading) || normalizedAiExchange.value.status === 'pending'
+})
+const showAiSyncingState = computed(() => {
+  return props.hasIaAccess
+    && normalizedAiExchange.value.status === 'not_purchased'
+    && Boolean(normalizedAiExchange.value.userInput?.trim())
+    && !showAiPendingState.value
+    && !showAiGeneratedState.value
+    && !showAiFailedState.value
 })
 
 const checkUserStatus = (actionType: 'ia' | 'results') => {
@@ -60,10 +88,6 @@ const checkUserStatus = (actionType: 'ia' | 'results') => {
     }
   }
 }
-
-// const emit = defineEmits<{
-//   (e: 'goToCheckout', payload: { type: 'questionnaire' | 'membership' | 'ia', questionnaireType?: string, key?: string }): void
-// }>()
 
 type PopinKey = 'results' | 'ia' | 'membership' | string
 const showPopin = ref(false)
@@ -157,10 +181,26 @@ const prepareIaCheckout = async () => {
 </script>
 
 <template>
-  <section id="premium-zone" class="my-8 mb-3" >
+  <section id="premium-zone" class="my-8 mb-3" v-if="showResultsOffer">
     <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left">
       Aller plus loin
     </h2>
+
+    <!-- admin ia button -->
+    <div
+      v-if=" false && showAdminForceRegenerate"
+      class="mb-5 p-4 rounded-3xl border border-dashed border-gray-400 bg-gray-50"
+    >
+      <p class="text-xs text-gray-500 mb-3">
+        Outil admin de test IA
+      </p>
+      <button
+        class="py-3 px-5 rounded-3xl bg-gray-900 text-white shadow-xl hover:shadow-none transition-shadow duration-300"
+        @click="emit('forceRegenerateIa')"
+      >
+        Regenerer l analyse
+      </button>
+    </div>
 
     <div class="md:flex md:items-start md:gap-8">
       <!-- Acces a tous les resultats -->
@@ -207,11 +247,8 @@ const prepareIaCheckout = async () => {
       </div>
 
       <!-- Acces aux resultats et a l'ia -->
-      <!-- {{ !hasUsedIa }}
-      {{ (hasIaAccess || hasMembershipAccess || hasFormationAccess) }}
-        {{ !hasUsedIa && (hasIaAccess || hasMembershipAccess || hasFormationAccess) }} -->
       <div
-        v-if="showIaOffer"
+        v-if="false && showIaOffer"
         data-testid="go-deeper-ia-offer"
         class="mt-8 p-5 border-l-4 rounded-3xl md:m-0 bg-white md:max-w-[48%]"
       >
@@ -285,12 +322,12 @@ const prepareIaCheckout = async () => {
       </div>
     </div>
 
-    <div v-if="showAiPendingState" class="mt-8 p-5 rounded-3xl border-l-4 border-blue-700 bg-white">
+    <div v-if="false && showAiPendingState" class="mt-8 p-5 rounded-3xl border-l-4 border-blue-700 bg-white">
       <h3 class="text-lg font-bold mb-3">
         Analyse sur mesure en cours
       </h3>
       <p class="text-sm text-gray-600">
-        Ton paiement a bien ete pris en compte. Nous generons actuellement ton analyse personnalisee.
+        {{ aiLoadingMessage || 'Ton paiement a bien ete pris en compte. Nous generons actuellement ton analyse personnalisee.' }}
       </p>
       <div class="mt-4 flex items-center text-sm text-blue-700">
         <LucideLoader class="animate-spin inline-block mr-2" :size="18" />
@@ -298,7 +335,19 @@ const prepareIaCheckout = async () => {
       </div>
     </div>
 
-    <div v-if="showAiGeneratedState" class="mt-8 p-5 rounded-3xl border-l-4 border-green-700 bg-white">
+    <div v-if="false && showAiSyncingState" class="mt-8 p-5 rounded-3xl border-l-4 border-blue-700 bg-white">
+      <h3 class="text-lg font-bold mb-3">
+        Analyse sur mesure en cours de synchronisation
+      </h3>
+      <p class="text-sm text-gray-600">
+        Ton paiement semble bien en cours de reconciliation avec ta session. Tes resultats restent accessibles et ton analyse devrait apparaitre ici sous peu.
+      </p>
+      <p class="mt-3 text-sm text-gray-600">
+        Si rien ne s affiche apres quelques instants, recharge la page ou reviens depuis ton profil.
+      </p>
+    </div>
+
+    <div v-if="false && showAiGeneratedState" class="mt-8 p-5 rounded-3xl border-l-4 border-green-700 bg-white">
       <h3 class="text-lg font-bold mb-3">
         Ton analyse sur mesure
       </h3>
@@ -307,16 +356,25 @@ const prepareIaCheckout = async () => {
       </div>
     </div>
 
-    <div v-if="showAiFailedState" class="mt-8 p-5 rounded-3xl border-l-4 border-red-700 bg-white">
+    <div v-if="false && showAiFailedState" class="mt-8 p-5 rounded-3xl border-l-4 border-red-700 bg-white">
       <h3 class="text-lg font-bold mb-3">
         Analyse sur mesure indisponible
       </h3>
       <p class="text-sm text-gray-600">
-        Le paiement a bien ete pris en compte, mais la generation de ton analyse a rencontre un probleme temporaire.
+        Le paiement a bien été pris en compte, mais la génération de ton analyse a rencontré un problème temporaire.
       </p>
       <p class="mt-3 text-sm text-gray-600">
-        Tu peux revenir sur cette page un peu plus tard pour relancer le chargement.
+        Pas d'inquiétude : ton texte est bien conservé. Il s'agit probablement d'un problème réseau ou d'un service temporairement indisponible.
       </p>
+      <p v-if="normalizedAiExchange.lastErrorMessage" class="mt-3 text-xs text-gray-500">
+        Dernière erreur : {{ normalizedAiExchange.lastErrorMessage }}
+      </p>
+      <button
+        class="mt-4 py-3 px-5 rounded-3xl bg-blue-700 text-white shadow-xl hover:shadow-none transition-shadow duration-300"
+        @click="emit('retryIa')"
+      >
+        Relancer
+      </button>
     </div>
 
     <!-- POPIN -->

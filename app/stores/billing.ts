@@ -127,10 +127,19 @@ export const useBillingStore = defineStore('billing', () => {
     const products: Record<AccessType, { price: number; mode: 'payment' | 'subscription', productId: string, productPriceId?: string, recurrence?: 'month' | 'year',  }> = {
       results: { price: 199, mode: 'payment', productId: 'prod_UFEBJxvgmXlOxL', productPriceId: 'price_1TGjipPH1HNS3Ks3YWPBQC7e' },
       ia: { price: 499, mode: 'payment', productId: 'prod_UFEBeMrgvlyq7q', productPriceId: 'price_1TGjjVPH1HNS3Ks362PNQVov' },
+      ebook: { price: 699, mode: 'payment', productId: 'prod_UJbrpB99diNvjd', productPriceId: 'price_1TKye1PH1HNS3Ks3blw4iFZ7' },
       membership: { price: 699, mode: 'subscription', productId: 'prod_UFEDIkXmyJC4xO', productPriceId : 'price_1TGjkrPH1HNS3Ks3Xajcb96w', recurrence: 'month',  },
       formation: { price: 4999, mode: 'subscription', productId: 'prod_xxx', recurrence: 'year',  },
     }
     
+    const successCheckoutUrl = accessType === 'ebook'
+      ? `${window.location.origin}/user/profil?checkout=success`
+      : `${window.location.origin}/user/${successUrl}/results?sessionId=${docId}`
+
+    const cancelCheckoutUrl = accessType === 'ebook'
+      ? `${window.location.origin}/ebook`
+      : `${window.location.origin}/user/profil/`
+
     const collectionRef = collection(firebaseFunctions.db, 'customers', user.value?.id ?? 'unknown_user', 'checkout_sessions')
 
     const docRef = await addDoc(collectionRef, {
@@ -163,8 +172,8 @@ export const useBillingStore = defineStore('billing', () => {
               metadata: { entityType, entitySubType, accessType, entityVersion, successUrl, docId },
             },
           }),
-      success_url: `${window.location.origin}/user/${successUrl}/results?sessionId=${docId}`,
-      cancel_url: `${window.location.origin}/user/profil/`,
+      success_url: successCheckoutUrl,
+      cancel_url: cancelCheckoutUrl,
     })
 
     return await new Promise<void>((resolve, reject) => {
