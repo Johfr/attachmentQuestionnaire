@@ -311,7 +311,7 @@ const scrollToPremiumZone = () => {
         <img
           src="~/assets/img/dimension-anxiety-avoidance-graphique2.png"
           alt="Graphique des dimensions anxiete et evitement"
-          class="md:max-w-[48%] h-full my-5 md:my-0 rounded-lg border md:hover:shadow-lg md:hover:scale-[2.1] md:hover:z-10 md:hover:relative md:hover:left-[26%] transition-transform duration-700 "
+          class="w-full h-full max-h-52 object-contain md:object-cover my-5 md:my-0 rounded-lg border md:max-w-[48%] md:max-h-full md:hover:shadow-lg md:hover:scale-[2.1] md:hover:z-10 md:hover:relative md:hover:left-[26%] transition-transform duration-700 "
         />
       </div>
 
