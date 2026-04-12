@@ -30,6 +30,19 @@ import type {
   ComputeAttachmentResultsApiResponse,
 } from '../../app/types/attachmentQuestionnaireResults'
 
+const mockBillingStore = vi.hoisted(() => ({
+  hasPaidResults: false,
+  hasPaidIa: false,
+  hasPaidMembership: false,
+  hasPaidFormation: false,
+  checkUserPermissions: vi.fn().mockResolvedValue(undefined),
+  goToCheckout: vi.fn().mockResolvedValue(undefined),
+}))
+
+vi.mock('~/stores/billing', () => ({
+  useBillingStore: vi.fn(() => mockBillingStore),
+}))
+
 // Drain the microtask queue without relying on setTimeout (safe with fake timers).
 // $fetch through @nuxt/test-utils registerEndpoint resolves over several microtask
 // cycles, so a few extra Promise turns keep assertions stable.
@@ -67,6 +80,9 @@ mockComponent('~/components/attachmentQuestionnaire/DoughnutChart.vue', () => ({
 }))
 mockComponent('~/components/attachmentQuestionnaire/PolarChart.vue', () => ({
   template: '<div class="stub-polar" />',
+}))
+mockComponent('~/components/GoDeeper.vue', () => ({
+  template: '<div class="stub-go-deeper" />',
 }))
 
 // Wizard store mock
@@ -130,6 +146,11 @@ describe('attachment-questionnaire/results (hot / first render)', () => {
     mockApiHandler.mockReset()
     mockWizardState.result = [{ id: 1, dimension: 'anxiety', value: 3, tags: ['fearOfLoss'] }]
     mockWizardState.isCompleted = true
+    mockBillingStore.hasPaidResults = false
+    mockBillingStore.hasPaidIa = false
+    mockBillingStore.hasPaidMembership = false
+    mockBillingStore.hasPaidFormation = false
+    mockBillingStore.checkUserPermissions.mockClear()
   })
 
   afterEach(() => {
@@ -148,6 +169,15 @@ describe('attachment-questionnaire/results (hot / first render)', () => {
     const wrapper = await mountSuspended(HotResultsPage)
     expect(wrapper.text()).not.toContain('Sauvegarde en cours')
     expect(wrapper.text()).not.toContain("n'ont pas pu etre sauvegardes")
+  })
+
+  it('keeps premium results locked on first hot-results render when the user has not paid', async () => {
+    mockApiHandler.mockResolvedValue(SUCCESS_RESPONSE)
+
+    const wrapper = await mountSuspended(HotResultsPage)
+
+    expect(wrapper.text()).toContain('Debloque l\'acces a tes sous profils anxieux et evitants')
+    expect(wrapper.text()).toContain('Lorem ipsum')
   })
 
   it('renders results even when persisted=false and sessionId is null', async () => {

@@ -380,19 +380,19 @@ const prepareIaCheckout = async () => {
       <div v-if="popinType === 'results'" class="md:flex md:justify-between md:gap-5">
         <div class="flex-1 mb-6 border p-5 rounded-3xl md:mb-0">
           <h3 class="text-lg font-bold mb-5">
-            <span class="block">Acces aux resultats</span>
+            <span class="block">Accès aux résultats</span>
             <span class="mr-1">1.99EUR</span>
             <span class="text-xs">(paiement unique)</span>
           </h3>
           <p class="mb-5 text-sm">
-            En cliquant sur le bouton ci-dessous, tu seras redirige vers la page de paiement. Une fois ton paiement valide, tu auras un acces immediat a :
+            En cliquant sur le bouton ci-dessous, tu seras redirigé vers la page de paiement. Une fois ton paiement validé, tu auras un accès immédiat à :
           </p>
           <ul class="list-disc list-inside mb-5">
-            <li class="mb-1 text-sm">Tous les resultats detailles de ton questionnaire d'attachement</li>
-            <li class="mb-1 text-sm">Y compris tes sous-profils anxieux et evitants</li>
-            <li class="mb-1 text-sm">La repartition detaillee de tes declencheurs</li>
-            <li class="mb-1 text-sm">Des conseils personnalises pour travailler sur tes mecanismes d'attachement</li>
-            <li class="mb-1 text-sm"><strong>Un acces a vie</strong> aux resultats des futurs passages du questionnaire</li>
+            <li class="mb-1 text-sm">Tous les résultats détaillés de ton questionnaire d'attachement</li>
+            <li class="mb-1 text-sm">Y compris tes sous-profils anxieux et évitants</li>
+            <li class="mb-1 text-sm">La répartition détaillée de tes déclencheurs</li>
+            <li class="mb-1 text-sm">Des conseils personnalisés pour travailler sur tes mécanismes d'attachement</li>
+            <li class="mb-1 text-sm"><strong>Un accès à vie</strong> aux résultats des futurs passages du questionnaire</li>
           </ul>
 
           <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">
@@ -422,10 +422,10 @@ const prepareIaCheckout = async () => {
             En souscrivant a notre abonnement, tu auras :
           </p>
           <ul class="list-disc list-inside mb-5">
-            <li class="mb-1 text-sm">Un acces total (resultats detailles, sous profils, repartition des declencheurs, conseils personnalises)</li>
-            <li class="mb-1 text-sm">L'acces aux analyses sur mesure personnalisees</li>
-            <li class="mb-1 text-sm">Un acces total aux resultats de tous les questionnaires du site</li>
-            <li class="mb-1 text-sm">Un acces total et prioritaire a tous les articles du site</li>
+            <li class="mb-1 text-sm">Un accès total (résultats détaillés, sous profils, répartition des déclencheurs, conseils personnalisés)</li>
+            <li class="mb-1 text-sm">L'accès aux analyses sur mesure personnalisées</li>
+            <li class="mb-1 text-sm">Un accès total aux résultats de tous les questionnaires du site</li>
+            <li class="mb-1 text-sm">Un accès total et prioritaire à tous les articles du site</li>
           </ul>
 
           <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">
@@ -453,17 +453,17 @@ const prepareIaCheckout = async () => {
             <span class="text-xs">(paiement unique)</span>
           </h3>
           <p class="mb-5 text-sm">
-            En cliquant sur le bouton ci-dessous, tu seras redirige vers la page de paiement. Une fois ton paiement valide, tu auras un acces immediat a :
+            En cliquant sur le bouton ci-dessous, tu seras redirigé vers la page de paiement. Une fois ton paiement valide, tu auras un accès immédiat à :
           </p>
 
           <ul class="list-disc text-sm pl-4 mb-5">
             <li v-if="!hasDetailedResultsAccess" class="mb-1">
-              L'ensemble de tes resultats debloques
+              L'ensemble de tes résultats débloqués
             </li>
-            <li class="mb-1">Une analyse personnalisee de ta situation amoureuse actuelle basee sur tes resultats au questionnaire d'attachement</li>
-            <li class="mb-1">Des conseils sur mesure pour avancer vers plus de securite dans ta relation actuelle</li>
+            <li class="mb-1">Une analyse personnalisée de ta situation amoureuse actuelle basée sur tes résultats au questionnaire d'attachement</li>
+            <li class="mb-1">Des conseils sur mesure pour avancer vers plus de sécurité dans ta relation actuelle</li>
             <li class="mb-1">Une grille de lecture et un plan d'action concret</li>
-            <li class="mb-1 text-sm"><strong>Un acces immediat</strong> aux resultats detailles de cette session</li>
+            <li class="mb-1 text-sm"><strong>Un accès immédiat</strong> aux résultats détaillés de cette session</li>
           </ul>
 
           <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">
@@ -477,7 +477,7 @@ const prepareIaCheckout = async () => {
             <span v-if="preparingIaCheckout || checkoutType === 'ia'">
               <LucideLoader class="animate-spin inline-block" :size="20" />
             </span>
-            <span v-else>Recevoir mon analyse personnalisee</span>
+            <span v-else>Recevoir mon analyse personnalisée</span>
           </button>
         </div>
 
@@ -485,19 +485,19 @@ const prepareIaCheckout = async () => {
         <div v-if="false" class="flex-1 p-5 border rounded-3xl bg-gradient-to-tr from-yellow-700 to-yellow-200 text-black shadow-xl">
           <h3 class="text-lg font-bold">
             Abonnement Membership - 6.99EUR/mois
-            <span class="text-xs">(annulable a tout moment)</span>
+            <span class="text-xs">(annulable à tout moment)</span>
           </h3>
-          <!-- tag : recommande. le parent a deja un degrade yellow. adapter les couleurs du tag -->
-          <span class="inline-block text-xs px-2 py-1 rounded-full mb-2 bg-yellow-700 text-white">Recommande</span>
+          <!-- tag : recommandé. le parent a déjà un dégradé yellow. adapter les couleurs du tag -->
+          <span class="inline-block text-xs px-2 py-1 rounded-full mb-2 bg-yellow-700 text-white">Recommandé</span>
 
           <p class="mt-5 mb-5 text-sm">
-            En souscrivant a notre abonnement, tu auras :
+            En souscrivant à notre abonnement, tu auras :
           </p>
           <ul class="list-disc list-inside mb-5">
-            <li class="mb-1 text-sm">Un acces total (resultats detailles, sous profils, repartition des declencheurs, conseils personnalises)</li>
-            <li class="mb-1 text-sm">L'acces aux analyses sur mesure personnalisees</li>
-            <li class="mb-1 text-sm">Un acces total aux resultats de tous les questionnaires du site</li>
-            <li class="mb-1 text-sm">Un acces total et prioritaire a tous les articles du site</li>
+            <li class="mb-1 text-sm">Un accès total (résultats détaillés, sous profils, répartition des déclencheurs, conseils personnalisés)</li>
+            <li class="mb-1 text-sm">L'accès aux analyses sur mesure personnalisées</li>
+            <li class="mb-1 text-sm">Un accès total aux résultats de tous les questionnaires du site</li>
+            <li class="mb-1 text-sm">Un accès total et prioritaire à tous les articles du site</li>
           </ul>
 
           <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">

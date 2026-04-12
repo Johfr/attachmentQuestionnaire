@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { PROFILE_SESSIONS_REFRESH_FLAG } from '~/constants/profileRefresh'
+
 definePageMeta({
   middleware: ["auth", "questionnaire-results-guard"],
   requiresAuth: true,
@@ -13,6 +15,10 @@ const { computedResults, sessionId, persisted, persistRetryFailed, computeError,
   useAttachmentResultsPersistRetry()
 
 await load()
+
+if (import.meta.client && computedResults.value) {
+  window.sessionStorage.setItem(PROFILE_SESSIONS_REFRESH_FLAG, '1')
+}
 
 const resetStore = () => {
   questionnaireWizardStore.reset()

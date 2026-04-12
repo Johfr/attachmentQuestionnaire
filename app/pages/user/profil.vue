@@ -5,6 +5,7 @@ import { useBillingStore } from '~/stores/billing'
 import { useQuestionnaireSessionsStore } from '~/stores/questionnaireSessions'
 import type { QuestionnaireSession } from '~/types/questionnaireSessions'
 import { getProfileLabel } from '~/utils/attachmentProfileTranslations'
+import { PROFILE_SESSIONS_REFRESH_FLAG } from '~/constants/profileRefresh'
 
 definePageMeta({
   middleware: ["auth"],
@@ -23,6 +24,17 @@ const isSubmitting = ref(false)
 const portalError = ref<string | null>(null)
 const isPortalLoading = ref(false)
 const dashboardLoadError = ref<string | null>(null)
+
+const consumeProfileSessionsRefreshFlag = () => {
+  if (!import.meta.client) return false
+
+  const shouldRefresh = window.sessionStorage.getItem(PROFILE_SESSIONS_REFRESH_FLAG) === '1'
+  if (shouldRefresh) {
+    window.sessionStorage.removeItem(PROFILE_SESSIONS_REFRESH_FLAG)
+  }
+
+  return shouldRefresh
+}
 
 const historySessions = computed(() => {
   return sessionsStore.sortedSessions.filter(session => session.status === 'completed')
@@ -51,9 +63,10 @@ watch(
   async (loggedIn) => {
     if (loggedIn) {
       dashboardLoadError.value = null
+      const shouldForceSessionsReload = consumeProfileSessionsRefreshFlag()
       try {
         await Promise.all([
-          sessionsStore.loadSessions(),
+          sessionsStore.loadSessions(shouldForceSessionsReload),
           billingStore.loadPurchaseHistory(),
         ])
       } catch {
