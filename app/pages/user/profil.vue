@@ -16,6 +16,7 @@ useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
 const authStore = useAuthStore()
 const billingStore = useBillingStore()
 const sessionsStore = useQuestionnaireSessionsStore()
+const { isDarkMode, initThemeMode, toggleThemeMode } = useThemeMode()
 const isLoggedIn = computed(() => authStore.isLoggedIn)
 const user = computed(() => authStore.user)
 const isSubmitting = ref(false)
@@ -156,6 +157,10 @@ const handleAuthAction = async () => {
     isSubmitting.value = false
   }
 }
+
+onMounted(() => {
+  initThemeMode()
+})
 </script>
 
 <template>
@@ -179,7 +184,8 @@ const handleAuthAction = async () => {
         {{ dashboardLoadError }}
       </p>
 
-      <div class="flex items-center flex-wrap">
+      <div class="flex items-end flex-wrap gap-3">
+        <!-- user -->
         <div class="flex flex-col items-center">
           <p class="font-bold">
             {{ user?.name }}, {{ user?.age }} ans
@@ -188,22 +194,36 @@ const handleAuthAction = async () => {
           <span
             v-for="tag in activeSubscriptionTags"
             :key="tag"
-            class="text-xs font-semibold px-3 py-1 rounded-full bg-green-200 text-green-600"
+            class="rounded-full bg-theme-successBadgeBg px-3 py-1 text-xs font-semibold text-theme-successBadgeText"
           >
             {{ accessTypeLabels[tag] ?? tag }}
           </span>
         </div>
 
+        <!-- logout -->
         <button
           type="button"
-          class="flex items-center justify-center gap-2 ml-5 py-2 px-4 text-xs text-white  disabled:opacity-60 rounded-3xl bg-rust"
+          class="flex items-center justify-center gap-2 py-2 px-4 text-xs bg-theme-button text-theme-buttonText  disabled:opacity-60 rounded-3xl"
           title="Se déconnecter"
           :disabled="isSubmitting"
           @click="handleAuthAction"
         >
-          <span>Déconnection</span>
+          <span>Déconnexion</span>
           <LucidePowerOff v-if="isLoggedIn" :size="18" />
           <LucidePower v-else :size="18" />
+        </button>
+
+        <!-- swith theme color -->
+        <button
+          type="button"
+          class="flex items-center justify-center gap-2 py-2 px-4 text-xs disabled:opacity-60 rounded-3xl md:hidden"
+          :class="isDarkMode ? 'bg-theme-buttonText text-theme-button' : 'bg-theme-button text-theme-buttonText'"
+          title="Changer le mode"
+          @click="toggleThemeMode"
+        >
+          <LucideSun v-if="isDarkMode" :size="18" />
+          <LucideMoon v-else :size="18" />
+          <span>Theme</span>
         </button>
       </div>
 
@@ -226,14 +246,15 @@ const handleAuthAction = async () => {
           v-for="session in historySessions"
           :key="session.id"
           :to="`/user/attachment-questionnaire/results?sessionId=${session.id}`"
-          class="flex justify-between items-center md:items-end gap-4 p-4 rounded-2xl bg-white border border-gray-200 hover:border-rust transition-colors"
+          class="flex justify-between items-center gap-4 rounded-2xl border border-transparent bg-theme-surfaceLinkCard p-4 transition-colors hover:border-theme-button md:items-end"
         >
           <div class="">
+            <!-- Initial du user + partner -->
             <p class="flex my-2 text-xs uppercase text-gray-400">
-              <span class="flex justify-center items-center w-6 h-6 p-2 rounded-full bg-primary border border-solid" :title="user?.name">
+              <span class="flex justify-center items-center w-6 h-6 p-2 rounded-full bg-primary" :title="user?.name">
                 {{ user?.name?.split('')[0] }}
               </span>
-              <span class="flex justify-center items-center w-6 h-6 -ml-1 p-2 rounded-full bg-secondary border border-solid" :title="session?.relationContext?.partnerFirstName ?? undefined">
+              <span class="flex justify-center items-center w-6 h-6 -ml-1 p-2 rounded-full bg-secondary" :title="session?.relationContext?.partnerFirstName ?? undefined">
                 {{ session?.relationContext?.partnerFirstName?.split('')[0] }}
               </span>
             </p>
@@ -282,7 +303,7 @@ const handleAuthAction = async () => {
       </p>
 
       <div v-else class="space-y-3">
-        <div class="p-4 rounded-2xl bg-white border border-gray-200">
+        <div class="rounded-2xl bg-theme-surfaceStaticCard p-4">
           <div class="flex items-center justify-between gap-4">
             <div>
               <p class="font-bold text-gray-800">
@@ -296,7 +317,7 @@ const handleAuthAction = async () => {
             <a
               :href="EBOOK_DOWNLOAD_URL"
               download
-              class="inline-flex items-center gap-2 py-3 px-5 text-sm font-semibold text-white bg-rust rounded-3xl hover:opacity-90 transition-all"
+              class="inline-flex items-center gap-2 py-3 px-5 text-sm font-semibold bg-theme-button text-theme-buttonText rounded-3xl hover:opacity-90 transition-all"
             >
               <LucideDownload :size="16" />
               Telecharger
@@ -324,7 +345,7 @@ const handleAuthAction = async () => {
             <div
               v-for="sub in billingStore.subscriptions"
               :key="sub.id"
-              class="p-4 rounded-2xl bg-white border border-gray-200"
+              class="rounded-2xl bg-theme-surfaceStaticCard p-4"
             >
               <div class="flex items-center justify-between">
                 <p class="font-bold text-gray-800">
@@ -354,7 +375,7 @@ const handleAuthAction = async () => {
 
             <button
               type="button"
-              class="flex items-center gap-2 mt-4 py-2 px-5 text-sm font-semibold text-white bg-rust rounded-3xl hover:opacity-90 disabled:opacity-60 transition-all"
+              class="flex items-center gap-2 mt-4 py-2 px-5 text-sm font-semibold bg-theme-button text-theme-buttonText rounded-3xl hover:opacity-90 disabled:opacity-60 transition-all"
               :disabled="isPortalLoading"
               @click="handleOpenPortal"
             >
@@ -381,7 +402,7 @@ const handleAuthAction = async () => {
           <div
             v-for="payment in oneShotPayments"
             :key="payment.id"
-            class="p-4 rounded-2xl bg-white border border-gray-200"
+            class="rounded-2xl bg-theme-surfaceStaticCard p-4"
           >
             <div class="flex items-center justify-between">
               <p class="font-bold text-gray-800">
@@ -410,4 +431,21 @@ const handleAuthAction = async () => {
 </template>
 
 <style lang="scss" scoped>
+.bg-white {
+  background-color: var(--card);
+}
+
+.border-gray-200 {
+  border-color: var(--border);
+}
+
+.text-gray-800,
+.text-gray-700 {
+  color: var(--text);
+}
+
+.text-gray-500,
+.text-gray-400 {
+  color: var(--text-muted);
+}
 </style>

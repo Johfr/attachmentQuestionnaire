@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import questions from '~/assets/data/questions.json'
-import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
 import type { QuestionResult, AttachmentQuestion } from '~/types/attachmentQuestionnaireResults'
 
 definePageMeta({
@@ -10,7 +9,6 @@ definePageMeta({
 
 useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
 
-// const router = useRouter()
 const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore()
 const questionList = questions.questions as unknown as AttachmentQuestion[]
 
@@ -23,7 +21,6 @@ if (!questionnaireWizardStore.hasStarted) {
 }
 
 const handleComplete = async (result: QuestionResult[]) => {
-  // console.log(result)
   questionnaireWizardStore.complete(result)
   await navigateTo('/attachment-questionnaire/results')
 }
@@ -56,11 +53,11 @@ const goHome = async () => {
 
 <template>
   <section>
-    <button @click="goHome" class="text-blue-700 text-xs md:text-sm flex items-center">
+    <button @click="goHome" class="mt-5 mb-6 flex items-center text-xs text-theme-text md:text-sm">
       <LucideArrowLeft :size="16" />
       Retour à l'accueil
     </button>
-    <h1 class="text-3xl font-bold my-8">Questionnaire d'attachement adulte</h1>
+    <h1 class="text-3xl font-bold my-8 text-center">Questionnaire d'attachement adulte</h1>
     <AttachmentQuestionnaireForm
       :questions="questionList"
       @complete="handleComplete"
@@ -68,8 +65,3 @@ const goHome = async () => {
   </section>
 </template>
 
-<style>
-h1 {
-  text-align: center;
-}
-</style>

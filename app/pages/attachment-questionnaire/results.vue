@@ -37,9 +37,9 @@ onBeforeRouteLeave((to) => {
 
 <template>
   <section>
-    <button @click="goHome" class="text-blue-700 text-xs md:text-sm flex items-center">
+    <button @click="goHome" class="mt-5 mb-6 flex items-center text-xs text-theme-text md:text-sm">
       <LucideArrowLeft :size="16" />
-      Retour a l'accueil
+      Retour à l'accueil
     </button>
     <h1 class="text-xl font-bold text-center md:text-4xl md:max-w-144 md:mx-auto">Tes resultats au Questionnaire d'attachement adulte</h1>
     <p class="text-sm md:text-base text-center text-gray-600">Decouvre ton style d'attachement</p>

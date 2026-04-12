@@ -66,18 +66,18 @@ const nextStep = () => {
 <template>
   <section>
     <h1 title="Questionnaire d'attachement adulte">Questionnaire d'attachement adulte</h1>
-    <p class="subtitle text-gray-500">
+    <p class="subtitle text-theme-muted">
       <LucideClock5 :size="12" class="mr-2" />
       Duree estimee : 8-15 minutes
     </p>
 
-    <div class="mt-4 p-6 text-sm text-gray-700 text-center bg-white border border-solid border-gray-300 rounded-3xl">
+    <div class="mt-4 p-6 text-sm text-gray-700 text-center bg-white rounded-3xl">
       <p>
         Tu t'appretes a passer le test pour definir ton type d'attachement adulte en couple. Il y a 20 questions, chacune avec 5 options de reponse. Choisis celle qui te correspond le mieux pour chaque question. Il n'y a pas de bonnes ou de mauvaises reponses, sois simplement honnete avec toi-meme.
       </p>
     </div>
 
-    <div class="mt-4 p-6 text-sm text-gray-700 text-center bg-white border border-solid border-gray-300 rounded-3xl">
+    <div class="mt-4 p-6 text-sm text-gray-700 text-center bg-white rounded-3xl">
       <p class="mb-2">
         Ce questionnaire explore tes reactions face au silence, a la distance, aux periodes de tension, a la peur de perdre l'autre. Il vise a identifier ton style d'attachement (anxieux, evitant, secure, desorganise) et a t'aider a mieux comprendre tes schemas relationnels.
       </p>
@@ -86,7 +86,7 @@ const nextStep = () => {
       </p>
     </div>
 
-    <div class="flex flex-col mt-4 p-6 text-sm text-gray-800 text-center bg-red-100 border border-solid border-gray-300 rounded-3xl">
+    <div class="flex flex-col mt-4 p-6 text-sm text-gray-800 text-center bg-red-100 rounded-3xl">
       <p class="mb-2">
         Commence ce questionnaire seulement quand tu peux aller jusqu'au bout.
       </p>
@@ -102,7 +102,7 @@ const nextStep = () => {
       {{ accessBlockedMessage }}
     </p>
 
-    <section v-if="!user && !accessBlockedMessage" class="mt-8 p-4 rounded-3xl bg-white">
+    <section v-if="!user && !accessBlockedMessage" class="intro-form-shell mt-8 rounded-3xl bg-theme-surfaceFormCard p-4 text-theme-text">
       <h2 class="mb-3">Personnalise ton experience</h2>
 
       <h3 class="mt-0 mb-2 text-xs font-semibold uppercase">A propos de toi</h3>
@@ -110,19 +110,19 @@ const nextStep = () => {
       <LoginForm v-if="!user" ref="loginFormData"/>
     </section>
 
-    <section v-if="!accessBlockedMessage" class="mt-4 mb-4 p-4 rounded-3xl bg-white">
-      <div class="my-2 leading-6 rounded-3xl bg-white">
+    <section v-if="!accessBlockedMessage" class="mt-4 mb-4 rounded-3xl bg-theme-surfaceFormCard p-4 text-theme-text">
+      <div class="my-2 rounded-3xl bg-transparent leading-6">
         <h3 class="mt-0 text-xs font-semibold uppercase">
           A propos de ton/ta partenaire
           <span>(Facultatif)</span>
         </h3>
         <label for="partnerFirstName" class="flex flex-col mt-2 text-sm" >
           Son prenom
-          <input v-model="partnerName" type="text" id="partnerFirstName" name="partnerFirstName" autocomplete="off" placeholder="Ex: Camille" class="mt-2 p-3 text-sm border border-solid rounded-2xl text-gray-700" />
+          <input v-model="partnerName" type="text" id="partnerFirstName" name="partnerFirstName" autocomplete="off" placeholder="Ex: Camille" class="mt-2 rounded-2xl border border-solid border-theme-partnerFormInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         </label>
         <label for="partnerAge" class="flex flex-col mt-2 text-sm">
           Son age
-          <input v-model="partnerAge" type="number" id="partnerAge" name="partnerAge" autocomplete="off" placeholder="Ex: 30" class="mt-2 p-3 text-sm border border-solid rounded-2xl text-gray-700" />
+          <input v-model="partnerAge" type="number" id="partnerAge" name="partnerAge" autocomplete="off" placeholder="Ex: 30" class="mt-2 rounded-2xl border border-solid border-theme-partnerFormInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         </label>
       </div>
     </section>
@@ -137,7 +137,7 @@ const nextStep = () => {
       <LucideMoveRight v-if="!isSubmitting" :size="16" />
     </button>
 
-    <p class="mt-5 text-xs text-gray-500 text-center">
+    <p class="mt-5 text-center text-xs text-theme-muted">
       Vos donnees personnelles restent privees et ne sont utilisees que pour personnaliser votre experience. Elles ne sont pas partagees avec des tiers et sont protegees conformement a notre politique de confidentialite.
     </p>
   </section>
@@ -207,4 +207,5 @@ h2 {
   display: flex;
   align-items: center;
 }
+
 </style>

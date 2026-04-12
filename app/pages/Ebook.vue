@@ -51,14 +51,14 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
         class="w-full h-full mb-8 rounded-lg shadow-md object-contain md:max-w-[55%]"
       />
 
-      <div class="flex flex-col p-4 space-y-7 text-gray-900 md:max-w-[45%]">
+      <div class="flex flex-col p-4 space-y-7 text-theme-text md:max-w-[45%]">
         <!-- entete -->
         <h2 class="text-4xl leading-normal md:max-w-[80%] md:text-4xl md:leading-normal">
           Ebook : Tout comprendre sur la relation anxieux-évitant
         </h2>
 
         <button
-          class="px-4 py-4 bg-blue-500 text-white rounded-full w-full disabled:opacity-60"
+          class="px-4 py-4 bg-theme-button text-theme-buttonText rounded-full w-full disabled:opacity-60"
           :disabled="checkoutType === 'ebook'"
           @click="goToCheckout('ebook', 'ebook', 'ebook')"
         >
@@ -76,7 +76,7 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
         </p>
 
         <!-- encart accroche -->
-        <div class="p-6 bg-white rounded-3xl border-l-4 border-solid border-gray-600">
+        <div class="rounded-3xl bg-theme-surfaceStaticCard p-6">
           <p>
             Pourquoi certaines relations semblent intenses mais impossibles à faire durer ?
             Pourquoi plus l'un s'accroche et l'autre fuit ?
@@ -110,7 +110,7 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
           Si tu veux comprendre en profondeur la dynamique <strong>anxieux-évitant</strong>, les <strong>blessures d'attachement</strong> qui la sous-tendent et les pistes pour en sortir, cet ebook est fait pour toi.
         </p>
 
-        <em>Vous obtiendrez un fichier PDF (537KB)</em>
+        <em class="text-theme-muted">Vous obtiendrez un fichier PDF (537KB)</em>
       </div>
     </div>
   </section>

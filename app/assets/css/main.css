@@ -7,21 +7,253 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--bg);
 }
+
+:root {
+  --bg: #fff8f6;
+  --bg-elevated: #f7eee9;
+  --text: #2f241f;
+  --text-muted: #76635c;
+  --border: #dcc8bf;
+  --card: #ffffff;
+  --card-muted: #f3e6e0;
+  --card-soft: #f6ede8;
+  --panel: #f1e2dd;
+  --surface-primary: #ecf3fd;
+  --surface-secondary: #faecf1;
+  --surface-slate: #dfe8ff;
+  --light-brown: #d4c9c4;
+  --accent: #a7482f;
+  --accent-soft: #b86245;
+  --accent-strong: #cf7d65;
+  --nav-bg: #fff8f6;
+  --nav-text: #8b6d63;
+  --nav-active: #b5792d;
+  --nav-divider: #c4b8b1;
+  --button-dark: #00173d;
+  --button-dark-text: #f6efea;
+  --button-primary: #1f4fae;
+  --button-primary-text: #f4f8ff;
+  --button-rust: #a7482f;
+  --button-rust-text: #fff3ed;
+  --link: #3f8cff;
+  --overlay: rgba(10, 10, 10, 0.5);
+  --success-badge-bg: #dcfce7;
+  --success-badge-text: #166534;
+  --surface-link-card: #ffffff;
+  --surface-static-card: #ffffff;
+  --surface-intro-card: #ffffff;
+  --surface-results-global-profile: #ffffff;
+  --surface-question-card: #ffffff;
+  --surface-form-card: #ffffff;
+  --surface-form-input: #ffffff;
+  --questionnaire-input-border: #d1d5db;
+  --form-input-border: #d1d5db;
+  --partner-form-input-border: #d1d5db;
+  --history-card-hover-border: #dcc8bf;
+  --progressBar-bg: #d1d5db;
+  --question-active-border: rgb(34, 0, 128);
+  --results-surface: #ffffff;
+  --results-surface-alt: #f6ede8;
+  --results-surface-muted: #f3e6e0;
+  --results-global-profile-bg: #ffffff;
+  --results-subprofile-anxiety-bg: #bae6fd;
+  --results-subprofile-avoidance-bg: #fecdd3;
+  --results-trigger-anxiety-border: #bae6fd;
+  --results-trigger-avoidance-border: #fecdd3;
+  --results-donut-track: #d1d5db;
+  --results-donut-anxiety-text: #0369a1;
+  --results-donut-avoidance-text: #be123c;
+  --results-trigger-high-text: #dc2626;
+  --results-trigger-high-bg: #dc2626;
+  --results-trigger-medium-text: #ca8a04;
+  --results-trigger-medium-bg: #ca8a04;
+  --results-trigger-low-text: #16a34a;
+  --results-trigger-low-bg: #16a34a;
+  --results-overlay: rgba(255, 255, 255, 0.72);
+  --account-section-card-bg: #ffffff;
+  --static-card-bg: #ffffff;
+  --modal-bg: #ffffff;
+  --modal-text: #2f241f;
+  --modal-muted: #76635c;
+  --modal-close: #8b7b71;
+  --modal-close-hover: #5f514a;
+  --modal-close-ring: #d8cdc5;
+  --modal-overlay: rgba(10, 10, 10, 0.58);
+
+  --primary-color: rgb(54, 112, 226);
+  --primary-color-light: rgba(54, 112, 226, 0.1);
+  --secondary-color: rgb(254, 205, 211);
+  --tertiary-color: #456564;
+  --text-color: var(--text);
+  --button-color: var(--button-dark);
+}
+
+:root.dark,
+:root[data-theme='dark'] {
+  --bg: #5a1504;
+  --bg-elevated: #6a1f0b;
+  --text: #f1ece7;
+  --text-muted: #c4b8b1;
+  --border: #d48269;
+  --card: #18191b;
+  --card-muted: #18191b;
+  --card-soft: #18191b;
+  --panel: #392017;
+  --surface-primary: #2d3441;
+  --surface-secondary: #4a1f31;
+  --surface-slate: #606d79; /*f0f8ff 4c74b3*/
+  --light-brown: #8d7b74;
+  --accent: #d48269;
+  --accent-soft: #a55c46;
+  --accent-strong: #ea8c6d;
+  --nav-bg: #5a1504;
+  --nav-text: #ca8e79;
+  --nav-active: #dfac58;
+  --nav-divider: #c4b8b1;
+  --button-dark: #6684ab;
+  --button-dark-text: #efe8e2;
+  --button-primary: #1e4fb1;
+  --button-primary-text: #f4f7ff;
+  --button-rust: #863a26;
+  --button-rust-text: #fff1ea;
+  --link: #56a0ff;
+  --overlay: rgba(8, 8, 10, 0.68);
+  --success-badge-bg: #0a5631;
+  --success-badge-text: #8ff0b5;
+  --surface-link-card: #141415;
+  --surface-static-card: #392017;
+  --surface-intro-card: #ffffff;
+  --surface-results-global-profile: #221715;
+  --surface-question-card: #18191b;
+  --surface-form-card: #18191b;
+  --surface-form-input: #000000;
+  --form-input-border: transparent;
+  --partner-form-input-border: #d1d5db;
+  --history-card-hover-border: #9ca3af;
+  --progressBar-bg: #18191b;
+  --question-active-border: rgb(34, 0, 128);
+  --results-surface: #18191b;
+  --results-surface-alt: #4a1024;
+  --results-surface-muted: #221715;
+  --results-global-profile-bg: #221715;
+  --results-subprofile-anxiety-bg: #1f3345;
+  --results-subprofile-avoidance-bg: #4a1024;
+  --results-trigger-anxiety-border: #bae6fd;
+  --results-trigger-avoidance-border: #fecdd3;
+  --results-donut-track: #d1d5db;
+  --results-donut-anxiety-text: #0e7cc9;
+  --results-donut-avoidance-text: #d91f55;
+  --results-trigger-high-text: #ff4d4d;
+  --results-trigger-high-bg: #cf2626;
+  --results-trigger-medium-text: #f5c245;
+  --results-trigger-medium-bg: #bc8800;
+  --results-trigger-low-text: #5ae79a;
+  --results-trigger-low-bg: #17934a;
+  --results-overlay: rgba(24, 25, 27, 0.82);
+  --account-section-card-bg: #392017;
+  --static-card-bg: #392017;
+  --modal-bg: #18191b;
+  --modal-text: #f1ece7;
+  --modal-muted: #b9aea7;
+  --modal-close: #b3a696;
+  --modal-close-hover: #f1ece7;
+  --modal-close-ring: #7b7266;
+  --modal-overlay: rgba(0, 0, 0, 0.78);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #5a1504;
+    --bg-elevated: #6a1f0b;
+    --text: #f1ece7;
+    --text-muted: #c4b8b1;
+    --border: #d48269;
+    --card: #18191b;
+    --card-muted: #18191b;
+    --card-soft: #18191b;
+    --panel: #392017;
+    --surface-primary: #2d3441;
+    --surface-secondary: #4a1f31;
+    --surface-slate: #606d79;
+    --light-brown: #8d7b74;
+    --accent: #d48269;
+    --accent-soft: #a55c46;
+    --accent-strong: #ea8c6d;
+    --nav-bg: #5a1504;
+    --nav-text: #ca8e79;
+    --nav-active: #dfac58;
+    --nav-divider: #c4b8b1;
+    --button-dark: #6684ab;
+    --button-dark-text: #efe8e2;
+    --button-primary: #1e4fb1;
+    --button-primary-text: #f4f7ff;
+    --button-rust: #863a26;
+    --button-rust-text: #fff1ea;
+    --link: #56a0ff;
+    --overlay: rgba(8, 8, 10, 0.68);
+    --success-badge-bg: #0a5631;
+    --success-badge-text: #8ff0b5;
+    --surface-link-card: #141415;
+    --surface-static-card: #392017;
+    --surface-intro-card: #ffffff;
+    --surface-results-global-profile: #221715;
+    --surface-question-card: #18191b;
+    --surface-form-card: #18191b;
+    --surface-form-input: #000000;
+    --form-input-border: transparent;
+    --partner-form-input-border: transparent;
+    --history-card-hover-border: #9ca3af;
+    --progressBar-bg: #18191b;
+    --question-active-border: rgb(34, 0, 128);
+    --results-surface: #18191b;
+    --results-surface-alt: #4a1024;
+    --results-surface-muted: #221715;
+    --results-global-profile-bg: #221715;
+    --results-subprofile-anxiety-bg: #1f3345;
+    --results-subprofile-avoidance-bg: #4a1024;
+    --results-trigger-anxiety-border: #bae6fd;
+    --results-trigger-avoidance-border: #fecdd3;
+    --results-donut-track: #d1d5db;
+    --results-donut-anxiety-text: #0e7cc9;
+    --results-donut-avoidance-text: #d91f55;
+    --results-trigger-high-text: #ff4d4d;
+    --results-trigger-high-bg: #cf2626;
+    --results-trigger-medium-text: #f5c245;
+    --results-trigger-medium-bg: #bc8800;
+    --results-trigger-low-text: #5ae79a;
+    --results-trigger-low-bg: #17934a;
+    --results-overlay: rgba(24, 25, 27, 0.82);
+    --account-section-card-bg: #392017;
+    --static-card-bg: #392017;
+    --modal-bg: #18191b;
+    --modal-text: #f1ece7;
+    --modal-muted: #b9aea7;
+    --modal-close: #b3a696;
+    --modal-close-hover: #f1ece7;
+    --modal-close-ring: #7b7266;
+    --modal-overlay: rgba(0, 0, 0, 0.78);
+  }
+}
+
+:root.dark .font-semibold,
+:root[data-theme='dark'] .font-semibold {
+  font-weight: 400;
+}
+
+:root.dark .font-bold,
+:root[data-theme='dark'] .font-bold {
+  font-weight: 500;
+}
+
 body {
   font-family: 'Inter', Arial, sans-serif;
   font-weight: 400;
   margin: 0;
   padding: 0;
-  /* background-color: #fbfbfb; */
-  background-color: #f7f9fc;
-
-  --primary-color: rgb(54, 112, 226);
-  --primary-color-light: rgba(54, 112, 226, 0.1);
-  --secondary-color: rgb(254, 205, 211); /*#fecdd3*/
-  --tertiary-color: #456564;
-  --text-color: #333;
-  --button-color: rgb(34, 0, 128);
+  background-color: var(--bg);
+  color: var(--text);
 }
 fieldset {
   margin: 0;
@@ -34,6 +266,14 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  color: inherit;
 }
 
 .submit-button {

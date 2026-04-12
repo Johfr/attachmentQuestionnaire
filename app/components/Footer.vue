@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <nav class="hidden justify-between items-center p-5 gap-5 font-serif text-gray-500 border-t border-solid border-gray-300 bg-lightPeach fixed bottom-0 left-0 right-0 z-10 md:flex md:static">
+  <nav class="hidden justify-between items-center p-5 gap-5 font-serif text-theme-navText border-t border-solid border-theme-navDivider bg-theme-nav fixed bottom-0 left-0 right-0 z-10 md:flex md:static">
     <routerLink to="/" class="flex flex-wrap justify-center" title="Accueil">
       <LucideHeartPulse :size="30" class="fill-rust stroke-white" />
       <span class="text-xs md:hidden">
@@ -41,7 +41,7 @@
 <style lang="scss" scoped>
 .router-link-active {
   font-weight: bold;
-  color: #b5651d; /* Rust color */
+  color: var(--nav-active);
   position: relative;
 
   &:after {
@@ -55,7 +55,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #b5651d; /* Rust color */
+    background-color: var(--nav-active);
     margin-top: 4px;
   }
 }

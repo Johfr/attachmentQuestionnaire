@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue'
 import type { QuestionResult, AttachmentQuestion, AttachmentDimension } from '~/types/attachmentQuestionnaireResults'
 
 const props = defineProps<{
@@ -13,11 +14,40 @@ const currentQuestion = ref(1)
 const surveyCompleted = ref(false)
 const results = ref<QuestionResult[]>([])
 const isSubmitting = ref(false)
+const questionRefs = ref<Record<number, HTMLElement | null>>({})
+const submitButtonRef = ref<HTMLElement | null>(null)
+const MOBILE_BREAKPOINT = 960
+
+const setQuestionRef = (questionId: number, element: Element | ComponentPublicInstance | null) => {
+  questionRefs.value[questionId] = element instanceof HTMLElement ? element : null
+}
+
+const scrollToNextStep = async (nextQuestionId: number) => {
+  if (!import.meta.client || window.innerWidth >= MOBILE_BREAKPOINT) {
+    return
+  }
+
+  await nextTick()
+
+  if (surveyCompleted.value) {
+    submitButtonRef.value?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    })
+    return
+  }
+
+  questionRefs.value[nextQuestionId]?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  })
+}
 
 const getInputValue = (questionDimension: AttachmentDimension, questionId: number, value: number, questionTags: string[]) => {
   if (currentQuestion.value === questionId) {
     currentQuestion.value++
-  } 
+    void scrollToNextStep(currentQuestion.value)
+  }
   if (currentQuestion.value >= props.questions.length + 1) {
     surveyCompleted.value = true
   }
@@ -47,7 +77,12 @@ const submitForm = async () => {
 
 <template>
   <form>
-    <div v-for="question in questions" :key="question.id" v-show="currentQuestion >= question.id">
+    <div
+      v-for="question in questions"
+      :key="question.id"
+      v-show="currentQuestion >= question.id"
+      :ref="(element) => setQuestionRef(question.id, element)"
+    >
       <Transition name="slide-up" mode="out-in">
         <div v-if="currentQuestion >= question.id" class="question-wrapper">
           <div class="question-container" :class="question.id < currentQuestion ? 'active' : ''" >
@@ -95,7 +130,7 @@ const submitForm = async () => {
       </Transition>
     </div>
 
-    <button v-if="surveyCompleted" :disabled="isSubmitting" @click="submitForm" type="button" class="submit-button flex items-center justify-center gap-2 disabled:opacity-60">
+    <button v-if="surveyCompleted" ref="submitButtonRef" :disabled="isSubmitting" @click="submitForm" type="button" class="submit-button flex items-center justify-center gap-2 disabled:opacity-60">
       <LucideLoader v-if="isSubmitting" :size="16" class="loader-spin" />
       <span>Soumettre</span>
     </button>
@@ -111,7 +146,7 @@ $sm-resolution: 960px;
   display: flex;
   align-items: center;
   min-height: 65px;
-  background-color: #fff;
+  background-color: var(--surface-question-card);
   border-radius: 10px;
   position: relative;
   margin-bottom: 0.5rem;
@@ -150,7 +185,7 @@ $sm-resolution: 960px;
   border-radius: 10px;
 
   &.active {
-    border: 1px solid rgb(34, 0, 128);
+    border: 1px solid var(--question-active-border);
   }
 
   @media screen and (min-width: $sm-resolution) {
@@ -177,8 +212,6 @@ $sm-resolution: 960px;
     margin-bottom: 0;
     padding-right: 15px;
     padding-left: 15px;
-    border-right: 1px solid #ccc;
-    border-left: 1px solid #ccc;
     text-align: left;
 
     .question {
@@ -214,15 +247,15 @@ $sm-resolution: 960px;
     appearance: none;
     width: 35px;
     height: 35px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--questionnaire-input-border);
     border-radius: 50%; //4px
     cursor: pointer;
     transition: 0.3s ease;
   }
 
   input[type="radio"]:checked {
-    background-color: rgb(34, 0, 128);
-    border-color: rgb(34, 0, 128);
+    background-color: var(--question-active-border);
+    border-color: var(--question-active-border);
     color: #fff;
   }
 }
@@ -267,7 +300,7 @@ $sm-resolution: 960px;
     right: 0;
 
     &.active {
-      background-color: rgb(34, 0, 128);
+      background-color: var(--question-active-border);
     }
   }
 }

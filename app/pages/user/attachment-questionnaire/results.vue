@@ -41,7 +41,7 @@ const loadSession = async () => {
     loadingError.value = null
     computedResults.value = null
     sessionLoadingMessage.value = typeof route.query.sessionId === 'string'
-      ? 'Nous recuperons ta session et tes acces apres le paiement...'
+      ? 'Nous recuperons ta session et tes accès...'
       : 'Chargement de ta session...'
 
     await sessionsStore.loadSessions()
@@ -52,7 +52,7 @@ const loadSession = async () => {
 
       if (!selectedSession && import.meta.client) {
         for (let attempt = 1; attempt <= SESSION_LOOKUP_ATTEMPTS; attempt++) {
-          sessionLoadingMessage.value = `Nous recuperons ta session apres le paiement... (${attempt}/${SESSION_LOOKUP_ATTEMPTS})`
+          sessionLoadingMessage.value = `Nous recuperons ta sessièn... (${attempt}/${SESSION_LOOKUP_ATTEMPTS})`
           await wait(SESSION_LOOKUP_DELAY_MS)
           await sessionsStore.loadSessions(true)
           selectedSession = sessionsStore.getSessionById(requestedSessionId)
@@ -135,7 +135,7 @@ const scheduleBillingRefresh = (attempt = 0) => {
 
 if (import.meta.server) {
   sessionLoadingMessage.value = typeof route.query.sessionId === 'string'
-    ? 'Nous recuperons ta session et tes acces apres le paiement...'
+    ? 'Nous recuperons ta session et tes accès...'
     : 'Chargement de ta session...'
 } else {
   await loadSession()
@@ -163,28 +163,28 @@ onBeforeUnmount(() => {
 
 <template>
   <section>
-    <button @click="goBack" class="text-blue-700 text-xs md:text-sm flex items-center">
+    <button @click="goBack" class="mt-5 mb-6 flex items-center text-xs text-theme-text md:text-sm">
       <LucideArrowLeft :size="16" />
       Retour au profil
     </button>
-    <h1 class="text-xl font-bold text-center md:text-4xl md:max-w-144 md:mx-auto">Tes resultats au Questionnaire d'attachement adulte</h1>
-    <p class="text-sm md:text-base text-center text-gray-600">Decouvre ton style d'attachement</p>
-    <p v-if="computedResults" class="text-sm md:text-base text-center text-gray-600">
+    <h1 class="text-center text-xl font-bold text-theme-text md:mx-auto md:max-w-144 md:text-4xl">Tes resultats au Questionnaire d'attachement adulte</h1>
+    <p class="text-center text-sm text-theme-muted md:text-base">Decouvre ton style d'attachement</p>
+    <p v-if="computedResults" class="text-center text-sm text-theme-muted md:text-base">
       {{ computedResults.completionDate }}
     </p>
 
     <div class="my-10">
       <div
         v-if="isSessionLoading"
-        class="p-5 rounded-3xl bg-white border-l-4 border-blue-700"
+        class="rounded-3xl border-l-4 border-l-theme-resultsTriggerAnxietyBorder bg-theme-resultsSurface p-5"
       >
-        <div class="flex items-center text-sm text-blue-700">
+        <div class="flex items-center text-sm text-theme-link">
           <LucideLoader class="animate-spin inline-block mr-2" :size="18" />
           {{ sessionLoadingMessage }}
         </div>
       </div>
 
-      <p v-else-if="loadingError" class="text-red-600">{{ loadingError }}</p>
+      <p v-else-if="loadingError" class="text-theme-resultsTriggerHighText">{{ loadingError }}</p>
 
       <AttachmentQuestionnaireResults
         v-if="!isSessionLoading && computedResults && session"
@@ -203,6 +203,3 @@ onBeforeUnmount(() => {
     </div>
   </section>
 </template>
-
-<style>
-</style>

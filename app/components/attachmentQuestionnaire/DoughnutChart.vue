@@ -52,11 +52,31 @@ const props = defineProps({
     type: String,
     default: '#000'
   },
+  segmentBorderColor: {
+    type: String,
+    default: 'var(--results-donut-track)'
+  },
   showSecondaryTooltip: {
     type: Boolean,
     default: false
   }
 })
+
+const { themeMode } = useThemeMode()
+
+const resolveCanvasColor = (value, fallback) => {
+  if (!import.meta.client || typeof value !== 'string') return value || fallback
+
+  const trimmedValue = value.trim()
+  const cssVariableMatch = trimmedValue.match(/^var\((--[^)]+)\)$/)
+  if (!cssVariableMatch) return trimmedValue || fallback
+
+  const resolvedValue = getComputedStyle(document.documentElement)
+    .getPropertyValue(cssVariableMatch[1])
+    .trim()
+
+  return resolvedValue || fallback
+}
 
 const textCenterPlugin = {
   id: 'textCenter',
@@ -106,29 +126,33 @@ const chartData = computed(() => ({
   datasets: props.datasets
 }))
 
-const chartOptions = computed(() => ({
-  responsive: props.responsive,
-  cutout: props.cutout,
-  borderColor: '#ccc',
-  plugins: {
-    legend: props.legend,
-    textCenter: {
-      text: props.centerText,
-      fontSize: props.centerTextFontSize,
-      fontColor: props.centerTextFontColor
-    },
-    tooltip: {
-      callbacks: {
-        label: (context) => {
-          if (!props.showSecondaryTooltip && context.dataIndex > 0) {
-            return ''
+const chartOptions = computed(() => {
+  const activeTheme = themeMode.value
+
+  return {
+    responsive: props.responsive,
+    cutout: props.cutout,
+    borderColor: resolveCanvasColor(props.segmentBorderColor, activeTheme === 'dark' ? '#d1d5db' : '#ccc'),
+    plugins: {
+      legend: props.legend,
+      textCenter: {
+        text: props.centerText,
+        fontSize: props.centerTextFontSize,
+        fontColor: resolveCanvasColor(props.centerTextFontColor, activeTheme === 'dark' ? '#f1ece7' : '#000')
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            if (!props.showSecondaryTooltip && context.dataIndex > 0) {
+              return ''
+            }
+            return `${context.parsed}%`
           }
-          return `${context.parsed}%`
         }
       }
     }
   }
-}))
+})
 
 const canvasStyle = computed(() => ({
   width: typeof props.width === 'number' ? `${props.width}px` : props.width,

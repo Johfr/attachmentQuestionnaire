@@ -8,7 +8,7 @@ const { isLoginModalOpen } = storeToRefs(authStore)
 </script>
 
 <template>
-  <div class="default-layout bg-lightPeach">
+  <div class="default-layout bg-theme-bg text-theme-text">
     <div class="default-container pb-24">
       <header>
         <Navbar />

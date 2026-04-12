@@ -22,7 +22,8 @@ const { isLoginModalOpen } = storeToRefs(authStore)
 
 <style lang="scss" scoped>
 .questionnaire-layout {
-  background-color: #fff8f6;
+  background-color: var(--bg);
+  color: var(--text);
 }
 .questionnaire-wrapper{
   // max-width: 1260px;

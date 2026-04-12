@@ -168,9 +168,9 @@ const toggleProfileExplanation = (key: string) => {
 </script>
 
 <template>
-  <section class="p-5 mt-6 mb-6 bg-[#f1e2dd] rounded-3xl w-full md:max-w-[40%]">
+  <section class="p-5 mt-6 mb-6 bg-theme-panel rounded-3xl w-full md:max-w-[40%]">
     <p
-      class="flex justify-between items-center text-xs uppercase text-gray-400"
+      class="flex justify-between items-center text-xs uppercase text-theme-muted"
       :title="progressStore.hasResult ? `Voir les caractéristiques de l\'élément ${progressStore.element}` : 'Etat actuel'"
     >
       Etat actuel
@@ -182,7 +182,7 @@ const toggleProfileExplanation = (key: string) => {
         @click.self="showPopin = !showPopin"
       />
     </p>
-    <h2 class="mb-6 text-lg font-serif font-bold">
+    <h2 class="mb-6 text-lg font-serif">
       <template v-if="progressStore.hasResult">Niveau {{ progressStore.level }}</template>
       <template v-else>...</template>
     </h2>
@@ -203,20 +203,20 @@ const toggleProfileExplanation = (key: string) => {
         <span class="font-bold">{{ profileType }}</span>
       </p>
 
-      <p v-if="!progressStore.hasResult && !progressStore.isLoading" class="text-sm text-gray-400">
+      <p v-if="!progressStore.hasResult && !progressStore.isLoading" class="text-sm text-theme-muted">
         Passe le questionnaire pour découvrir ton niveau.
       </p>
     </div>
 
     <!-- progress bar  -->
-    <div class="w-full bg-[#d5d5d5] rounded-full h-2">
+    <div class="w-full bg-theme-progressBarBg rounded-full h-2">
       <div
         class="h-2 rounded-full"
         :class="progressStore.hasResult ? bgColorByElement[progressStore.element] : 'bg-gray-400'"
         :style="{ width: progressStore.progress + '%' }"
-      ></div>
+      />
     </div>
-    <p v-if="progressStore.hasResult" class="text-xs text-gray-500">
+    <p v-if="progressStore.hasResult" class="text-xs text-theme-muted">
       <template v-if="progressStore.level < 11">Progression vers le niveau {{ progressStore.level + 1 }}</template>
       <template v-else>Félicitation, tu as atteint un attachement sécure de haut niveau !</template>
     </p>
@@ -251,9 +251,27 @@ const toggleProfileExplanation = (key: string) => {
         <p class="text-sm text-gray-500 ">{{ levelsDefinitions.find(l => l.level === progressStore.level)?.description }}</p>
       </div>
 
+      <div class="flex flex-col items-start gap-2">
+        <RouterLink to="attachment-styles">
+          <button class="px-4 py-3 bg-theme-button text-theme-buttonText rounded-3xl text-sm">
+            En savoir plus sur les styles d'attachement
+            <LucideArrowRight :size="16" class="ml-2 inline-block" />
+          </button>
+        </RouterLink>
+
+        <RouterLink to="elements">
+          <button class="px-4 py-3 bg-theme-button text-theme-buttonText rounded-3xl text-sm">
+            En savoir plus sur les éléments
+            <LucideArrowRight :size="16" class="ml-2 inline-block" />
+          </button>
+        </RouterLink>
+      </div>
+      
       <!-- Style d'attachement -->
-      <div class="mb-8">
-        <h3 class="md:text-lg font-bold mb-3 text-gray-700">Il existe en tout 4 types d'attachement</h3>
+      <div v-if="false" class="mb-8">
+        <h3 class="md:text-lg font-bold mb-3 text-gray-700">
+          Il existe en tout 4 types d'attachement
+        </h3>
         <ul class="list-disc list-inside">
           <li v-for="def in definitions" :key="def.key" class="text-sm text-gray-500 mb-2 last:mb-0">
             <span>{{ def.type }}</span>
@@ -270,7 +288,7 @@ const toggleProfileExplanation = (key: string) => {
       </div>
 
       <!-- Elements définitions -->
-      <div class="mb-8">
+      <div v-if="false" class="mb-8">
         <h3 class="md:text-lg font-bold mb-3 text-gray-700">
           Il existe 1 élément pour chaque type d'attachement
         </h3>
@@ -293,4 +311,17 @@ const toggleProfileExplanation = (key: string) => {
 </template>
 
 <style lang="scss" scoped>
+.bg-red-100 {
+  background-color: var(--card);
+  color: var(--text);
+}
+
+.text-gray-700 {
+  color: var(--text);
+}
+
+.text-gray-500,
+.text-gray-400 {
+  color: var(--text-muted);
+}
 </style>

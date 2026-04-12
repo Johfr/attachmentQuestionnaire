@@ -28,13 +28,14 @@ const { isLoginModalOpen } = storeToRefs(authStore)
 
 <style lang="scss">
 .article-layout {
-  background-color: #fff8f6;
+  background-color: var(--bg);
+  color: var(--text);
 }
 .article-container {
   max-width: 1260px;
   height: 100vh;
   margin: 0 auto;
-  padding: 0 1rem 10rem;
+  padding: 1rem 1rem 6rem 1rem;
   // background-color: #fff8f6;
 }
 // main {

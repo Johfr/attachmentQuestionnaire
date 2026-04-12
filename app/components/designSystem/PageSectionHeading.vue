@@ -30,7 +30,7 @@ const props = defineProps<{
       </em>
     </h2>
 
-    <h2 v-else class="text-2xl font-bold">
+    <h2 v-else class="text-2xl font-bold text-theme-text">
       {{ title }}
     </h2>
     

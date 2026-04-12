@@ -6,7 +6,7 @@ const authStore = useAuthStore()
 const user = computed(() => authStore.user)
 
 const currentForm = ref<AuthFormMode>('signup')
-const loginFormButtonText = computed(() => currentForm.value === 'signup' ? "J'ai déjà un compte" : 'Créer un compte')
+const loginFormButtonText = computed(() => currentForm.value === 'signup' ? "J'ai deja un compte" : 'Creer un compte')
 const switchLoginForm = () => {
   currentForm.value = currentForm.value === 'signup' ? 'login' : 'signup'
   clearValidation()
@@ -137,66 +137,80 @@ const submit = (): { isValid: boolean, payload?: AuthFormPayload } => {
 defineExpose({
   submit,
 })
-
 </script>
 
 <template>
-  <form class="flex flex-col bg-white">
-    <div class="flex justify-between w-full md:max-w-[75%] mb-3 mx-auto rounded-3xl border border-solid border-gray-300">
-      <button v-if="!user" type="button" @click="switchLoginForm" class="w-full px-3 py-2 text-gray-700 text-sm rounded-3xl transition-all" :class="{ 'bg-blue-400 text-white': currentForm === 'signup' }">
-        Créer un compte
+  <form class="flex flex-col bg-transparent text-theme-text">
+    <div class="mx-auto mb-4 flex w-full justify-between rounded-3xl bg-theme-surfaceFormCard md:max-w-[75%]">
+      <button
+        v-if="!user"
+        type="button"
+        @click="switchLoginForm"
+        class="w-full rounded-3xl px-3 py-2 text-sm text-theme-muted transition-all"
+        :class="{ 'bg-theme-button text-theme-primaryText': currentForm === 'signup' }"
+      >
+        Creer un compte
         <!-- {{ loginFormButtonText }} -->
       </button>
-      <button v-if="!user" type="button" @click="switchLoginForm" class="w-full px-3 py-2 text-gray-700 text-sm rounded-3xl transition-all" :class="{ 'bg-blue-400 text-white': currentForm === 'login' }">
+      <button
+        v-if="!user"
+        type="button"
+        @click="switchLoginForm"
+        class="w-full rounded-3xl px-3 py-2 text-sm text-theme-muted transition-all"
+        :class="{ 'bg-theme-button text-theme-primaryText': currentForm === 'login' }"
+      >
         Me connecter
         <!-- {{ loginFormButtonText }} -->
       </button>
     </div>
 
     <div v-if="!user && currentForm === 'signup'" class="flex flex-col text-sm">
-      <label for="userFirstName" class="flex flex-col mt-2 text-sm">
-        Ton prénom*
-        <input v-model="name" @blur="touchAndValidate('name')" type="text" id="userFirstName" name="userFirstName" autocomplete="given-name" placeholder="Ex: Alex" class="mt-2 p-3 text-sm border border-solid  rounded-2xl text-gray-700"/>
+      <label for="userFirstName" class="mt-2 flex flex-col text-sm">
+        Ton prenom*
+        <input v-model="name" @blur="touchAndValidate('name')" type="text" id="userFirstName" name="userFirstName" autocomplete="given-name" placeholder="Ex: Alex" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.name && errors.name" class="mt-1 text-xs text-red-600">{{ errors.name }}</small>
       </label>
-      <label for="userAge" class="flex flex-col mt-2 text-sm">
-        Ton âge*
-        <input v-model="age" @blur="touchAndValidate('age')" type="number" id="userAge" name="userAge" autocomplete="off" placeholder="Ex: 28" class="mt-2 p-3 text-sm border border-solid  rounded-2xl text-gray-700"/>
+      <label for="userAge" class="mt-2 flex flex-col text-sm">
+        Ton age*
+        <input v-model="age" @blur="touchAndValidate('age')" type="number" id="userAge" name="userAge" autocomplete="off" placeholder="Ex: 28" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.age && errors.age" class="mt-1 text-xs text-red-600">{{ errors.age }}</small>
       </label>
-      <label for="userEmailSignup" class="flex flex-col mt-2 text-sm">
+      <label for="userEmailSignup" class="mt-2 flex flex-col text-sm">
         Ton email*
-        <input v-model="email" @blur="touchAndValidate('email')" type="email" id="userEmailSignup" name="userEmail" autocomplete="email" placeholder="Ex: alex@example.com" class="mt-2 p-3 text-sm border border-solid  rounded-2xl text-gray-700"/>
+        <input v-model="email" @blur="touchAndValidate('email')" type="email" id="userEmailSignup" name="userEmail" autocomplete="email" placeholder="Ex: alex@example.com" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.email && errors.email" class="mt-1 text-xs text-red-600">{{ errors.email }}</small>
       </label>
-      <label for="userPasswordSignup" class="flex flex-col mt-2 text-sm">
+      <label for="userPasswordSignup" class="mt-2 flex flex-col text-sm">
         Ton mot de passe*
-        <small>(pour sauvegarder tes résultats et y accéder plus tard)</small>
-        <input v-model="password" @blur="touchAndValidate('password')" type="password" id="userPasswordSignup" name="userPassword" autocomplete="new-password" placeholder="Ex: monMotDePasse123" class="mt-2 p-3 text-sm border border-solid  rounded-2xl text-gray-700"/>
+        <small class="text-theme-muted">(pour sauvegarder tes resultats et y acceder plus tard)</small>
+        <input v-model="password" @blur="touchAndValidate('password')" type="password" id="userPasswordSignup" name="userPassword" autocomplete="new-password" placeholder="Ex: monMotDePasse123" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.password && errors.password" class="mt-1 text-xs text-red-600">{{ errors.password }}</small>
       </label>
 
-      <!-- <button type="button" @click="submitCreateUser">Créer un compte</button> -->
+      <!-- <button type="button" @click="submitCreateUser">Creer un compte</button> -->
     </div>
-    
+
     <div v-if="!user && currentForm === 'login'" class="information-container">
       <!-- <h3 class="mt-0 text-xs font-semibold uppercase">A propos de toi</h3> -->
-      
-      <label for="userEmailLogin" class="flex flex-col mt-2 text-sm">
+      <label for="userEmailLogin" class="mt-2 flex flex-col text-sm">
         Ton email*
-        <input v-model="email" @blur="touchAndValidate('email')" type="email" id="userEmailLogin" name="userEmailLogin" autocomplete="email" placeholder="Ex: alex@example.com" class="mt-2 p-3 text-sm border border-solid  rounded-2xl text-gray-700"/>
+        <input v-model="email" @blur="touchAndValidate('email')" type="email" id="userEmailLogin" name="userEmailLogin" autocomplete="email" placeholder="Ex: alex@example.com" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.email && errors.email" class="mt-1 text-xs text-red-600">{{ errors.email }}</small>
       </label>
-      <label for="userPasswordLogin" class="flex flex-col mt-2 text-sm">
+      <label for="userPasswordLogin" class="mt-2 flex flex-col text-sm">
         Ton mot de passe*
-        <input v-model="password" @blur="touchAndValidate('password')" type="password" id="userPasswordLogin" name="userPasswordLogin" autocomplete="current-password" placeholder="Ex: monMotDePasse123" class="mt-2 p-3 text-sm border border-solid  rounded-2xl text-gray-700"/>
+        <input v-model="password" @blur="touchAndValidate('password')" type="password" id="userPasswordLogin" name="userPasswordLogin" autocomplete="current-password" placeholder="Ex: monMotDePasse123" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.password && errors.password" class="mt-1 text-xs text-red-600">{{ errors.password }}</small>
       </label>
     </div>
   </form>
 </template>
 
-
 <style scoped lang="scss">
-
+.information-container {
+  margin: .5rem 0;
+  line-height: 1.5;
+  border-radius: 25px;
+  background-color: transparent;
+}
 </style>

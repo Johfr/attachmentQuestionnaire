@@ -163,13 +163,13 @@ const scrollToPremiumZone = () => {
 </script>
 
 <template>
-  <p v-if="billingAccessWarning" class="mb-4 text-xs text-amber-700 text-center">
+  <p v-if="billingAccessWarning" class="mb-4 text-xs text-center text-theme-muted">
     {{ billingAccessWarning }}
   </p>
   <p v-if="graphData.completionDate" class="sr-only">
     {{ graphData.completionDate }}
   </p>
-  <div class="donuts-container flex justify-evenly bg-white py-8 rounded-3xl md:justify-center md:gap-20">
+  <div class="donuts-container flex justify-evenly rounded-3xl bg-theme-surfaceLinkCard py-8 md:justify-center md:gap-20">
     <div class="w-[125px] h-[125px] md:w-[250px] md:h-[250px]">
       <DoughnutChart
         :labels="anxietyLabel"
@@ -180,7 +180,8 @@ const scrollToPremiumZone = () => {
         :height="'125px'"
         :center-text="`Anxiety\n${anxietyAverageScore}%`"
         :center-text-font-size="14"
-        :center-text-font-color="'#0369a1'"
+        :center-text-font-color="'var(--results-donut-anxiety-text)'"
+        :segment-border-color="'var(--results-donut-track)'"
       />
     </div>
     <div class="w-[125px] h-[125px] md:w-[250px] md:h-[250px]">
@@ -193,28 +194,31 @@ const scrollToPremiumZone = () => {
         :height="'125px'"
         :center-text="`Avoidance\n${avoidanceAverageScore}%`"
         :center-text-font-size="14"
-        :center-text-font-color="'#be123c'"
+        :center-text-font-color="'var(--results-donut-avoidance-text)'"
+        :segment-border-color="'var(--results-donut-track)'"
       />
     </div>
   </div>
 
   <section class="my-8">
-    <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left">Tes profils d'attachement</h2>
+    <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left text-theme-text">
+      Tes profils d'attachement
+    </h2>
 
     <div class="md:flex md:justify-start md:gap-4">
-      <div class="mb-3 bg-white p-5 rounded-3xl border-l-4 border-blue-700 md:flex-1 md:max-w-[48%]">
-        <h3 class="text-md mb-3 font-bold">
+      <div class="mb-3 rounded-3xl bg-theme-surfaceResultsGlobalProfile p-5 md:flex-1 md:max-w-[48%]">
+        <h3 class="text-md mb-3 font-bold text-theme-text">
           <component :is="getProfileIcon(globalProfileKey)" :size="20" class="inline-block mr-2" />
           {{ getProfileLabel(globalProfileKey) }}
         </h3>
         <p
-          class="max-h-36 overflow-hidden mb-3 text-sm text-gray-600 line-clamp-4"
+          class="max-h-36 overflow-hidden mb-3 text-sm text-theme-muted line-clamp-4"
           :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen('global') }"
         >
           {{ profilExplanations[globalProfileKey] ?? '' }}
         </p>
-        <span class="block w-full p-3 text-right text-xs cursor-pointer" @click="toggleProfileExplanation('global')">
-          {{ isProfileExplanationOpen('global') ? 'Reduire...' : 'Lire la suite...' }}
+        <span class="block w-full p-3 text-right text-xs cursor-pointer text-theme-button" @click="toggleProfileExplanation('global')">
+          {{ isProfileExplanationOpen('global') ? 'Réduire...' : 'Lire la suite...' }}
         </span>
       </div>
 
@@ -225,10 +229,13 @@ const scrollToPremiumZone = () => {
       >
         <div class="relative">
           <div
-            class="mb-3 p-5 rounded-3xl"
-            :class="[dimension === 'anxiety' ? 'bg-primary' : 'bg-secondary', !hasBasicAccess ? 'opacity-50 blur-[5px]' : '']"
+            class="mb-3 rounded-3xl p-5 text-theme-text"
+            :class="[
+              dimension === 'anxiety' ? 'bg-theme-resultsSubprofileAnxietyBg' : 'bg-theme-resultsSubprofileAvoidanceBg',
+              !hasBasicAccess ? 'opacity-50 blur-[5px]' : ''
+            ]"
           >
-            <h3 class="text-md mb-3 font-bold">
+            <h3 class="text-md mb-3 font-bold text-theme-text">
               <component :is="getProfileIcon(getSubProfile(dimension))" :size="20" class="inline-block mr-2" />
               Sous profil :
               <span v-if="!hasBasicAccess">
@@ -239,7 +246,7 @@ const scrollToPremiumZone = () => {
               </span>
             </h3>
             <p
-              class="max-h-36 overflow-hidden mb-3 text-sm text-gray-600 line-clamp-4"
+              class="max-h-36 overflow-hidden mb-3 text-sm text-theme-muted line-clamp-4"
               :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen(dimension) }"
             >
               <span v-if="!hasBasicAccess">
@@ -249,21 +256,21 @@ const scrollToPremiumZone = () => {
                 {{ profilExplanations[getSubProfile(dimension)] }}
               </span>
             </p>
-            <span class="block w-full p-3 text-right text-xs cursor-pointer" @click="toggleProfileExplanation(dimension)">
-              {{ isProfileExplanationOpen(dimension) ? 'Reduire...' : 'Lire la suite...' }}
+            <span class="block w-full p-3 text-right text-xs cursor-pointer text-theme-button" @click="toggleProfileExplanation(dimension)">
+              {{ isProfileExplanationOpen(dimension) ? 'Réduire...' : 'Lire la suite...' }}
             </span>
           </div>
 
           <div
             v-if="!hasBasicAccess"
-            class="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm flex items-center justify-center rounded-3xl cursor-pointer"
+            class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-3xl bg-theme-resultsOverlay backdrop-blur-sm"
             @click.prevent.stop=""
           >
             <button type="button" @click="scrollToPremiumZone">
               <div class="text-center">
-                <p class="mb-2 font-bold text-gray-700 opacity-35">
+                <p class="mb-2 font-bold text-theme-text opacity-35">
                   Debloque l'acces a tes sous profils anxieux et evitants
-                  <LucideCornerRightDown :size="24" class="inline-block ml-2 text-gray-700" />
+                  <LucideCornerRightDown :size="24" class="inline-block ml-2 text-theme-text" />
                 </p>
               </div>
             </button>
@@ -273,15 +280,15 @@ const scrollToPremiumZone = () => {
     </div>
   </section>
 
-  <div class="mb-3 bg-white rounded-3xl border-l-4 text-gray-800 border-gray-200 md:flex-1 md:max-w-[340%]">
+  <div class="mb-3 rounded-3xl border-l-4 border-l-theme-button bg-theme-surfaceStaticCard text-theme-text md:flex-1 md:max-w-[340%]">
     <Accordeon title="Explication des resultats">
       <div class="md:flex md:flex-row-reverse md:justify-between md:items-center">
         <div class="md:max-w-[48%]">
-          <p class="mb-3 text-sm">
+          <p class="mb-3 text-sm text-theme-muted">
             Le type global repose sur deux dimensions principales : l'anxiete et l'evitement. Les reponses au questionnaire permettent d'evaluer le niveau de chacun de ces deux axes, puis de situer le profil general de la personne parmi les grands styles d'attachement : secure, anxieux, evitant ou desorganise, comme l'illustre le graphique ci-dessous.
           </p>
 
-          <p class="mb-3 text-sm">
+          <p class="mb-3 text-sm text-theme-muted">
             A partir de la on peut definir :
           </p>
 
@@ -309,23 +316,23 @@ const scrollToPremiumZone = () => {
       </div>
 
       <div class="my-8">
-        <p class="mt-3 mb-3 text-sm">
+        <p class="mt-3 mb-3 text-sm text-theme-muted">
           Ce profil global ne suffit pas toujours a decrire precisement le fonctionnement relationnel d'un individu. C'est pourquoi le questionnaire prend aussi en compte des <strong>declencheurs specifiques</strong> : 5 lies a l'anxiete et 5 lies a l'evitement.
         </p>
 
-        <p class="mt-3 mb-3 text-sm">
+        <p class="mt-3 mb-3 text-sm text-theme-muted">
           L'objectif principal n'est donc pas de coller une etiquette mais de mieux comprendre ce qui active concretement le systeme d'attachement.
         </p>
 
-        <p class="mt-3 mb-3 text-sm">
+        <p class="mt-3 mb-3 text-sm text-theme-muted">
           Une personne globalement secure peut d'ailleurs presenter des scores moderes sur certains declencheurs, ce qui montre que certaines situations la touchent malgre tout.
         </p>
       </div>
 
-      <div class="bg-white mt-8 p-5 rounded-3xl border-l-4 border-gray-500 md:mt-5">
+      <div class="mt-8 rounded-3xl border-l-4 border-theme-border bg-theme-surfaceStaticCard p-5 md:mt-5">
         <LucideLightbulb :size="20" class="inline-block mr-2" />
         <strong>Note importante</strong>
-        <p class="mt-3 text-sm text-gray-600">
+        <p class="mt-3 text-sm text-theme-muted">
           N'oubliez pas que votre profil d'attachement peut evoluer avec le temps et les experiences. Les resultats de ce questionnaire sont une photographie de votre etat actuel.
         </p>
       </div>
@@ -333,7 +340,7 @@ const scrollToPremiumZone = () => {
   </div>
 
   <section v-if="hasBasicAccess" class="my-8">
-    <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left">Repartition detaillee des declencheurs</h2>
+    <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left text-theme-text">Repartition detaillee des declencheurs</h2>
     <div class="my-12 justify-center md:w-144 md:h-144 mx-auto flex">
       <PolarChart :tags="tagData" :width="'600px'" :height="'600px'" />
     </div>
@@ -341,7 +348,7 @@ const scrollToPremiumZone = () => {
 
   <section class="my-8">
     <div v-for="dimension in ['anxiety', 'avoidance']" :key="dimension">
-      <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left">
+      <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left text-theme-text">
         {{ dimension === 'anxiety' ? 'Declencheurs anxieux' : 'Declencheurs evitants' }}
       </h2>
 
@@ -350,9 +357,9 @@ const scrollToPremiumZone = () => {
           v-for="(tag, tagId) in tagsResults[dimension as 'anxiety' | 'avoidance']"
           :key="tag.label"
           :data-testid="`trigger-card-${tag.key}`"
-          class="max-h-[60px] overflow-hidden mb-3 bg-white p-5 border-l-4 rounded-3xl md:w-[48%] md:max-h-[100px]"
+          class="mb-3 max-h-[60px] overflow-hidden rounded-3xl border-l-4 bg-theme-resultsSurface p-5 text-theme-text md:max-h-[100px] md:w-[48%]"
           :class="[
-            dimension === 'anxiety' ? 'border-primary' : 'border-secondary',
+            dimension === 'anxiety' ? 'border-l-theme-resultsTriggerAnxietyBorder' : 'border-l-theme-resultsTriggerAvoidanceBorder',
             { 'max-h-full md:max-h-full': isProfileExplanationOpen(tag.trigger) },
             { 'relative h-[100px]': !hasBasicAccess && tagId != 0 }
           ]"
@@ -360,100 +367,118 @@ const scrollToPremiumZone = () => {
           <div
             class="flex justify-between"
             :class="[!hasBasicAccess && tagId != 0 ? 'cursor-not-allowed pointer-events-none' : 'cursor-pointer']"
-            :title="isProfileExplanationOpen(tag.trigger) ? 'Reduire' : 'Deplier'"
+            :title="isProfileExplanationOpen(tag.trigger) ? 'Réduire' : 'Deplier'"
             @click.prevent.stop="toggleProfileExplanation(tag.trigger)"
           >
-            <p :class="tag.regulationLevel === 'high' ? 'text-red-600' : tag.regulationLevel === 'medium' ? 'text-yellow-600' : 'text-green-600'" class="p-1 rounded-md text-xs">
+            <p
+              class="p-1 rounded-md text-xs"
+              :class="[
+                tag.regulationLevel === 'high'
+                  ? 'text-theme-resultsTriggerHighText'
+                  : tag.regulationLevel === 'medium'
+                    ? 'text-theme-resultsTriggerMediumText'
+                    : 'text-theme-resultsTriggerLowText'
+              ]"
+            >
               <LucideMinusCircle v-if="isProfileExplanationOpen(tag.trigger)" :size="14" class="inline-block mr-1" />
               <LucidePlusCircle v-else :size="14" class="inline-block mr-1" />
               Trigger : {{ tag.tag }}
             </p>
-            <p class="text-white p-1 rounded-md text-xs" :class="tag.regulationLevel === 'high' ? 'bg-red-600' : tag.regulationLevel === 'medium' ? 'bg-yellow-600' : 'bg-green-600'">
+            <p
+              class="text-white p-1 rounded-md text-xs"
+              :class="[
+                tag.regulationLevel === 'high'
+                  ? 'bg-theme-resultsTriggerHighBg'
+                  : tag.regulationLevel === 'medium'
+                    ? 'bg-theme-resultsTriggerMediumBg'
+                    : 'bg-theme-resultsTriggerLowBg'
+              ]"
+            >
               {{ tag.regulationLevel }}
             </p>
           </div>
 
           <div v-if="hasBasicAccess || (!hasBasicAccess && tagId === 0)">
             <h3
-              class="text-md font-bold mt-3 mb-5 cursor-pointer"
+              class="text-md font-bold mt-3 mb-5 cursor-pointer text-theme-text"
               @click.prevent.stop="toggleProfileExplanation(tag.trigger)"
             >
               <component :is="getTagIcon(tag.key)" :size="20" class="inline-block mr-2" />
               {{ tag.label }}
             </h3>
 
-            <p class="mb-3 text-sm text-gray-600">
+            <p class="mb-3 text-sm text-theme-muted">
               <strong>Indicateur :</strong>
               {{ tag.indicator }}
             </p>
 
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-theme-muted">
               {{ tag.trigger }}
             </p>
 
-            <div class="bg-white p-5 rounded-3xl md:flex-1">
+            <div class="rounded-3xl p-5 md:flex-1">
               <LucideUserCircle :size="20" class="inline-block mr-2" />
               <strong>Ce genre de profil :</strong>
               <ul
-                class="pl-5 max-h-16 overflow-hidden text-sm text-gray-600 line-clamp-2"
+                class="pl-5 max-h-16 overflow-hidden text-sm text-theme-muted line-clamp-2"
                 :class="{ 'max-h-full line-clamp-none md:max-h-full': isProfileExplanationOpen(tag.label) }"
               >
                 <li
                   v-for="(behavior, index) in tag.associatedBehaviors"
                   :key="index"
-                  class="mb-3 text-sm text-gray-600 list-disc list-inside first-letter:uppercase"
+                  class="mb-3 text-sm text-theme-muted list-disc list-inside first-letter:uppercase"
                 >
                   {{ behavior }}
                 </li>
               </ul>
               <p
                 :data-testid="`trigger-behaviors-toggle-${tag.key}`"
-                class="block w-full p-3 text-right text-xs cursor-pointer"
+                class="block w-full p-3 text-right text-xs cursor-pointer text-theme-button"
                 @click="toggleProfileExplanation(tag.label)"
               >
-                {{ isProfileExplanationOpen(tag.label) ? 'Reduire...' : 'Lire la suite...' }}
+                {{ isProfileExplanationOpen(tag.label) ? 'Réduire...' : 'Lire la suite...' }}
               </p>
             </div>
 
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-theme-muted">
               <strong>Te concernant : </strong>{{ tag.outputText }}
             </p>
 
-            <div class="bg-white p-5 rounded-3xl md:flex-1">
+            <div class="rounded-3xl p-5 md:flex-1">
               <LucideLightbulb :size="20" class="inline-block mr-2" />
               <strong>Mon conseil</strong>
               <ul
-                class="pl-5 max-h-16 overflow-hidden text-sm text-gray-600 line-clamp-2"
+                class="pl-5 max-h-16 overflow-hidden text-sm text-theme-muted line-clamp-2"
                 :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen(tag.key) }"
               >
                 <li
                   v-for="(advice, index) in tag.advices"
                   :key="index"
-                  class="mb-3 text-sm text-gray-600 list-disc list-inside first-letter:uppercase"
+                  class="mb-3 text-sm text-theme-muted list-disc list-inside first-letter:uppercase"
                 >
                   {{ advice }}
                 </li>
               </ul>
               <p
                 :data-testid="`trigger-advices-toggle-${tag.key}`"
-                class="block w-full p-3 text-right text-xs cursor-pointer"
+                class="block w-full p-3 text-right text-xs cursor-pointer text-theme-button"
                 @click="toggleProfileExplanation(tag.key)"
               >
-                {{ isProfileExplanationOpen(tag.key) ? 'Reduire...' : 'Lire la suite...' }}
+                {{ isProfileExplanationOpen(tag.key) ? 'Réduire...' : 'Lire la suite...' }}
               </p>
             </div>
           </div>
 
           <div
             v-if="!hasBasicAccess && tagId != 0"
-            class="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm flex items-center justify-center rounded-3xl cursor-pointer"
+            class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-3xl bg-theme-resultsOverlay backdrop-blur-sm"
             @click.prevent.stop=""
           >
             <button type="button" @click="scrollToPremiumZone">
               <div class="text-sm text-center md:text-md">
-                <p class="mb-2 font-bold text-gray-700 opacity-35">
+                <p class="mb-2 font-bold text-theme-text opacity-35">
                   Debloque l'acces a ce resultat
-                  <LucideCornerRightDown :size="24" class="inline-block ml-2 text-gray-700" />
+                  <LucideCornerRightDown :size="24" class="inline-block ml-2 text-theme-text" />
                 </p>
               </div>
             </button>

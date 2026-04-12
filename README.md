@@ -101,6 +101,8 @@ Structure BDD:
 npm run build
 ```
 
+> **Note timeout** : sur cette app, le build complet prend en moyenne `4 min 30` sur la machine projet. Si une commande CI/agent ou un terminal outille impose un timeout trop court, prevoir une marge confortable plutot que conclure trop vite a un echec du build.
+
 Ce build genere:
 
 - `.output/public` pour Firebase Hosting

@@ -33,8 +33,8 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="modal fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50" @click.self="authStore.closeLoginModal()">
-    <div class="max-w-80 w-full max-h-128 overflow-auto bg-white p-6 rounded-3xl shadow-lg md:max-w-md">
+  <div class="fixed top-0 left-0 flex h-full w-full items-center justify-center bg-theme-modalOverlay px-4" @click.self="authStore.closeLoginModal()">
+    <div class="max-h-128 w-full max-w-80 overflow-auto rounded-3xl bg-theme-modalBg p-6 text-theme-modalText shadow-lg md:max-w-md">
 
       <p v-if="authErrorMessage" class="mt-3 text-xs text-red-600">
         {{ authErrorMessage }}
@@ -43,11 +43,11 @@ const handleLogin = async () => {
       <LoginForm ref="loginFormData" />
 
       <div class="flex items-center mt-5">
-        <button :disabled="isSubmitting" class="px-4 py-3 mr-3 rounded-3xl bg-blue-500 text-white text-xs md:text-sm disabled:opacity-60 flex items-center gap-2" @click="handleLogin">
+        <button :disabled="isSubmitting" class="mr-3 flex items-center gap-2 rounded-3xl bg-theme-button px-4 py-3 text-xs text-theme-primaryText disabled:opacity-60 md:text-sm" @click="handleLogin">
           <LucideLoader v-if="isSubmitting" :size="14" class="loader-spin" />
           {{ isSubmitting ? 'Verification...' : 'Se connecter' }}
         </button>
-        <button @click="authStore.closeLoginModal()">
+        <button class="text-theme-muted" @click="authStore.closeLoginModal()">
           Fermer
         </button>
       </div>

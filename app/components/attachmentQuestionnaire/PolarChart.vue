@@ -33,9 +33,10 @@ const insideLabelPlugin = {
       const midAngle = (startAngle + endAngle) / 2
       const x = centerX + Math.cos(midAngle) * maxRadius
       const y = centerY + Math.sin(midAngle) * maxRadius
+      const textColor = chart.config.options?.plugins?.insideLabels?.textColor || '#000'
 
       ctx.save()
-      ctx.fillStyle = '#000'
+      ctx.fillStyle = textColor
       ctx.font = 'bold 12px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
@@ -82,6 +83,9 @@ const props = defineProps({
   }
 })
 
+const { themeMode } = useThemeMode()
+const isDarkMode = computed(() => themeMode.value === 'dark')
+
 const canvasRef = ref(null)
 const chartInstance = ref(null)
 
@@ -91,23 +95,29 @@ const chartData = computed(() => ({
     {
       data: props.tags.map((t) => t.value),
       backgroundColor: props.tags.map((t) => t.color || '#888'),
-      borderWidth: 1
+      borderWidth: isDarkMode.value ? 0 : 1,
+      borderColor: isDarkMode.value ? 'transparent' : '#ffffff'
     }
   ]
 }))
 
 const chartOptions = computed(() => ({
   responsive: true,
+  color: isDarkMode.value ? '#fff' : '#000',
   plugins: {
     legend: { display: false },
     tooltip: { enabled: false },
-    insideLabels: { enabled: true }
+    insideLabels: {
+      enabled: true,
+      textColor: isDarkMode.value ? '#fff' : '#000'
+    }
   },
   scales: {
     r: {
       ticks: { display: false },
-      grid: { color: 'rgba(255,255,255,0.3)' },
-      angleLines: { color: 'rgba(255,255,255,0.2)' }
+      pointLabels: { color: isDarkMode.value ? '#fff' : '#000' },
+      grid: { display: false },
+      angleLines: { display: false }
     }
   }
 }))

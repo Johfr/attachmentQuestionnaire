@@ -21,6 +21,7 @@ Ce fichier capture les regles de collaboration attendues pour les agents qui tra
 - privilegier les tests cibles avant la suite complete
 - si une commande de test echoue a cause du sandbox ou d'un `EPERM` / `spawn`, l'agent peut demander automatiquement une escalation pour relancer la meme commande
 - ne pas lancer de commandes lourdes ou inutiles si un test cible suffit
+- ne lancer aucun test sans demande explicite du user
 
 ## Git
 
@@ -28,12 +29,20 @@ Ce fichier capture les regles de collaboration attendues pour les agents qui tra
 - ne jamais faire de commit ou de push sans demande claire et explicite du user
 - ne jamais faire d'amend sans accord explicite du user
 - ne jamais revert des changements non compris ou non demandes
+- ne jamais lancer de build sans demande explicite du user
+- ne jamais lancer de commit sans demande explicite du user
+- ne jamais lancer de push sans demande explicite du user
 
 ## Edition
 
 - preferer des modifications petites, ciblees et faciles a relire
 - ne pas prendre d'initiatives produit non demandees
 - quand un comportement est ambigu, privilegier l'intention metier documentee dans `docs/`
+- executer ce que le user demande, sans sur-implementation non nécessaire
+- garder en tête le scope
+- aller au plus simple dans la demande tout en comprenant le scope, les enjeux, les régressions possibles ou les liens entre fichiers qui peuvent créer des problèmes futurs
+- rester simple dans la conception, il s'agir d'un mvp en v1. Inutile de surcharger le code comme si c'était un ecommerce. Le but n'est pas de créer une usine à gaz.
+- coder simple, efficace, bonne pratique, lisible et dans le cadre pose par le user
 
 ## Docs a consulter
 

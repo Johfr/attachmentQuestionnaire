@@ -82,9 +82,6 @@ const checkUserStatus = (actionType: 'ia' | 'results') => {
     if (props.hasResultsAccess || props.hasMembershipAccess || props.hasFormationAccess) {
       // acces direct aux resultats sans popin
       openPopin('results')
-    } else {
-      // popin d'incitation a l'achat
-      openPopin('results')
     }
   }
 }

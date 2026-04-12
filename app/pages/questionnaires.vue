@@ -53,7 +53,7 @@ const questionnaires = [
     isActive: false,
   }
 ]
-const itemsBackground = ['#fdf1ec', '#f2f7e7', '#f8ebe6'] // 'aliceblue', 'honeydew', 'lavender', antiquewhite, azure]
+const itemsBackground = ['rust', 'softGreen', 'softPeach'] // 'aliceblue', 'honeydew', 'lavender', antiquewhite, azure]
 
 useSeoMeta({
   title: 'Questionnaires d\'attachement adulte',
