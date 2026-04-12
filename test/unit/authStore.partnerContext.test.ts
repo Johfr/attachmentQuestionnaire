@@ -9,7 +9,7 @@ const firestoreMocks = vi.hoisted(() => ({
 }))
 
 const firebaseInitMock = vi.hoisted(() => ({
-  firebaseFunctions: {
+  firebaseClient: {
     auth: {
       currentUser: {
         uid: 'user-123',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useBillingStore } from '~/stores/billing'
-import { firebaseFunctions } from '~/composables/firebase/init'
+import { firebaseClient } from '~/composables/firebase/init'
 import { ATTACHMENT_AI_MAX_INPUT_CHARS, ATTACHMENT_AI_MIN_INPUT_CHARS } from '~/constants/attachmentAi'
 import { normalizeAiExchange } from '~/utils/aiExchange'
 import type { EntitySubType, EntityType, AccessType } from '~/types/billing'
@@ -139,7 +139,7 @@ watch(
 )
 
 const getAuthorizationHeaders = async () => {
-  const token = await firebaseFunctions.auth.currentUser?.getIdToken()
+  const token = await firebaseClient.auth.currentUser?.getIdToken()
   if (!token) {
     throw new Error('Impossible de verifier ton compte pour le moment.')
   }

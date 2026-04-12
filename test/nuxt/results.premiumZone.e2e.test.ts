@@ -6,6 +6,8 @@ import ResultsComponent from '../../app/components/attachmentQuestionnaire/Resul
 import type { AttachmentQuestionnaireDisplayResults } from '../../app/types/attachmentQuestionnaireResults'
 
 const mockBillingStore = vi.hoisted(() => ({
+  hasPaidResults: false,
+  hasPaidIa: false,
   hasPaidMembership: false,
   hasPaidFormation: false,
   checkUserPermissions: vi.fn().mockResolvedValue(undefined),
@@ -94,6 +96,10 @@ const DISPLAY_RESULTS_FIXTURE: AttachmentQuestionnaireDisplayResults = {
 
 describe('results premium-zone browser regression', () => {
   beforeEach(() => {
+    mockBillingStore.hasPaidResults = false
+    mockBillingStore.hasPaidIa = false
+    mockBillingStore.hasPaidMembership = false
+    mockBillingStore.hasPaidFormation = false
     mockBillingStore.checkUserPermissions.mockClear()
     mockBillingStore.goToCheckout.mockClear()
   })

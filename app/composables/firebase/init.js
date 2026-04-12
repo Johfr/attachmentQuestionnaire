@@ -23,7 +23,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const db = getFirestore(app)
-const firestore = getFirestore(app)
 const functions = getFunctions(app)
 
 // Analytics ne doit etre initialise que dans le navigateur.
@@ -32,21 +31,22 @@ if (process.client) {
 }
 
 
-export const firebaseFunctions = {
-    auth,
-    db,
-    getAuth,
-    updateProfile,
-    onAuthStateChanged,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    GoogleAuthProvider,
-    signInWithPopup,
-    signInAnonymously,
-    EmailAuthProvider,
-    linkWithCredential,
-    signOut,
-    app,
-    getFunctions, 
-    httpsCallable,
+export const firebaseClient = {
+  auth,
+  db,
+  functions,
+  getAuth,
+  updateProfile,
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInAnonymously,
+  EmailAuthProvider,
+  linkWithCredential,
+  signOut,
+  app,
+  getFunctions,
+  httpsCallable,
 }

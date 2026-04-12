@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
-import { firebaseFunctions } from '~/composables/firebase/init'
+import { firebaseClient } from '~/composables/firebase/init'
 import { collection, query, where, addDoc, getDocs, onSnapshot } from "firebase/firestore"
 import type { EntitySubType, EntityType, AccessType, EntityVersion, UserPayment, UserSubscription } from '~/types/billing'
 
@@ -43,7 +43,7 @@ export const useBillingStore = defineStore('billing', () => {
     // Est-ce qu'on requête customers ou alors questionnaireSessions une fois mis à jour ?
     // Paiements uniques réussis
     const paymentsSnap = await getDocs(query(
-      collection(firebaseFunctions.db, 'customers', uid, 'payments'),
+      collection(firebaseClient.db, 'customers', uid, 'payments'),
       where('status', '==', 'succeeded'),
     ))
     const paidProductIds = new Set<string>()
@@ -54,7 +54,7 @@ export const useBillingStore = defineStore('billing', () => {
 
     // Abonnements actifs
     const subsSnap = await getDocs(query(
-      collection(firebaseFunctions.db, 'customers', uid, 'subscriptions'),
+      collection(firebaseClient.db, 'customers', uid, 'subscriptions'),
       where('status', 'in', ['active', 'trialing']),
     ))
     const activeSubProductIds = new Set<string>()
@@ -83,7 +83,7 @@ export const useBillingStore = defineStore('billing', () => {
 
     try {
       const paymentsSnap = await getDocs(query(
-        collection(firebaseFunctions.db, 'customers', uid, 'payments'),
+        collection(firebaseClient.db, 'customers', uid, 'payments'),
         where('status', '==', 'succeeded'),
       ))
       payments.value = paymentsSnap.docs.map((d) => ({
@@ -96,7 +96,7 @@ export const useBillingStore = defineStore('billing', () => {
       })) as UserPayment[]
 
       const subsSnap = await getDocs(
-        collection(firebaseFunctions.db, 'customers', uid, 'subscriptions'),
+        collection(firebaseClient.db, 'customers', uid, 'subscriptions'),
       )
       subscriptions.value = subsSnap.docs.map((d) => ({
         id: d.id,
@@ -112,8 +112,8 @@ export const useBillingStore = defineStore('billing', () => {
   }
 
   const openCustomerPortal = async () => {
-    const functionsInstance = firebaseFunctions.getFunctions(firebaseFunctions.app)
-    const createPortalLink = firebaseFunctions.httpsCallable(
+    const functionsInstance = firebaseClient.getFunctions(firebaseClient.app)
+    const createPortalLink = firebaseClient.httpsCallable(
       functionsInstance,
       'ext-firestore-stripe-payments-createPortalLink',
     )
@@ -140,7 +140,7 @@ export const useBillingStore = defineStore('billing', () => {
       ? `${window.location.origin}/ebook`
       : `${window.location.origin}/user/profil/`
 
-    const collectionRef = collection(firebaseFunctions.db, 'customers', user.value?.id ?? 'unknown_user', 'checkout_sessions')
+    const collectionRef = collection(firebaseClient.db, 'customers', user.value?.id ?? 'unknown_user', 'checkout_sessions')
 
     const docRef = await addDoc(collectionRef, {
       mode: products[accessType].mode,

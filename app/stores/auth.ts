@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { firebaseFunctions } from "~/composables/firebase/init.js"
+import { firebaseClient } from "~/composables/firebase/init.js"
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { createUserAccountWithEmailAndPassword, signInUserWithEmailAndPassword, signOutUser } from '~/composables/firebase/Authentification.js'
 import type {
@@ -119,7 +119,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const savePartnerContext = async (partnerData: PartnerContextPayload) => {
-    const currentUser = firebaseFunctions.auth.currentUser
+    const currentUser = firebaseClient.auth.currentUser
     if (!currentUser) return false
 
     try {
@@ -129,7 +129,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       await setDoc(
-        doc(firebaseFunctions.db, 'users', currentUser.uid),
+        doc(firebaseClient.db, 'users', currentUser.uid),
         {
           currentPartnerContext: partnerContext,
           updatedAt: serverTimestamp(),
@@ -170,7 +170,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const getUserProfileFromFirestore = async (uid: string, fallbackEmail: string) => {
-    const userDocRef = doc(firebaseFunctions.db, 'users', uid)
+    const userDocRef = doc(firebaseClient.db, 'users', uid)
     const userDoc = await getDoc(userDocRef)
     const data = userDoc.exists() ? userDoc.data() : {}
     const isFirestoreAdmin = data?.admin === true
@@ -205,8 +205,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const loadCurrentPartnerContext = async () => {
-    const uid = firebaseFunctions.auth.currentUser?.uid || user.value?.id
-    const fallbackEmail = firebaseFunctions.auth.currentUser?.email || user.value?.email || ''
+    const uid = firebaseClient.auth.currentUser?.uid || user.value?.id
+    const fallbackEmail = firebaseClient.auth.currentUser?.email || user.value?.email || ''
 
     if (!uid) {
       currentPartnerContext.value = null
@@ -299,7 +299,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       if (currentForm === 'signup') {
         await setDoc(
-          doc(firebaseFunctions.db, 'users', firebaseUser.uid),
+          doc(firebaseClient.db, 'users', firebaseUser.uid),
           {
             uid: firebaseUser.uid,
             email: firebaseUser.email || userLoginForm.email,
@@ -337,7 +337,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
 
         await setDoc(
-          doc(firebaseFunctions.db, 'users', firebaseUser.uid),
+          doc(firebaseClient.db, 'users', firebaseUser.uid),
           loginDocPayload,
           { merge: true },
         )
@@ -404,8 +404,8 @@ export const useAuthStore = defineStore('auth', () => {
     hasInitialized.value = true
 
     return new Promise<void>((resolve) => {
-      firebaseFunctions.onAuthStateChanged(
-        firebaseFunctions.auth,
+      firebaseClient.onAuthStateChanged(
+        firebaseClient.auth,
         async (firebaseUser) => {
           if (firebaseUser) {
             const profile = await getUserProfileFromFirestore(firebaseUser.uid, firebaseUser.email || '')

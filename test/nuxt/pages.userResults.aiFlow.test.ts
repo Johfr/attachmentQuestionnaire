@@ -68,7 +68,7 @@ vi.mock('~/stores/questionnaireSessions', () => ({
 }))
 
 vi.mock('~/composables/firebase/init', () => ({
-  firebaseFunctions: {
+  firebaseClient: {
     auth: {
       currentUser: {
         getIdToken: vi.fn().mockResolvedValue('firebase-token'),

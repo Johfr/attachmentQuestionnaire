@@ -41,7 +41,7 @@ vi.mock('firebase/firestore', () => ({
 }))
 
 vi.mock('~/composables/firebase/init', () => ({
-  firebaseFunctions: {
+  firebaseClient: {
     db: {},
     app: {},
     getFunctions: vi.fn(() => ({})),

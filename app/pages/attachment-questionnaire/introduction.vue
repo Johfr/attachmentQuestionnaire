@@ -29,7 +29,12 @@ const startSurvey = async (userData: { authPayload: AuthFormPayload | null, part
 
   try {
     if (user.value) {
-      await authStore.loadCurrentPartnerContext()
+      // Le prechargement onMounted couvre le cas normal ; on ne relit ici
+      // que si le contexte partenaire ET le cooldown ne sont pas encore en memoire.
+      if (!authStore.currentPartnerContext && !authStore.getQuestionnaireAccessEntry('attachment')) {
+        await authStore.loadCurrentPartnerContext()
+      }
+
       const cooldown = authStore.getQuestionnaireCooldownStatus('attachment')
       if (cooldown.blocked) {
         accessBlockedMessage.value = buildCooldownMessage(cooldown.remainingDays)

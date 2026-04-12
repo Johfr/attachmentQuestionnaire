@@ -1,10 +1,10 @@
-import { firebaseFunctions } from "~/composables/firebase/init.js"
+import { firebaseClient } from "~/composables/firebase/init.js"
 
 
 // Créer un user avec email & mdp
 export const createUserAccountWithEmailAndPassword = async (email, password) => {
   try {
-    const userCredential = await firebaseFunctions.createUserWithEmailAndPassword(firebaseFunctions.auth, email, password)
+    const userCredential = await firebaseClient.createUserWithEmailAndPassword(firebaseClient.auth, email, password)
     return {
       success: true,
       user: userCredential.user,
@@ -21,7 +21,7 @@ export const createUserAccountWithEmailAndPassword = async (email, password) => 
 // connexion avec email & mdp
 export const signInUserWithEmailAndPassword = async (email, password) => {
   try {
-    const userCredential = await firebaseFunctions.signInWithEmailAndPassword(firebaseFunctions.auth, email, password)
+    const userCredential = await firebaseClient.signInWithEmailAndPassword(firebaseClient.auth, email, password)
     return {
       success: true,
       user: userCredential.user,
@@ -37,7 +37,7 @@ export const signInUserWithEmailAndPassword = async (email, password) => {
 
 // Update du globalUser avec photo et nickname
 export const addDisplayNameAndPhotoToUserProfile = async (displayName, photoURL) => {
-  const currentUser = firebaseFunctions.auth.currentUser
+  const currentUser = firebaseClient.auth.currentUser
   if (!currentUser) {
     return {
       success: false,
@@ -46,7 +46,7 @@ export const addDisplayNameAndPhotoToUserProfile = async (displayName, photoURL)
   }
 
   try {
-    await firebaseFunctions.updateProfile(currentUser, { displayName, photoURL })
+    await firebaseClient.updateProfile(currentUser, { displayName, photoURL })
     return { success: true }
   } catch (error) {
     return {
@@ -58,5 +58,5 @@ export const addDisplayNameAndPhotoToUserProfile = async (displayName, photoURL)
 
 // Déconnexion
 export const signOutUser = () => {
-  return firebaseFunctions.signOut(firebaseFunctions.auth)
+  return firebaseClient.signOut(firebaseClient.auth)
 }

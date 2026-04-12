@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { collection, getDocs, query, where } from 'firebase/firestore'
-import { firebaseFunctions } from '~/composables/firebase/init.js'
+import { firebaseClient } from '~/composables/firebase/init.js'
 import { useAuthStore } from '~/stores/auth'
 import type { QuestionnaireSession } from '~/types/questionnaireSessions'
 
@@ -75,7 +75,7 @@ export const useQuestionnaireSessionsStore = defineStore('questionnaireSessions'
 
     try {
       const sessionsQuery = query(
-        collection(firebaseFunctions.db, 'questionnaireSessions'),
+        collection(firebaseClient.db, 'questionnaireSessions'),
         where('uid', '==', uid),
       )
       const snapshot = await getDocs(sessionsQuery)

@@ -25,24 +25,22 @@ const handleComplete = async (result: QuestionResult[]) => {
   await navigateTo('/attachment-questionnaire/results')
 }
 
-onBeforeRouteLeave((to, from, next) => {
+onBeforeRouteLeave((to) => {
   if (to.path === '/attachment-questionnaire/results') {
-    next()
-    return
-  } else {
-    if (questionnaireWizardStore.hasStarted) {
-      const leave = confirm('Êtes-vous sûr de vouloir quitter le questionnaire ? Vos réponses seront perdues.')
-      if (leave) {
-        resetStore()
-        questionnaireWizardStore.goToIntroduction()
-        next()
-      } else {
-        next(false)
-      }
-    } else {
-      next()
-    }
+    return true
   }
+
+  if (!questionnaireWizardStore.hasStarted) {
+    return true
+  }
+
+  const leave = confirm('Êtes-vous sûr de vouloir quitter le questionnaire ? Vos réponses seront perdues.')
+  if (!leave) {
+    return false
+  }
+
+  resetStore()
+  return true
 })
 
 const goHome = async () => {
@@ -64,4 +62,3 @@ const goHome = async () => {
     />
   </section>
 </template>
-

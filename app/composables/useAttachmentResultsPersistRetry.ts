@@ -52,7 +52,7 @@
 
 import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
 import { useAuthStore } from '~/stores/auth'
-import { firebaseFunctions } from '~/composables/firebase/init.js'
+import { firebaseClient } from '~/composables/firebase/init.js'
 import type {
   AttachmentQuestion,
   AttachmentQuestionnaireDisplayResults,
@@ -83,7 +83,7 @@ export function useAttachmentResultsPersistRetry() {
   // L'API persiste encore via add(), donc l'idempotence serveur documentee
   // reste une cible et non une garantie effective a ce stade.
   const callApi = async (): Promise<ComputeAttachmentResultsApiResponse> => {
-    const token = await firebaseFunctions.auth.currentUser?.getIdToken()
+    const token = await firebaseClient.auth.currentUser?.getIdToken()
     const partnerCtx = authStore.currentPartnerContext
     return $fetch<ComputeAttachmentResultsApiResponse>('/api/attachment/results', {
       method: 'POST',
