@@ -2,9 +2,12 @@
   "name": "nuxt-front",
   "type": "module",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "build": "nuxt build",
-    "postbuild": "node -e \"const fs=require('fs');const cp=require('child_process');const root=JSON.parse(fs.readFileSync('package.json','utf8'));const serverDir='.output/server';const serverPath=serverDir+'/package.json';const server=JSON.parse(fs.readFileSync(serverPath,'utf8'));delete server.dependencies['@img/sharp-win32-x64'];server.dependencies['firebase-admin']=root.dependencies['firebase-admin'];server.dependencies['firebase-functions']=root.dependencies['firebase-functions'];fs.writeFileSync(serverPath,JSON.stringify(server,null,2)+'\\n');fs.writeFileSync(serverDir+'/.npmrc','legacy-peer-deps=true\\n');fs.rmSync(serverDir+'/node_modules',{recursive:true,force:true});fs.rmSync(serverDir+'/package-lock.json',{force:true});cp.execSync('npm install --package-lock-only --ignore-scripts --legacy-peer-deps',{cwd:serverDir,stdio:'inherit'})\"",
+    "postbuild": "node -e \"const fs=require('fs');const cp=require('child_process');const root=JSON.parse(fs.readFileSync('package.json','utf8'));const serverDir='.output/server';const serverPath=serverDir+'/package.json';const server=JSON.parse(fs.readFileSync(serverPath,'utf8'));delete server.dependencies['@img/sharp-win32-x64'];server.dependencies['firebase-admin']=root.dependencies['firebase-admin'];server.dependencies['firebase-functions']=root.dependencies['firebase-functions'];server.engines={...(server.engines||{}),node:'22'};fs.writeFileSync(serverPath,JSON.stringify(server,null,2)+'\\n');fs.writeFileSync(serverDir+'/.npmrc','legacy-peer-deps=true\\n');fs.rmSync(serverDir+'/node_modules',{recursive:true,force:true});fs.rmSync(serverDir+'/package-lock.json',{force:true});cp.execSync('npm install --package-lock-only --ignore-scripts --legacy-peer-deps',{cwd:serverDir,stdio:'inherit'})\"",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",

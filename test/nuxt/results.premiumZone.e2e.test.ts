@@ -138,7 +138,7 @@ describe('results premium-zone browser regression', () => {
     await firstToggle!.trigger('click')
     await nextTick()
 
-    expect(wrapper.text()).toContain('Reduire...')
+    expect(wrapper.text()).toContain('Réduire...')
     expect(consoleErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('Canvas is already in use'))
     expect(consoleErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('is not a registered controller'))
   })
@@ -177,7 +177,7 @@ describe('results premium-zone browser regression', () => {
 
     expect(triggerCard.classes()).toContain('max-h-full')
 
-    const expandedTriggerToggle = wrapper.findAll('[title="Reduire"]').find(node =>
+    const expandedTriggerToggle = wrapper.findAll('[title="Réduire"], [title="RÃ©duire"]').find(node =>
       node.text().includes('Trigger : fearOfLoss')
     )
     expect(expandedTriggerToggle).toBeTruthy()
@@ -188,14 +188,14 @@ describe('results premium-zone browser regression', () => {
 
     await triggerBehaviorsToggle.trigger('click')
     await nextTick()
-    expect(wrapper.find('[data-testid="trigger-behaviors-toggle-fearOfLoss"]').text()).toBe('Reduire...')
+    expect(wrapper.find('[data-testid="trigger-behaviors-toggle-fearOfLoss"]').text()).toBe('Réduire...')
 
     const triggerAdvicesToggle = wrapper.find('[data-testid="trigger-advices-toggle-fearOfLoss"]')
     expect(triggerAdvicesToggle.exists()).toBe(true)
     expect(triggerAdvicesToggle.text()).toBe('Lire la suite...')
     await triggerAdvicesToggle.trigger('click')
     await nextTick()
-    expect(wrapper.find('[data-testid="trigger-advices-toggle-fearOfLoss"]').text()).toBe('Reduire...')
+    expect(wrapper.find('[data-testid="trigger-advices-toggle-fearOfLoss"]').text()).toBe('Réduire...')
 
     await wrapper.find('[data-testid="trigger-behaviors-toggle-fearOfLoss"]').trigger('click')
     await nextTick()

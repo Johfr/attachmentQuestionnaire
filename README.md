@@ -11,7 +11,7 @@ Application Nuxt 4 en SSR pour le questionnaire d'attachement, avec:
 
 ## Stack technique
 
-- Node.js: 20 (recommande)
+- Node.js: 22 (recommande, version locale cible : `22.19.0`)
 - Nuxt: 4
 - Firebase:
 	- Hosting
@@ -21,7 +21,7 @@ Application Nuxt 4 en SSR pour le questionnaire d'attachement, avec:
 
 ## Prerequis
 
-1. Installer Node.js 20
+1. Installer Node.js 22 (`22.19.0` recommande sur ce projet)
 2. Installer Firebase CLI
 
 ```bash
@@ -109,6 +109,7 @@ Ce build genere:
 - `.output/server` pour la Function SSR
 
 Le script `postbuild` retire automatiquement la dependance Windows `@img/sharp-win32-x64` du package SSR genere pour eviter l'erreur de plateforme au deploiement Linux Firebase.
+Il force aussi `engines.node = 22` dans `.output/server/package.json` pour garder le runtime SSR aligne avec Firebase au prochain deploy.
 
 ## Preview local du build
 
@@ -140,6 +141,8 @@ firebase deploy --only functions:nuxt-ssr,functions:custom
 # 3) Deployer Hosting
 firebase deploy --only hosting
 ```
+
+> **Note CLI locale** : si la commande globale `firebase` est casse (ex : install globale corrompue sous Windows/pnpm), le fallback fiable pour ce projet est `npx firebase-tools ...`. Verifie sur cette passe Node 22 : `npx firebase-tools --version` retourne bien une CLI exploitable.
 
 Cette sequence evite les longues attentes d'un deploy complet quand seul Hosting ou les Functions doivent etre finalises, et permet aussi de finaliser rapidement Hosting si le deploy global bute sur un sujet operationnel annexe.
 
@@ -229,8 +232,11 @@ npm run serve
 
 ## Notes importantes
 
-- Runtime Node.js 20 est actuellement utilise pour les fonctions.
-- **Node.js 20 sera deprecie le 2026-04-30 et decommissionnee le 2026-10-31.** Prevoir une montee de version avant ces dates.
+- Runtime Node.js 22 est maintenant utilise pour les fonctions.
+- Le runtime est explicite a deux endroits pour eviter les derives entre codebases :
+  - `firebase.json` force `runtime: nodejs22` pour `nuxt-ssr` et `custom`
+  - `functions/package.json` declare `engines.node = 22`
+- La version locale cible est aussi epinglee dans `.nvmrc` (`22.19.0`) pour eviter les builds relances sous une version differente.
 - Si une route API Nuxt renvoie 404 apres ajout/deplacement de fichier, redemarrer `npm run dev`.
 
 ## Commandes rapides (copier/coller)
@@ -243,7 +249,7 @@ npm run dev
 ```powershell
 # build + deploy complet (PowerShell)
 npm run build
-nvm use 20.19.5
+nvm use 22
 npm install --no-save --no-package-lock firebase-functions firebase-admin
 firebase deploy
 ```

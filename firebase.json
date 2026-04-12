@@ -7,6 +7,7 @@
     {
       "source": ".output/server",
       "codebase": "nuxt-ssr",
+      "runtime": "nodejs22",
       "ignore": [
         "node_modules",
         ".git",
@@ -18,6 +19,7 @@
     {
       "source": "functions",
       "codebase": "custom",
+      "runtime": "nodejs22",
       "ignore": [
         "node_modules",
         ".git",

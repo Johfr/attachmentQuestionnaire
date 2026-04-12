@@ -35,7 +35,7 @@ Fonctionnalites a venir :
 | Hebergement | Firebase Hosting + Cloud Functions gen2 |
 | Paiement | Stripe via Firebase Extension |
 | Tests | Vitest + @nuxt/test-utils |
-| Node requis | **20** (Node 24 casse la resolution firebase-functions) |
+| Node requis | **22** (runtime Firebase cible pour `nuxt-ssr` et `custom`) |
 
 ---
 
@@ -279,4 +279,4 @@ export const useBillingStore = defineStore('billing', () => {
 - [ ] **Cloud Function formation** `hasPaidFormation` via `onSubscriptionWritten` - V2, voir note dans `docs/cloud-functions.md`
 - [ ] **Integration OpenAI** : generation de l'analyse IA des resultats
 - [ ] **Blog v2** : pages articles individuelles avec SEO (JSON-LD `Article`, og:article:*)
-- [ ] Mise a jour Node 20 -> version suivante (**depreciation 2026-04-30, decommission 2026-10-31**)
+- [x] Mise a jour runtime Firebase vers Node 22

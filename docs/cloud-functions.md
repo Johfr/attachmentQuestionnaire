@@ -1,7 +1,7 @@
 # Cloud Functions custom — `functions/index.js`
 
 > Codebase Firebase : `custom`  
-> Runtime : Node 20 (**dépréciation 2026-04-30, décommission 2026-10-31**), firebase-functions v6, firebase-admin v12  
+> Runtime : Node 22, firebase-functions v6, firebase-admin v12  
 > Déploiement : `firebase deploy --only functions:custom`
 
 ---
