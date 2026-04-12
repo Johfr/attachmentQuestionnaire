@@ -57,7 +57,7 @@ const questionnaireCurrentStep = computed(() => questionnaireWizardStore.current
     background-color: #eee;
 
     &.active {
-      background-color: var(--light-brown);
+      background-color: var(--button-dark);
     }
   }
 }
