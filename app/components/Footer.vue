@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useAuthStore } from '~/stores/auth'
+const authStore = useAuthStore()
+const user = computed(() => authStore.user)
 </script>
 
 <template>
@@ -16,6 +19,12 @@
     </p>
     
     <div class="flex justify-between gap-5">
+      <RouterLink v-if="user && user.admin" to="/admin" class="flex flex-wrap justify-center">
+        <LucideList :size="20" class="mb-3 md:mr-1 text-rust md:hidden md:mb-0" />
+        <span class="text-xs hidden md:block md:text-md">
+          Admin
+        </span>
+      </RouterLink>
       <RouterLink to="/attachment-styles" class="flex flex-wrap justify-center">
         <LucideList :size="20" class="mb-3 md:mr-1 text-rust md:hidden md:mb-0" />
         <span class="text-xs hidden md:block md:text-md">

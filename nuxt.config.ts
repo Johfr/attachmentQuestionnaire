@@ -83,6 +83,8 @@ export default defineNuxtConfig({
       stripeMembershipPriceId: process.env.NUXT_PUBLIC_STRIPE_MEMBERSHIP_PRICE_ID || '',
       stripeFormationProductId: process.env.NUXT_PUBLIC_STRIPE_FORMATION_PRODUCT_ID || '',
       stripeFormationPriceId: process.env.NUXT_PUBLIC_STRIPE_FORMATION_PRICE_ID || '',
+      stripeTestLiveProductId: process.env.NUXT_PUBLIC_STRIPE_TESTLIVE_PRODUCT_ID || '',
+      stripeTestLivePriceId: process.env.NUXT_PUBLIC_STRIPE_TESTLIVE_PRICE_ID || '',
     },
   },
 })

@@ -175,11 +175,15 @@ export const useBillingStore = defineStore('billing', () => {
     
     const successCheckoutUrl = accessType === 'ebook'
       ? `${window.location.origin}/user/profil?checkout=success`
-      : `${window.location.origin}/user/${successUrl}/results?sessionId=${docId}`
+      : accessType === 'testLive'
+        ? `${window.location.origin}/admin?checkout=success`
+        : `${window.location.origin}/user/${successUrl}/results?sessionId=${docId}`
 
     const cancelCheckoutUrl = accessType === 'ebook'
       ? `${window.location.origin}/ebook`
-      : `${window.location.origin}/user/profil/`
+      : accessType === 'testLive'
+        ? `${window.location.origin}/admin`
+        : `${window.location.origin}/user/profil/`
 
     const collectionRef = collection(firebaseClient.db, 'customers', user.value?.id ?? 'unknown_user', 'checkout_sessions')
 
@@ -198,6 +202,7 @@ export const useBillingStore = defineStore('billing', () => {
         entityVersion,
         successUrl,
         docId,
+        checkoutOrigin: accessType === 'testLive' ? 'admin' : 'app',
       },
       // Mirror metadata onto the PaymentIntent (payment mode) or Subscription (subscription mode)
       // so the Stripe Extension propagates it to customers/{uid}/payments or /subscriptions.
@@ -205,12 +210,28 @@ export const useBillingStore = defineStore('billing', () => {
       ...(selectedProduct.mode === 'payment'
         ? {
             payment_intent_data: {
-              metadata: { entityType, entitySubType, accessType, entityVersion, successUrl, docId },
+              metadata: {
+                entityType,
+                entitySubType,
+                accessType,
+                entityVersion,
+                successUrl,
+                docId,
+                checkoutOrigin: accessType === 'testLive' ? 'admin' : 'app',
+              },
             },
           }
         : {
             subscription_data: {
-              metadata: { entityType, entitySubType, accessType, entityVersion, successUrl, docId },
+              metadata: {
+                entityType,
+                entitySubType,
+                accessType,
+                entityVersion,
+                successUrl,
+                docId,
+                checkoutOrigin: accessType === 'testLive' ? 'admin' : 'app',
+              },
             },
           }),
       success_url: successCheckoutUrl,

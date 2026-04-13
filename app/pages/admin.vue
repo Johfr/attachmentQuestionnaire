@@ -1,0 +1,71 @@
+<script setup lang="ts">
+import { useAuthStore } from '~/stores/auth'
+import { useBillingStore } from '~/stores/billing'
+
+definePageMeta({
+  middleware: ['auth'],
+  requiresAuth: true,
+})
+
+const route = useRoute()
+const authStore = useAuthStore()
+const billingStore = useBillingStore()
+
+const isLoadingCheckout = ref(false)
+const checkoutError = ref('')
+
+const startLiveCheckoutTest = async () => {
+  checkoutError.value = ''
+  isLoadingCheckout.value = true
+
+  try {
+    await billingStore.goToCheckout('other', 'other', 'testLive', 'v1', 'admin', 'admin-live-checkout')
+  } catch (error) {
+    checkoutError.value = error instanceof Error
+      ? error.message
+      : 'Impossible de creer la checkout session de test pour le moment.'
+  } finally {
+    isLoadingCheckout.value = false
+  }
+}
+</script>
+
+<template>
+  <section>
+    <DesignSystemPageSectionHeading :isHeading="true" title="Admin panel" titleSize="text-4xl md:text-3xl" sectionSpacing="mt-8 mb-12" />
+
+    <div v-if="authStore.isAdmin">
+      <section class="rounded-3xl border-l-4 border-theme-button bg-theme-surfaceStaticCard p-6">
+        <h2 class="mb-3 text-xl font-semibold text-theme-text">
+          Test achat produit live Stripe
+        </h2>
+        <p class="mb-4 text-sm text-theme-muted">
+          Ce bouton permet de vérifier la page Stripe Checkout et l'écriture Firestore dans `customers/{uid}/checkout_sessions`.
+        </p>
+
+        <p v-if="route.query.checkout === 'success'" class="mb-4 rounded-3xl bg-green-700 px-4 py-2 text-sm text-white">
+          Retour checkout détecté. Tu peux maintenant vérifier Stripe et Firestore.
+        </p>
+
+        <p v-if="checkoutError" class="mb-4 rounded-3xl bg-red-700 px-4 py-2 text-sm text-white">
+          {{ checkoutError }}
+        </p>
+
+        <button
+          class="bg-theme-button text-theme-buttonText inline-flex items-center gap-2 rounded-3xl px-5 py-3 text-sm"
+          :disabled="isLoadingCheckout"
+          @click="startLiveCheckoutTest"
+        >
+          <LucideLoader v-if="isLoadingCheckout" :size="18" class="animate-spin" />
+          <span>{{ isLoadingCheckout ? 'Redirection en cours...' : 'Lancer un test checkout live' }}</span>
+        </button>
+      </section>
+    </div>
+
+    <div v-else class="rounded-3xl border-l-4 border-theme-button bg-theme-surfaceStaticCard p-6">
+      <p class="text-sm text-theme-muted">
+        Cette page est réservée à l'administration.
+      </p>
+    </div>
+  </section>
+</template>
