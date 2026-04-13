@@ -13,7 +13,7 @@ useHead({
 })
 
 
-const glossaryEntries = [
+const attachmentStyles = [
   {
     term: 'Attachement adulte',
     definition: 'La théorie de l\'attachement adulte décrit la façon dont nos expériences relationnelles précoces façonnent notre manière de vivre l\'intimité, la confiance et la séparation dans nos relations amoureuses. Développée par John Bowlby pour l\'enfance et adaptée à l\'adulte par Hazan et Shaver, elle identifie plusieurs styles — sécure, anxieux, évitant, désorganisé — qui influencent nos comportements relationnels tout au long de la vie.',
@@ -44,16 +44,7 @@ const glossaryEntries = [
 <template>
   <section class="">
     <DesignSystemPageSectionHeading :isHeading="true" title="Les différents styles d'attachement" titleSize="text-4xl md:text-3xl" sectionSpacing="mt-8 mb-12" />
-
-    <div class="flex flex-col gap-4">
-      <div v-for="(entry, index) in glossaryEntries" :key="index" class="glossary-entry">
-        <h2 class="text-lg font-semibold">
-          {{ entry.term }}
-        </h2>
-        <p class="text-sm text-gray-600">
-          {{ entry.definition }}
-        </p>
-      </div>
-    </div>
+    
+    <EntryList :entries="attachmentStyles" />
   </section>
 </template>

@@ -16,7 +16,7 @@
     </p>
     
     <div class="flex justify-between gap-5">
-      <RouterLink to="/attachement-styles" class="flex flex-wrap justify-center">
+      <RouterLink to="/attachment-styles" class="flex flex-wrap justify-center">
         <LucideList :size="20" class="mb-3 md:mr-1 text-rust md:hidden md:mb-0" />
         <span class="text-xs hidden md:block md:text-md">
           Attachement styles

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-const glossaryEntries = [
+const elementsEntries = [
   {
     term: 'Mountain',
     definition: 'L\'élément de la montagne symbolise la stabilité, la solidité et la permanence. Il représente les bases solides sur lesquelles nous construisons nos relations, ainsi que les défis que nous devons surmonter pour atteindre une connexion profonde. Il est associé au style d\'attachement sécure, où la confiance et la sécurité sont les fondations de la relation.',
@@ -27,16 +27,11 @@ const glossaryEntries = [
 <template>
   <section class="">
     <DesignSystemPageSectionHeading :isHeading="true" title="Les 4 éléments" titleSize="text-4xl md:text-3xl" sectionSpacing="mt-8 mb-12" />
-
-    <div class="flex flex-col gap-4">
-      <div v-for="(entry, index) in glossaryEntries" :key="index" class="glossary-entry">
-        <h2 class="text-lg font-semibold">
-          {{ entry.term }}
-        </h2>
-        <p class="text-sm text-gray-600">
-          {{ entry.definition }}
-        </p>
-      </div>
-    </div>
+    
+    <p class="mb-5 text-sm text-theme-muted">
+      Les éléments sont des concepts symboliques qui représentent les différentes dynamiques et caractéristiques des styles d'attachement. Ils n'ont pas de base scientifique formelle, mais sont utilisés comme des métaphores. La montagne est souvent associée à la stabilité et à la sécurité, l'eau à l'émotion et à la fluidité, la neige à la distance et à la protection, la tempête à la turbulence et au changement, et l'éther à la complexité et à l'ambivalence. Ils sont associés aux différents styles d'attachement.
+    </p>
+    
+    <EntryList :entries="elementsEntries" />
   </section>
 </template>

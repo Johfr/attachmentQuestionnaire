@@ -1,4 +1,17 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: 'Glossaire de l\'attachement adulte | Définitions',
+  description: 'Définitions des concepts clés de la théorie de l\'attachement : style anxieux, évitant, sécure, désorganisé, activation du système d\'attachement, régulation émotionnelle, blessure d\'abandon, dépendance affective.',
+  keywords: 'glossaire attachement adulte, définition style attachement, attachement anxieux définition, attachement évitant définition, activation attachement, régulation émotionnelle, blessure d\'abandon, figure d\'attachement, dépendance affective, insécurité affective',
+  ogTitle: 'Glossaire de l\'attachement adulte',
+  ogDescription: 'Définitions des termes clés de la théorie de l\'attachement adulte : anxieux, évitant, sécure, désorganisé et plus.',
+  ogUrl: 'https://relation-anxieux-evitant.web.app/glossaire',
+})
+
+useHead({
+  link: [{ rel: 'canonical', href: 'https://relation-anxieux-evitant.web.app/glossaire' }],
+})
+
 const glossaryEntries = [
   {
     term: 'Attachement adulte',
@@ -61,34 +74,12 @@ const glossaryEntries = [
     definition: 'Une rupture amoureuse est vécue différemment selon le style d\'attachement. Les personnes anxieuses tendent à ruminer, à idéaliser l\'ex-partenaire et à chercher le contact. Les personnes évitantes peuvent sembler indifférentes en surface mais vivent souvent une détresse intériorisée. Comprendre son style d\'attachement aide à traverser une rupture de façon plus consciente et à éviter les patterns de retour compulsif.',
   },
 ]
-
-useSeoMeta({
-  title: 'Glossaire de l\'attachement adulte | Définitions',
-  description: 'Définitions des concepts clés de la théorie de l\'attachement : style anxieux, évitant, sécure, désorganisé, activation du système d\'attachement, régulation émotionnelle, blessure d\'abandon, dépendance affective.',
-  keywords: 'glossaire attachement adulte, définition style attachement, attachement anxieux définition, attachement évitant définition, activation attachement, régulation émotionnelle, blessure d\'abandon, figure d\'attachement, dépendance affective, insécurité affective',
-  ogTitle: 'Glossaire de l\'attachement adulte',
-  ogDescription: 'Définitions des termes clés de la théorie de l\'attachement adulte : anxieux, évitant, sécure, désorganisé et plus.',
-  ogUrl: 'https://relation-anxieux-evitant.web.app/glossaire',
-})
-
-useHead({
-  link: [{ rel: 'canonical', href: 'https://relation-anxieux-evitant.web.app/glossaire' }],
-})
 </script>
 
 <template>
   <section class="">
     <DesignSystemPageSectionHeading :isHeading="true" title="Glossaire" titleSize="text-4xl md:text-3xl" sectionSpacing="mt-8 mb-12" />
-
-    <div class="flex flex-col gap-4">
-      <div v-for="(entry, index) in glossaryEntries" :key="index" class="glossary-entry">
-        <h2 class="text-lg font-semibold">
-          {{ entry.term }}
-        </h2>
-        <p class="text-sm text-gray-600">
-          {{ entry.definition }}
-        </p>
-      </div>
-    </div>
+    
+    <EntryList :entries="glossaryEntries" />
   </section>
 </template>
