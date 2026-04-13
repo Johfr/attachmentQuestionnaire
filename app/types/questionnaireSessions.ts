@@ -24,6 +24,7 @@ export type QuestionnaireSession = {
   relationContext: {
     partnerFirstName: string | null
     partnerAge: number | null
+    partnerGender: 'male' | 'female' | null
   }
 
   answers: Array<{

@@ -92,7 +92,11 @@ export function useAttachmentResultsPersistRetry() {
         results: questionnaireWizardStore.result,
         questions: questionList,
         relationContext: partnerCtx
-          ? { partnerFirstName: partnerCtx.firstName, partnerAge: partnerCtx.age }
+          ? {
+              partnerFirstName: partnerCtx.firstName,
+              partnerAge: partnerCtx.age,
+              partnerGender: partnerCtx.gender,
+            }
           : null,
       },
     })

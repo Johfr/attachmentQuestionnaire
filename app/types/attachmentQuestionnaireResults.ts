@@ -174,6 +174,7 @@ export type ComputeAttachmentQuestionnaireResultsRequest = {
   relationContext?: {
     partnerFirstName: string | null
     partnerAge: number | null
+    partnerGender: 'male' | 'female' | null
   } | null
 }
 

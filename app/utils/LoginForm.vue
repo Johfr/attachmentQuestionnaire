@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/stores/auth'
-import type { AuthFormMode, AuthFormPayload, UserLoginForm } from '~/types/User'
+import type { AuthFormMode, AuthFormPayload, Gender, UserLoginForm } from '~/types/User'
 
 const authStore = useAuthStore()
 const user = computed(() => authStore.user)
@@ -16,12 +16,14 @@ const name = ref('')
 const email = ref('')
 const age = ref<string | number>('')
 const password = ref('')
+const gender = ref<Gender | null>(null)
 
 const touched = reactive({
   name: false,
   email: false,
   age: false,
   password: false,
+  gender: false,
 })
 
 const errors = reactive({
@@ -29,6 +31,7 @@ const errors = reactive({
   email: '',
   age: '',
   password: '',
+  gender: '',
 })
 
 const isSignupMode = computed(() => currentForm.value === 'signup')
@@ -38,23 +41,25 @@ const clearValidation = () => {
   touched.email = false
   touched.age = false
   touched.password = false
+  touched.gender = false
   errors.name = ''
   errors.email = ''
   errors.age = ''
   errors.password = ''
+  errors.gender = ''
 }
 
 const isEmailValid = (value: string) => /\S+@\S+\.\S+/.test(value)
 const normalizeAgeInput = () => String(age.value ?? '').trim()
 
-const validateField = (field: 'name' | 'email' | 'age' | 'password') => {
+const validateField = (field: 'name' | 'email' | 'age' | 'password' | 'gender') => {
   if (field === 'name') {
     if (!isSignupMode.value) {
       errors.name = ''
       return
     }
 
-    errors.name = name.value.trim() ? '' : 'Le prenom est obligatoire.'
+    errors.name = name.value.trim() ? '' : 'Le prénom est obligatoire.'
     return
   }
 
@@ -66,43 +71,53 @@ const validateField = (field: 'name' | 'email' | 'age' | 'password') => {
 
     const ageInput = normalizeAgeInput()
     if (!ageInput) {
-      errors.age = 'L age est obligatoire.'
+      errors.age = "L'âge est obligatoire."
       return
     }
 
     const parsedAge = Number(ageInput)
-    errors.age = Number.isNaN(parsedAge) || parsedAge <= 0 ? 'Saisis un age valide.' : ''
+    errors.age = Number.isNaN(parsedAge) || parsedAge <= 0 ? "Saisis un âge valide." : ''
+    return
+  }
+
+  if (field === 'gender') {
+    if (!isSignupMode.value) {
+      errors.gender = ''
+      return
+    }
+
+    errors.gender = gender.value ? '' : 'Selectionne ton sexe.'
     return
   }
 
   if (field === 'email') {
     const value = email.value.trim()
     if (!value) {
-      errors.email = 'L email est obligatoire.'
+      errors.email = "L'email est obligatoire."
       return
     }
 
-    errors.email = isEmailValid(value) ? '' : 'Saisis un email valide.'
+    errors.email = isEmailValid(value) ? '' : "Saisis un email valide."
     return
   }
 
   const pwd = password.value.trim()
   if (!pwd) {
-    errors.password = 'Le mot de passe est obligatoire.'
+    errors.password = "Le mot de passe est obligatoire."
     return
   }
 
-  errors.password = pwd.length >= 8 ? '' : '8 caracteres minimum.'
+  errors.password = pwd.length >= 8 ? '' : '8 caractères minimum.'
 }
 
-const touchAndValidate = (field: 'name' | 'email' | 'age' | 'password') => {
+const touchAndValidate = (field: 'name' | 'email' | 'age' | 'password' | 'gender') => {
   touched[field] = true
   validateField(field)
 }
 
 const submit = (): { isValid: boolean, payload?: AuthFormPayload } => {
-  const requiredFields: Array<'name' | 'email' | 'age' | 'password'> = isSignupMode.value
-    ? ['name', 'age', 'email', 'password']
+  const requiredFields: Array<'name' | 'email' | 'age' | 'password' | 'gender'> = isSignupMode.value
+    ? ['name', 'age', 'gender', 'email', 'password']
     : ['email', 'password']
 
   requiredFields.forEach((field) => {
@@ -123,6 +138,7 @@ const submit = (): { isValid: boolean, payload?: AuthFormPayload } => {
   if (isSignupMode.value) {
     payload.name = name.value.trim()
     payload.age = Number(normalizeAgeInput())
+    payload.gender = gender.value
   }
 
   return {
@@ -175,11 +191,27 @@ defineExpose({
         <input v-model="age" @blur="touchAndValidate('age')" type="number" id="userAge" name="userAge" autocomplete="off" placeholder="Ex: 28" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.age && errors.age" class="mt-1 text-xs text-red-600">{{ errors.age }}</small>
       </label>
+      <div class="mt-2 flex flex-col text-sm">
+        <span>Ton sexe*</span>
+        <div class="mt-2 flex gap-4">
+          <label class="inline-flex items-center gap-2">
+            <input v-model="gender" @change="touchAndValidate('gender')" type="radio" name="userGender" value="male" />
+            <span title="Homme">H</span>
+          </label>
+          <label class="inline-flex items-center gap-2">
+            <input v-model="gender" @change="touchAndValidate('gender')" type="radio" name="userGender" value="female" />
+            <span title="Femme">F</span>
+          </label>
+        </div>
+        <small v-if="touched.gender && errors.gender" class="mt-1 text-xs text-red-600">{{ errors.gender }}</small>
+      </div>
+      <!-- email -->
       <label for="userEmailSignup" class="mt-2 flex flex-col text-sm">
         Ton email*
         <input v-model="email" @blur="touchAndValidate('email')" type="email" id="userEmailSignup" name="userEmail" autocomplete="email" placeholder="Ex: alex@example.com" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.email && errors.email" class="mt-1 text-xs text-red-600">{{ errors.email }}</small>
       </label>
+      <!-- password -->
       <label for="userPasswordSignup" class="mt-2 flex flex-col text-sm">
         Ton mot de passe*
         <small class="text-theme-muted">(pour sauvegarder tes resultats et y acceder plus tard)</small>

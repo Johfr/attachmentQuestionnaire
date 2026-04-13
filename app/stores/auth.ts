@@ -6,6 +6,7 @@ import { createUserAccountWithEmailAndPassword, signInUserWithEmailAndPassword, 
 import type {
   AuthFormPayload,
   CurrentPartnerContext,
+  Gender,
   QuestionnaireAccessEntry,
   QuestionnaireAccessMap,
   UserLoginForm,
@@ -14,6 +15,7 @@ import type {
 type PartnerContextPayload = {
   partnerName?: string | null
   partnerAge?: number | null
+  partnerGender?: Gender | null
 }
 
 type AuthActionResult = {
@@ -44,17 +46,23 @@ export const useAuthStore = defineStore('auth', () => {
     isLoginModalOpen.value = false
   }
 
-  const buildPartnerContext = ({ partnerName, partnerAge }: PartnerContextPayload) => {
+  const normalizeGender = (value: unknown): Gender | null => {
+    return value === 'male' || value === 'female' ? value : null
+  }
+
+  const buildPartnerContext = ({ partnerName, partnerAge, partnerGender }: PartnerContextPayload) => {
     const normalizedName = (partnerName || '').trim() || null
     const normalizedAge = typeof partnerAge === 'number' ? partnerAge : null
+    const normalizedGender = normalizeGender(partnerGender)
 
-    if (!normalizedName && normalizedAge === null) {
+    if (!normalizedName && normalizedAge === null && !normalizedGender) {
       return null
     }
 
     return {
       firstName: normalizedName,
       age: normalizedAge,
+      gender: normalizedGender,
     }
   }
 
@@ -68,14 +76,16 @@ export const useAuthStore = defineStore('auth', () => {
       ? candidate.firstName.trim()
       : null
     const age = typeof candidate.age === 'number' ? candidate.age : null
+    const gender = normalizeGender(candidate.gender)
 
-    if (!firstName && age === null) {
+    if (!firstName && age === null && !gender) {
       return null
     }
 
     return {
       firstName,
       age,
+      gender,
     }
   }
 
@@ -182,6 +192,7 @@ export const useAuthStore = defineStore('auth', () => {
         name: (data?.name as string) || '',
         age: (typeof data?.age === 'number' ? data.age : null),
         admin: isFirestoreAdmin,
+        gender: normalizeGender(data?.gender),
         password: '',
       } as UserLoginForm,
       partnerContext: normalizeStoredPartnerContext(data?.currentPartnerContext),
@@ -274,10 +285,10 @@ export const useAuthStore = defineStore('auth', () => {
     let authResult: { success: boolean, user?: any, error?: string, errorCode?: string | null }
 
     if (currentForm === 'signup') {
-      if (!userLoginForm.name || userLoginForm.age === null || userLoginForm.age === undefined) {
+      if (!userLoginForm.name || userLoginForm.age === null || userLoginForm.age === undefined || !userLoginForm.gender) {
         return {
           success: false,
-          errorMessage: 'Nom et age sont obligatoires pour creer un compte.',
+          errorMessage: 'Nom, age et sexe sont obligatoires pour creer un compte.',
         }
       }
 
@@ -305,6 +316,7 @@ export const useAuthStore = defineStore('auth', () => {
             email: firebaseUser.email || userLoginForm.email,
             name: userLoginForm.name || null,
             age: userLoginForm.age ?? null,
+            gender: userLoginForm.gender ?? null,
             authProvider: 'password',
             emailVerified: Boolean(firebaseUser.emailVerified),
             createdAt: serverTimestamp(),
@@ -320,6 +332,7 @@ export const useAuthStore = defineStore('auth', () => {
           email: firebaseUser.email || userLoginForm.email,
           name: userLoginForm.name || '',
           age: userLoginForm.age ?? null,
+          gender: userLoginForm.gender ?? null,
           password: '',
         }
         currentPartnerContext.value = partnerContext

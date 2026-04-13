@@ -21,7 +21,7 @@ const buildCooldownMessage = (remainingDays: number) => {
   return `Encore ${remainingDays} ${unit} avant de pouvoir passer de nouveau le formulaire.`
 }
 
-const startSurvey = async (userData: { authPayload: AuthFormPayload | null, partnerName: string | null, partnerAge: number | null }) => {
+const startSurvey = async (userData: { authPayload: AuthFormPayload | null, partnerName: string | null, partnerAge: number | null, partnerGender: 'male' | 'female' | null }) => {
   await authStore.initAuth()
   authErrorMessage.value = null
   accessBlockedMessage.value = null
@@ -44,6 +44,7 @@ const startSurvey = async (userData: { authPayload: AuthFormPayload | null, part
       await authStore.savePartnerContext({
         partnerName: userData.partnerName,
         partnerAge: userData.partnerAge,
+        partnerGender: userData.partnerGender,
       })
 
       questionnaireWizardStore.start()
@@ -56,6 +57,7 @@ const startSurvey = async (userData: { authPayload: AuthFormPayload | null, part
     const result = await authStore.authenticateForQuestionnaire(userData.authPayload, {
       partnerName: userData.partnerName,
       partnerAge: userData.partnerAge,
+      partnerGender: userData.partnerGender,
     })
 
     if (!result.success) {
@@ -124,6 +126,7 @@ useHead({
       :is-submitting="isSubmitting"
       :initial-partner-name="currentPartnerContext?.firstName || null"
       :initial-partner-age="currentPartnerContext?.age ?? null"
+      :initial-partner-gender="currentPartnerContext?.gender ?? null"
       @startSurvey="startSurvey"
     />
   </main>

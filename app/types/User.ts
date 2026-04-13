@@ -1,5 +1,7 @@
 import type { Timestamp } from "firebase/firestore"
 
+export type Gender = 'male' | 'female'
+
 export type QuestionnaireAccessEntry = {
   lastCompletedAt: Timestamp | null
   nextAllowedAt: Timestamp | null
@@ -14,6 +16,7 @@ export type User = {
   name: string
   age: number | null
   admin?: boolean | null
+  gender: Gender | null
 
   createdAt: Timestamp
   updatedAt: Timestamp
@@ -25,6 +28,7 @@ export type User = {
   currentPartnerContext: {
     firstName: string | null
     age: number | null
+    gender: Gender | null
   } | null
 
   questionnaireAccess?: QuestionnaireAccessMap | null
@@ -38,6 +42,7 @@ export type User = {
 export type CurrentPartnerContext = {
   firstName: string | null
   age: number | null
+  gender: Gender | null
 }
 
 export type UserLoginForm = {
@@ -47,6 +52,7 @@ export type UserLoginForm = {
   name?: string
   age?: number | null
   admin?: boolean | null
+  gender?: Gender | null
 }
 
 export type AuthFormMode = 'login' | 'signup'

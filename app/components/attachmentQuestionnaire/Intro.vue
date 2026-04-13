@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import LoginForm from "~/utils/LoginForm.vue"
-import type { AuthFormPayload } from '~/types/User'
+import type { AuthFormPayload, Gender } from '~/types/User'
 
 const props = defineProps<{
   authErrorMessage?: string | null
@@ -9,6 +9,7 @@ const props = defineProps<{
   accessBlockedMessage?: string | null
   initialPartnerName?: string | null
   initialPartnerAge?: number | null
+  initialPartnerGender?: Gender | null
 }>()
 
 const auth = useAuthStore()
@@ -18,6 +19,7 @@ type StartSurveyPayload = {
   authPayload: AuthFormPayload | null
   partnerName: string | null
   partnerAge: number | null
+  partnerGender: Gender | null
 }
 
 type LoginFormExpose = {
@@ -31,12 +33,14 @@ const emits = defineEmits<{
 const loginFormData = ref<LoginFormExpose | null>(null)
 const partnerName = ref('')
 const partnerAge = ref<number | null>(null)
+const partnerGender = ref<Gender | null>(null)
 
 watch(
-  () => [props.initialPartnerName, props.initialPartnerAge],
-  ([nextPartnerName, nextPartnerAge]) => {
+  () => [props.initialPartnerName, props.initialPartnerAge, props.initialPartnerGender],
+  ([nextPartnerName, nextPartnerAge, nextPartnerGender]) => {
     partnerName.value = typeof nextPartnerName === 'string' ? nextPartnerName : ''
     partnerAge.value = typeof nextPartnerAge === 'number' ? nextPartnerAge : null
+    partnerGender.value = nextPartnerGender === 'male' || nextPartnerGender === 'female' ? nextPartnerGender : null
   },
   { immediate: true },
 )
@@ -57,6 +61,7 @@ const nextStep = () => {
     authPayload,
     partnerName: partnerName.value.trim() || null,
     partnerAge: partnerAge.value,
+    partnerGender: partnerGender.value,
   })
 
   // utiliser un loader sur le bouton pour indiquer que le questionnaire se prepare
@@ -120,6 +125,19 @@ const nextStep = () => {
           Son prenom
           <input v-model="partnerName" type="text" id="partnerFirstName" name="partnerFirstName" autocomplete="off" placeholder="Ex: Camille" class="mt-2 rounded-2xl border border-solid border-theme-partnerFormInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         </label>
+        <div class="mt-2 flex flex-col text-sm">
+          <span>Son sexe</span>
+          <div class="mt-2 flex gap-4">
+            <label class="inline-flex items-center gap-2">
+              <input v-model="partnerGender" type="radio" name="partnerGender" value="male" />
+              <span title="Homme">H</span>
+            </label>
+            <label class="inline-flex items-center gap-2">
+              <input v-model="partnerGender" type="radio" name="partnerGender" value="female" />
+              <span title="Femme">F</span>
+            </label>
+          </div>
+        </div>
         <label for="partnerAge" class="flex flex-col mt-2 text-sm">
           Son age
           <input v-model="partnerAge" type="number" id="partnerAge" name="partnerAge" autocomplete="off" placeholder="Ex: 30" class="mt-2 rounded-2xl border border-solid border-theme-partnerFormInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />

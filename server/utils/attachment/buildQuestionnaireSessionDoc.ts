@@ -9,6 +9,7 @@ const roundStoredTriggerScore = (value: number) => Math.round(value * 10000) / 1
 type RelationContext = {
   partnerFirstName: string | null
   partnerAge: number | null
+  partnerGender: 'male' | 'female' | null
 }
 
 /**
@@ -49,7 +50,7 @@ export const buildQuestionnaireSessionDoc = (
     status: 'completed' as const,
     scoringVersion: SCORING_VERSION,
 
-    relationContext: relationContext ?? { partnerFirstName: null, partnerAge: null },
+    relationContext: relationContext ?? { partnerFirstName: null, partnerAge: null, partnerGender: null },
 
     answers: rawAnswers.map(r => ({
       id: r.id,
