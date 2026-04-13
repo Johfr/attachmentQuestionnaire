@@ -28,7 +28,7 @@ export const useUserAttachmentProgressStore = defineStore('userAttachmentProgres
 
   const level = computed<number>(() => {
     if (!hasResult.value) return 1
-    const badCount = Object.values(triggers.value).filter(t => t.score > TRIGGER_THRESHOLD).length
+    const badCount = Object.values(triggers.value).filter(t => Math.round(t.score * 100) > 33).length
     return Math.max(1, TOTAL_TRIGGERS - badCount)
   })
 

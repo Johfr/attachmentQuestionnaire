@@ -96,7 +96,7 @@ const showMore = ref(false)
       </DesignSystemPageSectionHeading>
       
       <!-- user Progress -->
-      <DesignSystemUserProgress />
+      <DesignSystemUserProgress v-if="authStore?.questionnaireAccess?.attachment?.lastCompletedAt?.seconds" />
     </div>
 
     <!-- derniers questionnaires -->

@@ -187,9 +187,8 @@ const toggleProfileExplanation = (key: string) => {
       <template v-else>...</template>
     </h2>
 
-    <div class=" mb-6" @click="showPopin = !showPopin">
+    <div v-if="progressStore.hasResult" class="mb-6" @click="showPopin = !showPopin">
       <p
-        v-if="progressStore.hasResult"
         class="mb-2 px-4 py-2 text-sm inline-block rounded-3xl text-white shadow-none hover:shadow-lg shadow-slate-300 transition-shadow duration-500 cursor-pointer"
         :class="bgColorByElement[progressStore.element]"
         title="Voir les éléments de ce niveau"
@@ -198,15 +197,15 @@ const toggleProfileExplanation = (key: string) => {
         <span class="font-bold capitalize">{{ progressStore.element }}</span>
       </p>
       
-      <p v-if="progressStore.hasResult" class="mr-3 px-4 py-2 text-sm bg-red-100 inline-block rounded-3xl shadow-none hover:shadow-lg shadow-slate-300 transition-shadow duration-500 cursor-pointer" title="Voir les différents types d'attachement">
+      <p class="mr-3 px-4 py-2 text-sm bg-red-100 inline-block rounded-3xl shadow-none hover:shadow-lg shadow-slate-300 transition-shadow duration-500 cursor-pointer" title="Voir les différents types d'attachement">
         Type
         <span class="font-bold">{{ profileType }}</span>
       </p>
-
-      <p v-if="!progressStore.hasResult && !progressStore.isLoading" class="text-sm text-theme-muted">
-        Passe le questionnaire pour découvrir ton niveau.
-      </p>
     </div>
+
+    <p v-if="!progressStore.hasResult && !progressStore.isLoading" class="mb-3 text-sm text-theme-muted">
+      Passe le questionnaire pour découvrir ton niveau.
+    </p>
 
     <!-- progress bar  -->
     <div class="w-full bg-theme-progressBarBg rounded-full h-2">
@@ -248,7 +247,10 @@ const toggleProfileExplanation = (key: string) => {
         <h3 class="md:text-lg font-bold mb-3 text-gray-700">
           Tu es au niveau {{ progressStore.level }}/{{ levelsDefinitions.length }}
         </h3>
-        <p class="text-sm text-gray-500 ">{{ levelsDefinitions.find(l => l.level === progressStore.level)?.description }}</p>
+        <p class="text-sm text-theme-muted ">{{ levelsDefinitions.find(l => l.level === progressStore.level)?.description }}</p>
+        <p class="text-xs text-theme-muted mt-2 border-l-4 border-theme-muted pl-3">
+          Les niveaux sont calculés selon les scores de tes déclencheurs qui sont supérieurs à 33%. Il existe 11 déclencheurs et donc 11 niveaux de progression. Plus tu as des déclencheurs avec un score supérieur à 33%, plus ton score sera faible et plus tu devras travailler ces déclencheurs pour progresser vers le niveau supérieur. 
+        </p>
       </div>
 
       <div class="flex flex-col items-start gap-2">

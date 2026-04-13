@@ -34,7 +34,7 @@ const handleLogin = async () => {
 
 <template>
   <div class="fixed top-0 left-0 flex h-full w-full items-center justify-center bg-theme-modalOverlay px-4" @click.self="authStore.closeLoginModal()">
-    <div class="max-h-128 w-full max-w-80 overflow-auto rounded-3xl bg-theme-modalBg p-6 text-theme-modalText shadow-lg md:max-w-md">
+    <div class="max-h-128 w-full max-w-80 overflow-auto rounded-3xl bg-theme-modalBg p-6 text-theme-modalText shadow-lg md:max-w-md md:max-h-144">
 
       <p v-if="authErrorMessage" class="mt-3 text-xs text-red-600">
         {{ authErrorMessage }}

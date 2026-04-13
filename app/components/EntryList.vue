@@ -9,16 +9,14 @@ const props = defineProps<{
 </script>
 
 <template>
-
-    <div class="flex flex-col gap-4">
-      <div v-for="(entry, index) in entries" :key="index" class="glossary-entry">
-        <h2 class="text-lg font-semibold">
-          {{ entry.term }}
-        </h2>
-        <p class="text-sm text-theme-muted">
-          {{ entry.definition }}
-        </p>
-      </div>
+  <div class="flex flex-col gap-4">
+    <div v-for="(entry, index) in entries" :key="index" class="glossary-entry">
+      <h2 class="text-lg font-semibold">
+        {{ entry.term }}
+      </h2>
+      <p class="text-sm text-theme-muted">
+        {{ entry.definition }}
+      </p>
     </div>
-  </section>
+  </div>
 </template>
