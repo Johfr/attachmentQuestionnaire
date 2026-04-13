@@ -8,6 +8,7 @@ import type { EntitySubType, EntityType, AccessType, EntityVersion, UserPayment,
 export const useBillingStore = defineStore('billing', () => {
   const authStore = useAuthStore()
   const user = computed(() => authStore.user)
+  const runtimeConfig = useRuntimeConfig()
   // ce store récupère les informations de facturation de l'utilisateur, pour les abonnements et les paiements
   // 3 offres : achat ponctuel, membership : premium mensuelle, premium annuelle : pour la formation à venir
   // le user peut acheter l'achat de résultat pour le formulaire d'attachement ou pour les articles membership à 1.99€, l'achat d'une réponse personnalisée à 4.99€ comprenant les résultats pour le questionnaire d'attachement, ou s'abonner au membership premium à 6.99€/mois
@@ -31,6 +32,47 @@ export const useBillingStore = defineStore('billing', () => {
   const hasPaidIa = computed(() => billingInfo.value.hasPaidIa)
   const hasPaidMembership = computed(() => billingInfo.value.hasPaidMembership)
   const hasPaidFormation = computed(() => billingInfo.value.hasPaidFormation)
+
+  const stripeCatalog = {
+    results: {
+      price: 199,
+      mode: 'payment' as const,
+      productId: runtimeConfig.public.stripeResultsProductId,
+      productPriceId: runtimeConfig.public.stripeResultsPriceId,
+    },
+    ia: {
+      price: 499,
+      mode: 'payment' as const,
+      productId: runtimeConfig.public.stripeIaProductId,
+      productPriceId: runtimeConfig.public.stripeIaPriceId,
+    },
+    ebook: {
+      price: 699,
+      mode: 'payment' as const,
+      productId: runtimeConfig.public.stripeEbookProductId,
+      productPriceId: runtimeConfig.public.stripeEbookPriceId,
+    },
+    membership: {
+      price: 699,
+      mode: 'subscription' as const,
+      productId: runtimeConfig.public.stripeMembershipProductId,
+      productPriceId: runtimeConfig.public.stripeMembershipPriceId,
+      recurrence: 'month' as const,
+    },
+    formation: {
+      price: 4999,
+      mode: 'subscription' as const,
+      productId: runtimeConfig.public.stripeFormationProductId,
+      productPriceId: runtimeConfig.public.stripeFormationPriceId,
+      recurrence: 'year' as const,
+    },
+    testLive: {
+      price: 0,
+      mode: 'payment' as const,
+      productId: runtimeConfig.public.stripeTestLiveProductId,
+      productPriceId: runtimeConfig.public.stripeTestLivePriceId,
+    },
+  }
 
   const checkUserPermissions = async () => {
     if (!user.value) {
@@ -64,10 +106,10 @@ export const useBillingStore = defineStore('billing', () => {
     })
 
     billingInfo.value = {
-      hasPaidResults: paidProductIds.has('prod_UFEBJxvgmXlOxL'),
-      hasPaidIa: paidProductIds.has('prod_UFEBeMrgvlyq7q'),
-      hasPaidMembership: activeSubProductIds.has('prod_UFEDIkXmyJC4xO'),
-      hasPaidFormation: activeSubProductIds.has('prod_xxx'),
+      hasPaidResults: Boolean(stripeCatalog.results.productId) && paidProductIds.has(stripeCatalog.results.productId),
+      hasPaidIa: Boolean(stripeCatalog.ia.productId) && paidProductIds.has(stripeCatalog.ia.productId),
+      hasPaidMembership: Boolean(stripeCatalog.membership.productId) && activeSubProductIds.has(stripeCatalog.membership.productId),
+      hasPaidFormation: Boolean(stripeCatalog.formation.productId) && activeSubProductIds.has(stripeCatalog.formation.productId),
     }
   }
 
@@ -124,12 +166,11 @@ export const useBillingStore = defineStore('billing', () => {
   }
 
   const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType, accessType: AccessType, entityVersion: EntityVersion, successUrl: string, docId: string) => {
-    const products: Record<AccessType, { price: number; mode: 'payment' | 'subscription', productId: string, productPriceId?: string, recurrence?: 'month' | 'year',  }> = {
-      results: { price: 199, mode: 'payment', productId: 'prod_UFEBJxvgmXlOxL', productPriceId: 'price_1TGjipPH1HNS3Ks3YWPBQC7e' },
-      ia: { price: 499, mode: 'payment', productId: 'prod_UFEBeMrgvlyq7q', productPriceId: 'price_1TGjjVPH1HNS3Ks362PNQVov' },
-      ebook: { price: 699, mode: 'payment', productId: 'prod_UJbrpB99diNvjd', productPriceId: 'price_1TKye1PH1HNS3Ks3blw4iFZ7' },
-      membership: { price: 699, mode: 'subscription', productId: 'prod_UFEDIkXmyJC4xO', productPriceId : 'price_1TGjkrPH1HNS3Ks3Xajcb96w', recurrence: 'month',  },
-      formation: { price: 4999, mode: 'subscription', productId: 'prod_xxx', recurrence: 'year',  },
+    const products: Record<AccessType, { price: number; mode: 'payment' | 'subscription', productId: string, productPriceId?: string, recurrence?: 'month' | 'year' }> = stripeCatalog
+    const selectedProduct = products[accessType]
+
+    if (!selectedProduct.productPriceId) {
+      throw new Error('Produit Stripe non configure pour cet environnement.')
     }
     
     const successCheckoutUrl = accessType === 'ebook'
@@ -143,11 +184,11 @@ export const useBillingStore = defineStore('billing', () => {
     const collectionRef = collection(firebaseClient.db, 'customers', user.value?.id ?? 'unknown_user', 'checkout_sessions')
 
     const docRef = await addDoc(collectionRef, {
-      mode: products[accessType].mode,
+      mode: selectedProduct.mode,
       line_items: [
         {
           quantity: 1,
-          price: products[accessType].productPriceId, // Stripe product price_ID
+          price: selectedProduct.productPriceId, // Stripe product price_ID
         },
       ],
       metadata: {
@@ -161,7 +202,7 @@ export const useBillingStore = defineStore('billing', () => {
       // Mirror metadata onto the PaymentIntent (payment mode) or Subscription (subscription mode)
       // so the Stripe Extension propagates it to customers/{uid}/payments or /subscriptions.
       // Without this, the Cloud Functions cannot read docId / accessType from those documents.
-      ...(products[accessType].mode === 'payment'
+      ...(selectedProduct.mode === 'payment'
         ? {
             payment_intent_data: {
               metadata: { entityType, entitySubType, accessType, entityVersion, successUrl, docId },

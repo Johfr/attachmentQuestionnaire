@@ -72,5 +72,17 @@ export default defineNuxtConfig({
     openAiMaxOutputTokens: Number(process.env.NUXT_OPENAI_MAX_OUTPUT_TOKENS || 1800),
     openAiPromptCacheKey: process.env.NUXT_OPENAI_PROMPT_CACHE_KEY || 'relation-anxieux-evitant:attachment-ai',
     openAiPromptCacheRetention: process.env.NUXT_OPENAI_PROMPT_CACHE_RETENTION || 'in_memory',
+    public: {
+      stripeResultsProductId: process.env.NUXT_PUBLIC_STRIPE_RESULTS_PRODUCT_ID || '',
+      stripeResultsPriceId: process.env.NUXT_PUBLIC_STRIPE_RESULTS_PRICE_ID || '',
+      stripeIaProductId: process.env.NUXT_PUBLIC_STRIPE_IA_PRODUCT_ID || '',
+      stripeIaPriceId: process.env.NUXT_PUBLIC_STRIPE_IA_PRICE_ID || '',
+      stripeEbookProductId: process.env.NUXT_PUBLIC_STRIPE_EBOOK_PRODUCT_ID || '',
+      stripeEbookPriceId: process.env.NUXT_PUBLIC_STRIPE_EBOOK_PRICE_ID || '',
+      stripeMembershipProductId: process.env.NUXT_PUBLIC_STRIPE_MEMBERSHIP_PRODUCT_ID || '',
+      stripeMembershipPriceId: process.env.NUXT_PUBLIC_STRIPE_MEMBERSHIP_PRICE_ID || '',
+      stripeFormationProductId: process.env.NUXT_PUBLIC_STRIPE_FORMATION_PRODUCT_ID || '',
+      stripeFormationPriceId: process.env.NUXT_PUBLIC_STRIPE_FORMATION_PRICE_ID || '',
+    },
   },
 })
