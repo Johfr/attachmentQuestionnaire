@@ -32,6 +32,7 @@ const checkoutType = ref<AccessType | null>(null)
 const preparingIaCheckout = ref(false)
 const errorMessage = ref('')
 const normalizedAiExchange = computed(() => normalizeAiExchange(props.aiExchange))
+const hasPersistedSession = computed(() => props.docId.trim().length > 0)
 
 const hasDetailedResultsAccess = computed(() => {
   return (
@@ -100,6 +101,11 @@ const openPopin = (key: PopinKey) => {
 }
 
 const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType, accessType: AccessType) => {
+  if ((accessType === 'results' || accessType === 'ia') && !hasPersistedSession.value) {
+    errorMessage.value = 'La sauvegarde de cette session est encore en cours. Reessaie dans quelques instants.'
+    return
+  }
+
   checkoutType.value = accessType
 
   try {
@@ -398,10 +404,15 @@ const prepareIaCheckout = async () => {
           <p v-if="errorMessage" class="mb-2 px-5 py-2 text-xs bg-red-600 text-white rounded-3xl">
             Une erreur est survenue : {{ errorMessage }}
           </p>
+          <p v-else-if="!hasPersistedSession" class="mb-2 px-5 py-2 text-xs bg-amber-600 text-white rounded-3xl">
+            La session est encore en cours de sauvegarde. Le paiement sera disponible des qu'elle sera prete.
+          </p>
 
           <button
             class="py-4 rounded-3xl w-full bg-blue-700 text-white shadow-xl hover:shadow-none transition-shadow duration-300"
             @click="goToCheckout('questionnaire', 'attachment', 'results')"
+            :disabled="!hasPersistedSession || checkoutType === 'results'"
+            :class="{ 'opacity-50 cursor-not-allowed': !hasPersistedSession || checkoutType === 'results' }"
           >
             <span v-if="checkoutType === 'results'">
               <LucideLoader class="animate-spin inline-block" :size="20" />

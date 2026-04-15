@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useBillingStore } from '~/stores/billing'
+import { useAuthStore } from '~/stores/auth'
 import type { EntitySubType, EntityType, AccessType } from '~/types/billing'
 
 useSeoMeta({
@@ -19,21 +20,40 @@ useHead({
 })
 
 const billingStore = useBillingStore()
+const authStore = useAuthStore()
 const errorMessage = ref('')
 const checkoutType = ref<AccessType | null>(null)
 const docId = 'ebook-anxieux-evitant-v1'
+
+const getCheckoutErrorMessage = (error: unknown) => {
+  if (!(error instanceof Error)) {
+    return 'Une erreur est survenue lors de la redirection vers le paiement.'
+  }
+
+  if (
+    error.message.includes('Missing or insufficient permissions')
+    || error.message.includes('permission-denied')
+  ) {
+    return 'Tu dois être connecté pour accéder au paiement.'
+  }
+
+  return error.message || 'Une erreur est survenue lors de la redirection vers le paiement.'
+}
   
 const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType, accessType: AccessType) => {
+  if (!authStore.user) {
+    errorMessage.value = ''
+    authStore.openLoginModal()
+    return
+  }
+
   checkoutType.value = accessType
 
   try {
     errorMessage.value = ''
     await billingStore.goToCheckout(entityType, entitySubType, accessType, 'v1', 'ebook', docId)
   } catch (error) {
-    errorMessage.value =
-      error instanceof Error
-        ? error.message
-        : 'Une erreur est survenue lors de la redirection vers le paiement.'
+    errorMessage.value = getCheckoutErrorMessage(error)
   } finally {
     checkoutType.value = null
   }
@@ -58,6 +78,7 @@ const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType
         </h2>
 
         <button
+          data-testid="ebook-checkout-button"
           class="px-4 py-4 bg-theme-button text-theme-buttonText rounded-full w-full disabled:opacity-60"
           :disabled="checkoutType === 'ebook'"
           @click="goToCheckout('ebook', 'ebook', 'ebook')"

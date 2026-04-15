@@ -58,6 +58,65 @@ npm run dev
 
 Application disponible sur http://localhost:3000
 
+## Environnements
+
+Le projet prepare maintenant deux fichiers d'environnement dedies :
+
+- `.env.test`
+- `.env.prod`
+
+Le fichier `.env` reste un fallback local par defaut, aligne sur la prod. Les scripts du depot (`dev:test`, `build:test`, `deploy:test`, etc.) s'appuient eux sur `.env.test` ou `.env.prod`, pas sur `.env`.
+
+Scripts disponibles :
+
+```bash
+# dev
+npm run dev
+npm run dev:test
+npm run dev:prod
+
+# build
+npm run build
+npm run build:test
+npm run build:prod
+
+# deploy
+npm run deploy
+npm run deploy:test
+npm run deploy:prod
+```
+
+Etat actuel important :
+
+- ces scripts changent bien le fichier d'environnement charge (`.env.test` ou `.env.prod`)
+- ils changent maintenant aussi l'alias Firebase actif via `firebase use test` / `firebase use prod`
+- `prod` est l'environnement par defaut du depot pour `dev`, `build` et `deploy`
+- `NUXT_PUBLIC_APP_ENV` permet d'afficher clairement l'environnement courant cote admin
+- `NUXT_FIREBASE_PROJECT_ID` pilote maintenant le projet Firebase Admin cote serveur
+- `NUXT_FIREBASE_SERVICE_ACCOUNT_PATH` peut etre differencie entre `test` et `prod`
+
+Point d'attention local :
+
+- si tu veux un vrai back local `test` complet, il faut aussi renseigner un service account du projet test dans `.env.test`
+- tant que `NUXT_FIREBASE_SERVICE_ACCOUNT_PATH` est vide dans `.env.test`, le front test et les IDs Stripe test sont bien separes, mais les appels serveur qui exigent un credential Firebase Admin local peuvent rester limites
+
+Autrement dit, pour l'instant :
+
+- `dev`, `build`, `deploy` = prod
+- `dev:test`, `build:test`, `deploy:test` = test
+- `dev:prod`, `build:prod`, `deploy:prod` = prod
+
+Alias Firebase attendus dans `.firebaserc` :
+
+- `prod` -> `relation-anxieux-evitant`
+- `test` -> `relation-anxieux-evitant-test`
+
+Garde-fou equipe/agent :
+
+- aucun deploy ne doit etre lance sans environnement explicitement nomme
+- si la demande utilisateur dit seulement "deploy", il faut demander `test` ou `prod`
+- meme si les scripts par defaut ciblent prod, l'agent ne doit pas deduire l'environnement a la place du user
+
 ## Tests
 
 ```bash
@@ -101,6 +160,12 @@ Structure BDD:
 npm run build
 ```
 
+Pour un build explicitement aligne avec un environnement :
+
+```bash
+npm run build:prod
+```
+
 > **Note timeout** : sur cette app, le build complet prend en moyenne `4 min 30` sur la machine projet. Si une commande CI/agent ou un terminal outille impose un timeout trop court, prevoir une marge confortable plutot que conclure trop vite a un echec du build.
 
 Ce build genere:
@@ -126,7 +191,19 @@ Ordre recommande:
 npm run build
 
 # 2) Deployer
-firebase deploy
+npm run deploy
+```
+
+Version explicite recommande si tu veux verrouiller l'environnement applicatif :
+
+```bash
+# prod
+npm run build:prod
+npm run deploy:prod
+
+# test
+npm run build:test
+npm run deploy:test
 ```
 
 Pour un deploy plus safe et plus lisible en pratique, preferer souvent les commandes separees :
@@ -145,6 +222,8 @@ firebase deploy --only hosting
 > **Note CLI locale** : si la commande globale `firebase` est casse (ex : install globale corrompue sous Windows/pnpm), le fallback fiable pour ce projet est `npx firebase-tools ...`. Verifie sur cette passe Node 22 : `npx firebase-tools --version` retourne bien une CLI exploitable.
 
 Cette sequence evite les longues attentes d'un deploy complet quand seul Hosting ou les Functions doivent etre finalises, et permet aussi de finaliser rapidement Hosting si le deploy global bute sur un sujet operationnel annexe.
+
+> **Point de vigilance** : `deploy`, `deploy:prod` et `deploy:test` changent l'alias Firebase actif via `firebase use ...`. Si tu alternes souvent entre les deux environnements dans le meme terminal, verifie toujours ton intention avant de lancer un deploy.
 
 Le build genere maintenant un `.output/server/package.json` deterministe et son `package-lock.json`.
 Il ne faut pas installer manuellement des dependances dans `.output/server` avant le deploiement.

@@ -10,9 +10,13 @@ definePageMeta({
 const route = useRoute()
 const authStore = useAuthStore()
 const billingStore = useBillingStore()
+const runtimeConfig = useRuntimeConfig()
 
 const isLoadingCheckout = ref(false)
 const checkoutError = ref('')
+const appEnv = computed(() => (runtimeConfig.public.appEnv || 'prod').toUpperCase())
+const firebaseProjectId = computed(() => runtimeConfig.public.firebaseProjectId || 'non configure')
+const stripeMode = computed(() => appEnv.value === 'TEST' ? 'Stripe test' : 'Stripe live')
 
 const startLiveCheckoutTest = async () => {
   checkoutError.value = ''
@@ -34,10 +38,25 @@ const startLiveCheckoutTest = async () => {
   <section>
     <DesignSystemPageSectionHeading :isHeading="true" title="Admin panel" titleSize="text-4xl md:text-3xl" sectionSpacing="mt-8 mb-12" />
 
-    <div v-if="authStore.isAdmin">
+    <div v-if="authStore.isAdmin" class="border-none">
+      <section class="mb-6 rounded-3xl border-l-4 border-theme-button bg-theme-surfaceStaticCard p-6">
+        <h2 class="mb-3 text-xl font-semibold text-theme-text">
+          Environnement courant
+        </h2>
+        <p class="text-sm text-theme-muted">
+          Mode : <span class="font-semibold text-theme-text">{{ appEnv }}</span>
+        </p>
+        <p class="text-sm text-theme-muted">
+          Firebase : <span class="font-semibold text-theme-text">{{ firebaseProjectId }}</span>
+        </p>
+        <p class="text-sm text-theme-muted">
+          Stripe attendu : <span class="font-semibold text-theme-text">{{ stripeMode }}</span>
+        </p>
+      </section>
+
       <section class="rounded-3xl border-l-4 border-theme-button bg-theme-surfaceStaticCard p-6">
         <h2 class="mb-3 text-xl font-semibold text-theme-text">
-          Test achat produit live Stripe
+          Test achat produit Stripe en PROD
         </h2>
         <p class="mb-4 text-sm text-theme-muted">
           Ce bouton permet de vérifier la page Stripe Checkout et l'écriture Firestore dans `customers/{uid}/checkout_sessions`.
@@ -57,7 +76,7 @@ const startLiveCheckoutTest = async () => {
           @click="startLiveCheckoutTest"
         >
           <LucideLoader v-if="isLoadingCheckout" :size="18" class="animate-spin" />
-          <span>{{ isLoadingCheckout ? 'Redirection en cours...' : 'Lancer un test checkout live' }}</span>
+          <span>{{ isLoadingCheckout ? 'Redirection en cours...' : 'Lancer un test checkout' }}</span>
         </button>
       </section>
     </div>

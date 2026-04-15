@@ -4,6 +4,7 @@ import type { QuestionResult, AttachmentQuestion, AttachmentDimension } from '~/
 
 const props = defineProps<{
   questions: AttachmentQuestion[]
+  isSubmitting?: boolean
 }>()
 
 const emit = defineEmits(['complete'])
@@ -13,10 +14,11 @@ const inputRadioLength = ref([{ name:'Pas du tout d\'accord', value: 0 }, { name
 const currentQuestion = ref(1)
 const surveyCompleted = ref(false)
 const results = ref<QuestionResult[]>([])
-const isSubmitting = ref(false)
+const localSubmitting = ref(false)
 const questionRefs = ref<Record<number, HTMLElement | null>>({})
 const submitButtonRef = ref<HTMLElement | null>(null)
 const MOBILE_BREAKPOINT = 960
+const isButtonSubmitting = computed(() => Boolean(props.isSubmitting || localSubmitting.value))
 
 const setQuestionRef = (questionId: number, element: Element | ComponentPublicInstance | null) => {
   questionRefs.value[questionId] = element instanceof HTMLElement ? element : null
@@ -60,19 +62,19 @@ const getInputValue = (questionDimension: AttachmentDimension, questionId: numbe
   } else {
     results.value.push({ id: questionId, dimension: questionDimension, value, tags: questionTags })
   }
-  // return value
 }
 
-const submitForm = async () => {
-  if (isSubmitting.value) return
+const submitForm = () => {
+  if (isButtonSubmitting.value) return
+  localSubmitting.value = true
+  emit('complete', results.value)
+}
 
-  isSubmitting.value = true
-  try {
-    emit('complete', results.value)
-  } finally {
-    isSubmitting.value = false
+watch(() => props.isSubmitting, (isSubmitting) => {
+  if (!isSubmitting) {
+    localSubmitting.value = false
   }
-}
+})
 </script>
 
 <template>
@@ -103,7 +105,6 @@ const submitForm = async () => {
                 :for="`question-${question.id}-${radioOption.value}`"
                 class="input-wrapper"
               >
-              
                 <div class="input-icon-container">
                   <input
                     type="radio"
@@ -130,12 +131,18 @@ const submitForm = async () => {
       </Transition>
     </div>
 
-    <button v-if="surveyCompleted" ref="submitButtonRef" :disabled="isSubmitting" @click="submitForm" type="button" class="submit-button flex items-center justify-center gap-2 disabled:opacity-60">
-      <LucideLoader v-if="isSubmitting" :size="16" class="loader-spin" />
-      <span>Soumettre</span>
+    <button
+      v-if="surveyCompleted"
+      ref="submitButtonRef"
+      data-testid="questionnaire-submit-button"
+      :disabled="isButtonSubmitting"
+      @click="submitForm"
+      type="button"
+      class="submit-button flex items-center justify-center gap-2 disabled:opacity-60"
+    >
+      <LucideLoader v-if="isButtonSubmitting" :size="16" class="loader-spin" />
+      <span>{{ isButtonSubmitting ? 'Validation en cours...' : 'Soumettre' }}</span>
     </button>
-    
-    <!-- <pre>{{ results }}</pre> -->
   </form>
 </template>
 
@@ -248,7 +255,7 @@ $sm-resolution: 960px;
     width: 35px;
     height: 35px;
     border: 1px solid var(--questionnaire-input-border);
-    border-radius: 50%; //4px
+    border-radius: 50%;
     cursor: pointer;
     transition: 0.3s ease;
   }
@@ -273,7 +280,7 @@ $sm-resolution: 960px;
     left: 50%;
     transform: translate(-50%, -50%);
     color: #fff;
-    pointer-events: none; // pour que le clic passe à travers l'icône et soit pris en compte par l'input radio
+    pointer-events: none;
   }
 }
 .input-label {
@@ -281,7 +288,6 @@ $sm-resolution: 960px;
   justify-content: center;
   align-items: center;
   max-width: 50px;
-  font-size: 12px;
   margin-top: 5px;
   font-size: 9px;
   text-align: center;
@@ -290,9 +296,8 @@ $sm-resolution: 960px;
 .question-state {
   @media screen and (min-width: $sm-resolution) {
     width: 20px;
-    // height: 106px;
     height: 100%;
-    background-color: #c492922a; //ccc
+    background-color: #c492922a;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     transition: 1s ease;

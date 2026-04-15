@@ -62,6 +62,52 @@ Ces tests couvrent :
 - stockage du resultat OpenAI et passage en `generated`
 - bascule en `failed` si la generation serveur echoue
 
+## Ebook checkout auth
+
+Fichier de test :
+
+- `test/nuxt/ebook.checkoutAuth.test.ts`
+
+Objectif :
+
+- verrouiller le garde-fou UX sur `/ebook` quand le user n'est pas connecte
+
+Ce test couvre :
+
+- clic sur le CTA ebook en etant non connecte
+- ouverture de la popin de connexion
+- absence de creation de checkout session tant que le user n'est pas authentifie
+
+## Questionnaire submit flow
+
+Fichier de test :
+
+- `test/nuxt/questionnaire.submitFlow.test.ts`
+
+Objectif :
+
+- verrouiller l'UX de validation du questionnaire au dernier clic
+
+Ce test couvre :
+
+- affichage d'un loader pendant la validation / navigation vers les hot results
+- affichage d'un message d'erreur si la transition echoue
+
+## Payment trigger sync
+
+Fichier de test :
+
+- `test/unit/paymentSync.test.ts`
+
+Objectif :
+
+- verrouiller la propagation du paiement Stripe vers `questionnaireSessions/{id}.billingInfo`
+
+Ce test couvre :
+
+- extraction de metadata meme si elles arrivent dans `payment_intent.metadata`
+- mise a jour de `billingInfo.hasPaidResults` lors d'un paiement `results` reussi
+
 ## Memoire projet
 
 Bug deja rencontre :

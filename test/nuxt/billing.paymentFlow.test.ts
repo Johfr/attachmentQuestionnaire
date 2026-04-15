@@ -186,6 +186,17 @@ describe('billing/payment flow regression coverage', () => {
     expect(assignMock).toHaveBeenCalledWith('https://stripe.test/checkout/session-1')
   })
 
+  it('refuses to create a results checkout session when the questionnaire session is still missing', async () => {
+    const { useBillingStore } = await import('../../app/stores/billing')
+    const store = useBillingStore()
+
+    await expect(
+      store.goToCheckout('questionnaire', 'attachment', 'results', 'v1', 'attachment-questionnaire', ''),
+    ).rejects.toThrow('La session est encore en cours de sauvegarde')
+
+    expect(firestoreMocks.addDoc).not.toHaveBeenCalled()
+  })
+
   it('refreshes the session after delayed payment propagation and unlocks the results', async () => {
     vi.useFakeTimers()
 

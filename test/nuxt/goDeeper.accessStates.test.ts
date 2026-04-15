@@ -71,4 +71,21 @@ describe('GoDeeper access states', () => {
     expect(wrapper.find('[data-testid="go-deeper-ia-offer"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="go-deeper-ia-includes-results"]').exists()).toBe(false)
   })
+
+  it('blocks results checkout while the hot-results session is still being saved', async () => {
+    const wrapper = await mountGoDeeper({
+      docId: '',
+    })
+
+    await wrapper.findAll('button').find(node => node.text().includes('Debloquer !'))!.trigger('click')
+
+    expect(wrapper.text()).toContain('La session est encore en cours de sauvegarde')
+
+    const checkoutButton = wrapper.findAll('button').find(node => node.text().includes('Debloquer mes resultats'))
+    expect(checkoutButton).toBeTruthy()
+    expect(checkoutButton!.attributes('disabled')).toBeDefined()
+
+    await checkoutButton!.trigger('click')
+    expect(mockBillingStore.goToCheckout).not.toHaveBeenCalled()
+  })
 })

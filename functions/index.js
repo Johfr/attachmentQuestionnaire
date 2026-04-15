@@ -1,20 +1,11 @@
 const { onDocumentWritten } = require('firebase-functions/v2/firestore')
 const { initializeApp } = require('firebase-admin/app')
 const { getFirestore, FieldValue } = require('firebase-admin/firestore')
+const { syncPaymentToSession } = require('./paymentSync')
 
 initializeApp()
 
 const db = getFirestore()
-
-/**
- * Maps accessType (from checkout metadata) to the billingInfo field in QuestionnaireSession.
- * Only one-time purchases (results, ia) are linked to a specific session via docId.
- * Membership / formation are handled by onSubscriptionWritten.
- */
-const PAYMENT_FIELD_MAP = {
-  results: 'hasPaidResults',
-  ia: 'hasPaidIa',
-}
 
 /**
  * onPaymentWritten
@@ -36,64 +27,18 @@ const PAYMENT_FIELD_MAP = {
 exports.onPaymentWritten = onDocumentWritten(
   { document: 'customers/{uid}/payments/{paymentId}' },
   async (event) => {
-    const before = event.data?.before?.data()
-    const after = event.data?.after?.data()
-
-    if (!after) return // document deleted, nothing to do
-    if (after.status !== 'succeeded') return
-    if (before?.status === 'succeeded') return // already processed, skip
-
-    const metadata = after.metadata ?? {}
-    const { docId, accessType } = metadata
-
-    if (!docId || !accessType) {
-      console.warn('[onPaymentWritten] Missing docId or accessType in metadata', {
+    await syncPaymentToSession(
+      {
+        before: event.data?.before?.data(),
+        after: event.data?.after?.data(),
         uid: event.params.uid,
         paymentId: event.params.paymentId,
-      })
-      return
-    }
-
-    const field = PAYMENT_FIELD_MAP[accessType]
-    if (!field) {
-      // membership / formation are subscriptions — handled by onSubscriptionWritten
-      console.info('[onPaymentWritten] accessType not session-tied, skipping', { accessType })
-      return
-    }
-
-    const sessionRef = db.collection('questionnaireSessions').doc(docId)
-    const sessionSnap = await sessionRef.get()
-
-    if (!sessionSnap.exists) {
-      console.warn('[onPaymentWritten] Session document not found', { docId })
-      return
-    }
-
-    const sessionData = sessionSnap.data() || {}
-
-    // Idempotence guard
-    if (sessionData?.billingInfo?.[field] === true) {
-      console.info('[onPaymentWritten] Field already true, skipping', { docId, field })
-      return
-    }
-
-    const updatePayload = {
-      [`billingInfo.${field}`]: true,
-      updatedAt: FieldValue.serverTimestamp(),
-    }
-
-    if (accessType === 'ia') {
-      updatePayload['billingInfo.hasPaidResults'] = true
-      updatePayload['aiExchange.unlocked'] = true
-      updatePayload['aiExchange.purchasedAt'] = FieldValue.serverTimestamp()
-      updatePayload['aiExchange.status'] = 'pending'
-      updatePayload['aiExchange.lastErrorCode'] = null
-      updatePayload['aiExchange.lastErrorMessage'] = null
-    }
-
-    await sessionRef.update(updatePayload)
-
-    console.info('[onPaymentWritten] Session updated', { docId, field, uid: event.params.uid })
+      },
+      {
+        db,
+        serverTimestamp: FieldValue.serverTimestamp(),
+      },
+    )
   },
 )
 
@@ -104,8 +49,8 @@ exports.onPaymentWritten = onDocumentWritten(
  * The Stripe Firebase Extension writes here on subscription status changes.
  *
  * Propagates hasPaidMembership to ALL questionnaireSessions for this user:
- *   - active / trialing  → hasPaidMembership = true
- *   - any other status   → hasPaidMembership = false  (canceled, past_due, unpaid, etc.)
+ *   - active / trialing  -> hasPaidMembership = true
+ *   - any other status   -> hasPaidMembership = false  (canceled, past_due, unpaid, etc.)
  *
  * Skips if the status did not change between before and after.
  * Idempotent: skips individual session documents already at the correct value.
@@ -119,7 +64,6 @@ exports.onSubscriptionWritten = onDocumentWritten(
     const statusBefore = before?.status ?? null
     const statusAfter = after?.status ?? null
 
-    // No status change — nothing to propagate
     if (statusBefore === statusAfter) return
 
     const uid = event.params.uid
@@ -141,7 +85,7 @@ exports.onSubscriptionWritten = onDocumentWritten(
 
     for (const doc of sessionsSnap.docs) {
       const current = doc.data()?.billingInfo?.hasPaidMembership
-      if (current === hasMembership) continue // already correct
+      if (current === hasMembership) continue
 
       batch.update(doc.ref, {
         'billingInfo.hasPaidMembership': hasMembership,

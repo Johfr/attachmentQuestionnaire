@@ -77,13 +77,40 @@ export function useAttachmentResultsPersistRetry() {
   // Passe à true une fois tous les retries épuisés sans succès.
   const persistRetryFailed = ref(false)
   const computeError = ref<string | null>(null)
+  const wait = (delayMs: number) => new Promise((resolve) => setTimeout(resolve, delayMs))
+
+  const getFirebaseIdToken = async () => {
+    const existingToken = await firebaseClient.auth.currentUser?.getIdToken()
+    if (existingToken) {
+      return existingToken
+    }
+
+    if (!authStore.isLoggedIn) {
+      return null
+    }
+
+    // Juste apres une creation/connexion Firebase, currentUser peut rester
+    // null pendant un court instant alors que le store local est deja hydrate.
+    // On attend brievement avant le premier persist pour eviter un appel API
+    // sans Authorization et donc une session non sauvegardee.
+    for (let attempt = 0; attempt < 10; attempt++) {
+      await wait(100)
+
+      const retryToken = await firebaseClient.auth.currentUser?.getIdToken()
+      if (retryToken) {
+        return retryToken
+      }
+    }
+
+    return null
+  }
 
   // ── Appel API partagé par le chargement initial et les retries ──────────────
   // Attention : ce retry relance aujourd'hui le meme endpoint /results.
   // L'API persiste encore via add(), donc l'idempotence serveur documentee
   // reste une cible et non une garantie effective a ce stade.
   const callApi = async (): Promise<ComputeAttachmentResultsApiResponse> => {
-    const token = await firebaseClient.auth.currentUser?.getIdToken()
+    const token = await getFirebaseIdToken()
     const partnerCtx = authStore.currentPartnerContext
     return $fetch<ComputeAttachmentResultsApiResponse>('/api/attachment/results', {
       method: 'POST',

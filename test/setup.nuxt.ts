@@ -12,6 +12,7 @@ import { vi } from 'vitest'
 vi.mock('firebase/app', () => ({
   initializeApp: vi.fn(() => ({})),
   getApp: vi.fn(() => ({})),
+  getApps: vi.fn(() => []),
 }))
 
 vi.mock('firebase/auth', () => ({

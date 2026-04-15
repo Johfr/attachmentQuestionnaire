@@ -32,6 +32,10 @@ Ce fichier capture les regles de collaboration attendues pour les agents qui tra
 - ne jamais lancer de build sans demande explicite du user
 - ne jamais lancer de commit sans demande explicite du user
 - ne jamais lancer de push sans demande explicite du user
+- tout deploy doit preciser l'environnement cible
+- si l'environnement de deploy n'est pas explicitement donne par le user, demander clairement `test` ou `prod`
+- ne jamais supposer un deploy `test` ou `prod`
+- les scripts du depot sont cables avec `prod` par defaut, mais ce defaut ne remplace pas la confirmation explicite du user avant un deploy
 
 ## Edition
 
@@ -43,6 +47,7 @@ Ce fichier capture les regles de collaboration attendues pour les agents qui tra
 - aller au plus simple dans la demande tout en comprenant le scope, les enjeux, les régressions possibles ou les liens entre fichiers qui peuvent créer des problèmes futurs
 - rester simple dans la conception, il s'agir d'un mvp en v1. Inutile de surcharger le code comme si c'était un ecommerce. Le but n'est pas de créer une usine à gaz.
 - coder simple, efficace, bonne pratique, lisible et dans le cadre pose par le user
+- Aucune regression n'est admise. fais bien attention à comprendre le code et à appliquer un correctif sans effet de bord ni regression. Si tu dois explorer le code plus profondément, fais le.
 
 ## Docs a consulter
 

@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "relation-anxieux-evitant"
+    "default": "relation-anxieux-evitant",
+    "prod": "relation-anxieux-evitant",
+    "test": "relation-anxieux-evitant-test"
   }
 }

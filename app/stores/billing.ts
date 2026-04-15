@@ -168,6 +168,11 @@ export const useBillingStore = defineStore('billing', () => {
   const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType, accessType: AccessType, entityVersion: EntityVersion, successUrl: string, docId: string) => {
     const products: Record<AccessType, { price: number; mode: 'payment' | 'subscription', productId: string, productPriceId?: string, recurrence?: 'month' | 'year' }> = stripeCatalog
     const selectedProduct = products[accessType]
+    const trimmedDocId = docId.trim()
+
+    if ((accessType === 'results' || accessType === 'ia') && !trimmedDocId) {
+      throw new Error('La session est encore en cours de sauvegarde. Reessaie dans quelques instants.')
+    }
 
     if (!selectedProduct.productPriceId) {
       throw new Error('Produit Stripe non configure pour cet environnement.')
@@ -177,7 +182,7 @@ export const useBillingStore = defineStore('billing', () => {
       ? `${window.location.origin}/user/profil?checkout=success`
       : accessType === 'testLive'
         ? `${window.location.origin}/admin?checkout=success`
-        : `${window.location.origin}/user/${successUrl}/results?sessionId=${docId}`
+        : `${window.location.origin}/user/${successUrl}/results?sessionId=${trimmedDocId}`
 
     const cancelCheckoutUrl = accessType === 'ebook'
       ? `${window.location.origin}/ebook`
@@ -201,7 +206,7 @@ export const useBillingStore = defineStore('billing', () => {
         accessType,
         entityVersion,
         successUrl,
-        docId,
+        docId: trimmedDocId,
         checkoutOrigin: accessType === 'testLive' ? 'admin' : 'app',
       },
       // Mirror metadata onto the PaymentIntent (payment mode) or Subscription (subscription mode)
@@ -216,7 +221,7 @@ export const useBillingStore = defineStore('billing', () => {
                 accessType,
                 entityVersion,
                 successUrl,
-                docId,
+                docId: trimmedDocId,
                 checkoutOrigin: accessType === 'testLive' ? 'admin' : 'app',
               },
             },
@@ -229,7 +234,7 @@ export const useBillingStore = defineStore('billing', () => {
                 accessType,
                 entityVersion,
                 successUrl,
-                docId,
+                docId: trimmedDocId,
                 checkoutOrigin: accessType === 'testLive' ? 'admin' : 'app',
               },
             },

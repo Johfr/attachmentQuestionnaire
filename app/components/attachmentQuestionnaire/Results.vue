@@ -204,15 +204,17 @@ const scrollToPremiumZone = () => {
     <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left text-theme-text">
       Tes profils d'attachement
     </h2>
-
-    <div class="md:flex md:justify-start md:gap-4">
-      <div class="mb-3 rounded-3xl bg-theme-surfaceResultsGlobalProfile p-5 md:flex-1 md:max-w-[48%]">
+    
+    <!--  class="md:flex md:justify-start md:gap-4" -->
+    <div>
+       <!-- md:flex-1 md:max-w-[48%] -->
+      <div class="mb-3 rounded-3xl bg-theme-surfaceResultsGlobalProfile p-5">
         <h3 class="text-md mb-3 font-bold text-theme-text">
           <component :is="getProfileIcon(globalProfileKey)" :size="20" class="inline-block mr-2" />
           {{ getProfileLabel(globalProfileKey) }}
         </h3>
         <p
-          class="max-h-36 overflow-hidden mb-3 text-sm text-theme-muted line-clamp-4"
+          class="max-h-36 overflow-hidden mb-3 text-sm text-theme-muted line-clamp-4 whitespace-pre-line"
           :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen('global') }"
         >
           {{ profilExplanations[globalProfileKey] ?? '' }}
@@ -222,58 +224,61 @@ const scrollToPremiumZone = () => {
         </span>
       </div>
 
-      <div
-        v-for="dimension in profileDimensions"
-        :key="dimension"
-        class="flex-1 md:max-w-[48%]"
-      >
-        <div class="relative">
-          <div
-            class="mb-3 rounded-3xl p-5 text-theme-text"
-            :class="[
-              dimension === 'anxiety' ? 'bg-theme-resultsSubprofileAnxietyBg' : 'bg-theme-resultsSubprofileAvoidanceBg',
-              !hasBasicAccess ? 'opacity-50 blur-[5px]' : ''
-            ]"
+      <!-- Sous profils -->
+      <div class="md:flex md:justify-start md:gap-4">
+        <div
+          v-for="dimension in profileDimensions"
+          :key="dimension"
           >
-            <h3 class="text-md mb-3 font-bold text-theme-text">
-              <component :is="getProfileIcon(getSubProfile(dimension))" :size="20" class="inline-block mr-2" />
-              Sous profil :
-              <span v-if="!hasBasicAccess">
-                Debloque l'acces
-              </span>
-              <span v-else>
-                {{ getProfileLabel(getSubProfile(dimension)) }}
-              </span>
-            </h3>
-            <p
-              class="max-h-36 overflow-hidden mb-3 text-sm text-theme-muted line-clamp-4"
-              :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen(dimension) }"
+          <!-- class="flex-1 md:max-w-[48%]" -->
+          <div class="relative">
+            <div
+              class="mb-3 rounded-3xl p-5 text-theme-text"
+              :class="[
+                dimension === 'anxiety' ? 'bg-theme-resultsSubprofileAnxietyBg' : 'bg-theme-resultsSubprofileAvoidanceBg',
+                !hasBasicAccess ? 'opacity-50 blur-[5px]' : ''
+              ]"
             >
-              <span v-if="!hasBasicAccess">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat reiciendis quos temporibus voluptatem repudiandae! Enim, aspernatur cupiditate optio possimus necessitatibus dicta iste laborum eligendi perferendis. Veniam quod neque ullam ducimus!
+              <h3 class="text-md mb-3 font-bold text-theme-text">
+                <component :is="getProfileIcon(getSubProfile(dimension))" :size="20" class="inline-block mr-2" />
+                Sous profil :
+                <span v-if="!hasBasicAccess">
+                  Debloque l'acces
+                </span>
+                <span v-else>
+                  {{ getProfileLabel(getSubProfile(dimension)) }}
+                </span>
+              </h3>
+              <p
+                class="max-h-36 overflow-hidden mb-3 text-sm text-theme-muted line-clamp-4 whitespace-pre-line"
+                :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen(dimension) }"
+              >
+                <span v-if="!hasBasicAccess">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat reiciendis quos temporibus voluptatem repudiandae! Enim, aspernatur cupiditate optio possimus necessitatibus dicta iste laborum eligendi perferendis. Veniam quod neque ullam ducimus!
+                </span>
+                <span v-else>
+                  {{ profilExplanations[getSubProfile(dimension)] }}
+                </span>
+              </p>
+              <span class="block w-full p-3 text-right text-xs cursor-pointer text-theme-button" @click="toggleProfileExplanation(dimension)">
+                {{ isProfileExplanationOpen(dimension) ? 'Réduire...' : 'Lire la suite...' }}
               </span>
-              <span v-else>
-                {{ profilExplanations[getSubProfile(dimension)] }}
-              </span>
-            </p>
-            <span class="block w-full p-3 text-right text-xs cursor-pointer text-theme-button" @click="toggleProfileExplanation(dimension)">
-              {{ isProfileExplanationOpen(dimension) ? 'Réduire...' : 'Lire la suite...' }}
-            </span>
-          </div>
+            </div>
 
-          <div
-            v-if="!hasBasicAccess"
-            class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-3xl bg-theme-resultsOverlay backdrop-blur-sm"
-            @click.prevent.stop=""
-          >
-            <button type="button" @click="scrollToPremiumZone">
-              <div class="text-center">
-                <p class="mb-2 font-bold text-theme-text opacity-35">
-                  Debloque l'acces a tes sous profils anxieux et evitants
-                  <LucideCornerRightDown :size="24" class="inline-block ml-2 text-theme-text" />
-                </p>
-              </div>
-            </button>
+            <div
+              v-if="!hasBasicAccess"
+              class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-3xl bg-theme-resultsOverlay backdrop-blur-sm"
+              @click.prevent.stop=""
+            >
+              <button type="button" @click="scrollToPremiumZone">
+                <div class="text-center">
+                  <p class="mb-2 font-bold text-theme-text opacity-35">
+                    Debloque l'acces a tes sous profils anxieux et evitants
+                    <LucideCornerRightDown :size="24" class="inline-block ml-2 text-theme-text" />
+                  </p>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -285,25 +290,25 @@ const scrollToPremiumZone = () => {
       <div class="md:flex md:flex-row-reverse md:justify-between md:items-center">
         <div class="md:max-w-[48%]">
           <p class="mb-3 text-sm text-theme-muted">
-            Le type global repose sur deux dimensions principales : l'anxiete et l'evitement. Les reponses au questionnaire permettent d'evaluer le niveau de chacun de ces deux axes, puis de situer le profil general de la personne parmi les grands styles d'attachement : secure, anxieux, evitant ou desorganise, comme l'illustre le graphique ci-dessous.
+            Le type global repose sur deux dimensions principales : l'anxiete et l'evitement. Les reponses au questionnaire permettent d'evaluer le niveau de chacun de ces deux axes, puis de situer le profil general parmi les grands styles d'attachement : secure, anxieux, evitant ou desorganisé, comme l'illustre le graphique ci-dessous.
           </p>
 
           <p class="mb-3 text-sm text-theme-muted">
-            A partir de la on peut definir :
+            On peut definir :
           </p>
 
           <ul>
             <li class="mb-1 pl-3 text-sm list-disc list-inside">
-              Secure = anxiete low + evitement low
+              Secure = anxieté low + évitement low
             </li>
             <li class="mb-1 pl-3 text-sm list-disc list-inside">
-              Anxieux = anxiete high + evitement low
+              Anxieux = anxieté high + évitement low
             </li>
             <li class="mb-1 pl-3 text-sm list-disc list-inside">
-              Evitant = anxiete low + evitement high
+              Evitant = anxieté low + évitement high
             </li>
             <li class="mb-1 pl-3 text-sm list-disc list-inside">
-              Desorganise = anxiete high + evitement high
+              Desorganisé = anxieté high + évitement high
             </li>
           </ul>
         </div>
@@ -317,7 +322,7 @@ const scrollToPremiumZone = () => {
 
       <div class="my-8">
         <p class="mt-3 mb-3 text-sm text-theme-muted">
-          Ce profil global ne suffit pas toujours a decrire precisement le fonctionnement relationnel d'un individu. C'est pourquoi le questionnaire prend aussi en compte des <strong>declencheurs specifiques</strong> : 5 lies a l'anxiete et 5 lies a l'evitement.
+          Le profil global ne suffit pas toujours à decrire précisement le fonctionnement relationnel d'un individu. C'est pourquoi le questionnaire prend aussi en compte des <strong>declencheurs specifiques</strong> : 5 liés a l'anxiété et 5 liés a l'évitement.
         </p>
 
         <p class="mt-3 mb-3 text-sm text-theme-muted">
@@ -325,7 +330,7 @@ const scrollToPremiumZone = () => {
         </p>
 
         <p class="mt-3 mb-3 text-sm text-theme-muted">
-          Une personne globalement secure peut d'ailleurs presenter des scores moderes sur certains declencheurs, ce qui montre que certaines situations la touchent malgre tout.
+          Une personne globalement secure peut d'ailleurs présenter des scores modérés sur certains déclencheurs, ce qui montre que certaines situations la touchent malgré tout.
         </p>
       </div>
 
@@ -333,7 +338,7 @@ const scrollToPremiumZone = () => {
         <LucideLightbulb :size="20" class="inline-block mr-2" />
         <strong>Note importante</strong>
         <p class="mt-3 text-sm text-theme-muted">
-          N'oubliez pas que votre profil d'attachement peut evoluer avec le temps et les experiences. Les resultats de ce questionnaire sont une photographie de votre etat actuel.
+          N'oublie pas que ton profil d'attachement peut evoluer avec le temps et les expériences. Les résultats de ce questionnaire sont une photographie de ton état actuel.
         </p>
       </div>
     </Accordeon>
@@ -407,12 +412,12 @@ const scrollToPremiumZone = () => {
               {{ tag.label }}
             </h3>
 
-            <p class="mb-3 text-sm text-theme-muted">
+            <p class="mb-3 text-sm text-theme-muted whitespace-pre-line">
               <strong>Indicateur :</strong>
               {{ tag.indicator }}
             </p>
 
-            <p class="text-sm text-theme-muted">
+            <p class="text-sm text-theme-muted whitespace-pre-line">
               {{ tag.trigger }}
             </p>
 
@@ -426,7 +431,7 @@ const scrollToPremiumZone = () => {
                 <li
                   v-for="(behavior, index) in tag.associatedBehaviors"
                   :key="index"
-                  class="mb-3 text-sm text-theme-muted list-disc list-inside first-letter:uppercase"
+                  class="mb-3 text-sm text-theme-muted list-disc list-inside first-letter:uppercase whitespace-pre-line"
                 >
                   {{ behavior }}
                 </li>
@@ -440,7 +445,7 @@ const scrollToPremiumZone = () => {
               </p>
             </div>
 
-            <p class="text-sm text-theme-muted">
+            <p class="text-sm text-theme-muted whitespace-pre-line">
               <strong>Te concernant : </strong>{{ tag.outputText }}
             </p>
 
@@ -454,7 +459,7 @@ const scrollToPremiumZone = () => {
                 <li
                   v-for="(advice, index) in tag.advices"
                   :key="index"
-                  class="mb-3 text-sm text-theme-muted list-disc list-inside first-letter:uppercase"
+                  class="mb-3 text-sm text-theme-muted list-disc list-inside first-letter:uppercase whitespace-pre-line"
                 >
                   {{ advice }}
                 </li>

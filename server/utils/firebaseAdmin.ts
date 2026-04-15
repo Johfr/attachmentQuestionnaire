@@ -4,8 +4,9 @@ import { getAuth } from 'firebase-admin/auth'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-// Single Firebase project configuration for both Auth token verification and Firestore.
-const FIREBASE_PROJECT_ID = 'relation-anxieux-evitant'
+const FIREBASE_PROJECT_ID = process.env.NUXT_FIREBASE_PROJECT_ID
+  || process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID
+  || 'relation-anxieux-evitant'
 
 function loadCredential() {
   const serviceAccountPath = process.env.NUXT_FIREBASE_SERVICE_ACCOUNT_PATH
