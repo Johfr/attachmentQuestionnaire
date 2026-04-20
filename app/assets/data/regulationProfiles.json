@@ -4,336 +4,43 @@
       "key": "anxiousActivated",
       "label": "Anxieux activé",
       "dimension": "anxiety",
-      "explanation": "Ton sous-profil anxieux montre plus précisément comment ta dimension anxieuse s'exprime chez toi quand le lien devient incertain, flou ou émotionnellement chargé. \n\n Ici, l'anxiété semble s'activer vite et fortement en toi. Tu peux ressentir un besoin intense d'être rassuré, compris, choisi ou reconnecté à l'autre dès que quelque chose te paraît peu clair. Le doute, la distance, le silence, les changements d'attitude ou l'impression de perdre la main sur la relation peuvent rapidement créer de l'angoisse, de l'agitation intérieure ou une forte montée émotionnelle. \n\n Quand quelque chose change dans le comportement de ton/ta partenaire, ton système peut rapidement se mettre en alerte et chercher des signes de menace ou d'éloignement. Cela peut te pousser à ruminer, à vouloir clarifier vite, ou à chercher une reconnexion rapide pour retrouver un sentiment de sécurité. Ce sous-profil indique que ton équilibre intérieur peut devenir fortement dépendant de la lisibilité et de la stabilité immédiate de la relation. Plus le lien paraît instable, plus ton système peut s'emballer et chercher à réduire l'incertitude sans délai. \n\n Ce sous-profil va souvent avec une forme d'hypervigilance affective : tu observes, tu ressens, tu anticipes, tu cherches à comprendre ce qui se passe pour retrouver un sentiment de sécurité. Cela peut te rendre plus impulsif dans tes réactions, plus sensible aux signaux faibles, ou plus en difficulté pour retrouver rapidement ton calme quand le lien semble fragilisé. \n\n Ce fonctionnement n'est pas là pour te faire honte. Il montre surtout à quel point le lien compte pour toi, et à quel point ton système émotionnel se mobilise quand il perçoit un risque de perte, de flou ou de déséquilibre. Tes déclencheurs anxieux permettent justement d'identifier ce qui active le plus cette insécurité chez toi, comment elle se manifeste concrètement, et ce qui pourrait t'aider à retrouver plus d'apaisement dans la relation.",
-      "rules": {
-        "eligibility": {
-          "dimension": "anxiety",
-          "levels": ["high"]
-        },
-        "coreRules": [
-          {
-            "tag": "quickRepair",
-            "levels": ["high"]
-          },
-          {
-            "tag": "overthinking",
-            "levels": ["high"]
-          }
-        ],
-        "supportRules": [
-          {
-            "tag": "distanceSilence",
-            "levels": ["high"]
-          },
-          {
-            "tag": "fearOfLoss",
-            "levels": ["high"]
-          },
-          {
-            "tag": "validationRequired",
-            "levels": ["high"]
-          }
-        ],
-        "exclusionRules": [
-          {
-            "type": "profileConflict",
-            "profile": "anxiousRegulated",
-            "reason": "Le profil anxieux régulé ne doit pas être retenu si quickRepair et overthinking sont tous deux élevés."
-          }
-        ],
-        "matchPolicy": "allCore_plus_oneSupport"
-      }
+      "explanation": "Ton sous-profil anxieux montre plus précisément comment ta dimension anxieuse s'exprime chez toi quand le lien devient incertain, flou ou émotionnellement chargé. \n\n Ici, l'anxiété semble s'activer vite et fortement en toi. Tu peux ressentir un besoin intense d'être rassuré, compris, choisi ou reconnecté à l'autre dès que quelque chose te paraît peu clair. Le doute, la distance, le silence, les changements d'attitude ou l'impression de perdre la main sur la relation peuvent rapidement créer de l'angoisse, de l'agitation intérieure ou une forte montée émotionnelle. \n\n Quand quelque chose change dans le comportement de ton/ta partenaire, ton système peut rapidement se mettre en alerte et chercher des signes de menace ou d'éloignement. Cela peut te pousser à ruminer, à vouloir clarifier vite, ou à chercher une reconnexion rapide pour retrouver un sentiment de sécurité. Ce sous-profil indique que ton équilibre intérieur peut devenir fortement dépendant de la lisibilité et de la stabilité immédiate de la relation. Plus le lien paraît instable, plus ton système peut s'emballer et chercher à réduire l'incertitude sans délai. \n\n Ce sous-profil va souvent avec une forme d'hypervigilance affective : tu observes, tu ressens, tu anticipes, tu cherches à comprendre ce qui se passe pour retrouver un sentiment de sécurité. Cela peut te rendre plus impulsif dans tes réactions, plus sensible aux signaux faibles, ou plus en difficulté pour retrouver rapidement ton calme quand le lien semble fragilisé. \n\n Ce fonctionnement n'est pas là pour te faire honte. Il montre surtout à quel point le lien compte pour toi, et à quel point ton système émotionnel se mobilise quand il perçoit un risque de perte, de flou ou de déséquilibre. Tes déclencheurs anxieux permettent justement d'identifier ce qui active le plus cette insécurité chez toi, comment elle se manifeste concrètement, et ce qui pourrait t'aider à retrouver plus d'apaisement dans la relation."
     },
     {
       "key": "anxiousRegulated",
       "label": "Anxieux régulé",
       "dimension": "anxiety",
-      "explanation": "Ce sous-profil ne décrit pas toute ta manière d'aimer. Il montre plus précisément comment ta dimension anxieuse s'exprime chez toi dans la relation. \n\n Ici, le lien semble compter profondément pour toi, et certaines situations peuvent réellement t'activer sur le plan émotionnel. \n Le flou, la distance, les changements d'attitude ou le manque de clarté peuvent réveiller de l'inquiétude, du doute ou un besoin de réassurance. Mais contrairement à un fonctionnement plus fortement activé, tu sembles garder une capacité à prendre du recul, à réfléchir et à ne pas te laisser emporter entièrement par ce que tu ressens. \n\n Tu peux donc être touché, sensible, parfois préoccupé par ce qui se passe dans la relation, sans forcément basculer dans l'urgence émotionnelle, l'impulsivité ou la panique intérieure. Il y a chez toi une vraie vulnérabilité affective, mais aussi une base de régulation qui t'aide à contenir une partie de cette activation. Cela montre que ton système relationnel peut être sensible sans être constamment débordé. \n\n C'est un point important, car cela signifie qu'il existe déjà en toi des appuis sur lesquels t'appuyer pour gagner encore en stabilité. Tes déclencheurs anxieux permettent justement de voir plus finement ce qui vient activer cette sensibilité, dans quelles situations elle prend le plus de place, et comment tu peux mieux comprendre ce qui se joue en toi quand le lien devient moins rassurant.",
-      "rules": {
-        "eligibility": {
-          "dimension": "anxiety",
-          "levels": ["medium", "high"]
-        },
-        "coreRules": [
-          {
-            "tag": "quickRepair",
-            "levels": ["low", "medium"]
-          },
-          {
-            "tag": "overthinking",
-            "levels": ["low", "medium"]
-          },
-          {
-            "tag": "conflict",
-            "levels": ["low", "medium"]
-          }
-        ],
-        "supportRules": [
-          {
-            "tag": "validationRequired",
-            "levels": ["medium"]
-          },
-          {
-            "tag": "distanceSilence",
-            "levels": ["medium"]
-          }
-        ],
-        "exclusionRules": [
-          {
-            "type": "tagCombination",
-            "tags": ["quickRepair", "overthinking"],
-            "levels": ["high", "high"],
-            "reason": "Un duo quickRepair high + overthinking high oriente davantage vers un profil anxieux activé."
-          },
-          {
-            "type": "profileConflict",
-            "profile": "anxiousActivated",
-            "reason": "Le profil anxieux régulé ne doit pas être retenu si un pattern activé net est déjà validé."
-          }
-        ],
-        "matchPolicy": "allCore"
-      }
+      "explanation": "Ce sous-profil ne décrit pas toute ta manière d'aimer. Il montre plus précisément comment ta dimension anxieuse s'exprime chez toi dans la relation. \n\n Ici, le lien semble compter profondément pour toi, et certaines situations peuvent réellement t'activer sur le plan émotionnel. \n Le flou, la distance, les changements d'attitude ou le manque de clarté peuvent réveiller de l'inquiétude, du doute ou un besoin de réassurance. Mais contrairement à un fonctionnement plus fortement activé, tu sembles garder une capacité à prendre du recul, à réfléchir et à ne pas te laisser emporter entièrement par ce que tu ressens. \n\n Tu peux donc être touché, sensible, parfois préoccupé par ce qui se passe dans la relation, sans forcément basculer dans l'urgence émotionnelle, l'impulsivité ou la panique intérieure. Il y a chez toi une vraie vulnérabilité affective, mais aussi une base de régulation qui t'aide à contenir une partie de cette activation. Cela montre que ton système relationnel peut être sensible sans être constamment débordé. \n\n C'est un point important, car cela signifie qu'il existe déjà en toi des appuis sur lesquels t'appuyer pour gagner encore en stabilité. Tes déclencheurs anxieux permettent justement de voir plus finement ce qui vient activer cette sensibilité, dans quelles situations elle prend le plus de place, et comment tu peux mieux comprendre ce qui se joue en toi quand le lien devient moins rassurant."
     },
     {
       "key": "anxiousAmbivalent",
       "label": "Anxieux ambivalent",
       "dimension": "anxiety",
-      "explanation": "Ce sous-profil ne résume pas toute ta façon de vivre la relation. Il montre plus précisément comment ta dimension anxieuse s'exprime chez toi, avec un fonctionnement plus nuancé et parfois changeant selon les moments. \n\n Ici, l'insécurité relationnelle semble bien présente, mais elle ne prend pas toujours la même forme ni la même intensité. Tu peux passer d'un moment où tu ressens fortement le doute, le besoin de proximité ou l'angoisse de perdre le lien, à un autre moment où tu retrouves plus de calme, de recul ou de maîtrise. Ton vécu émotionnel peut donc être assez inconstant : parfois très touché, parfois plus apaisé, parfois en recherche de réponses, parfois capable de laisser un peu plus d'espace. \n\n Ce sous-profil traduit souvent une sensibilité affective réelle, mais moins prévisible, moins stable dans son expression. Tu n'es pas forcément dans une hyperactivation permanente, ni dans une régulation solidement installée. Il peut y avoir chez toi une forme d'hésitation intérieure, de fluctuation, ou de tiraillement entre ce que tu ressens, ce que tu redoutes et la manière dont tu essaies de garder l'équilibre. \n\n Pas d'inquiétude cependant, c'est justement pour cela que tes déclencheurs anxieux sont particulièrement utiles à observer. Ils permettent de voir ce qui revient le plus souvent, ce qui fait varier ton état dans la relation, et ce qui active chez toi ce mélange de doute, de besoin de proximité et d'instabilité émotionnelle. Ils sont une vraie base pour que tu puisses mieux gérer ces oscillations et que tu puisses trouver des appuis pour gagner en sérénité, même quand le lien devient plus compliqué ou moins rassurant.",
-      "rules": {
-        "eligibility": {
-          "dimension": "anxiety",
-          "levels": ["medium"]
-        },
-        "coreRules": [
-          {
-            "type": "majorityTagsAtLevel",
-            "tags": [
-              "distanceSilence",
-              "fearOfLoss",
-              "overthinking",
-              "validationRequired",
-              "quickRepair"
-            ],
-            "level": "medium",
-            "minimumCount": 3
-          }
-        ],
-        "supportRules": [
-          {
-            "tag": "conflict",
-            "levels": ["medium"]
-          }
-        ],
-        "exclusionRules": [
-          {
-            "type": "profileConflict",
-            "profile": "anxiousActivated",
-            "reason": "Le profil anxieux ambivalent ne doit pas être retenu si un profil anxieux activé est clairement validé."
-          },
-          {
-            "type": "profileConflict",
-            "profile": "anxiousRegulated",
-            "reason": "Le profil anxieux ambivalent ne doit pas être retenu si un profil anxieux régulé est clairement validé."
-          },
-          {
-            "type": "tagCombination",
-            "tags": ["quickRepair", "overthinking"],
-            "levels": ["high", "high"],
-            "reason": "Un duo quickRepair high + overthinking high indique un pattern activé plus net qu'ambivalent."
-          }
-        ],
-        "matchPolicy": "eligibility_plus_majorityMedium_withoutOtherClearMatch"
-      }
+      "explanation": "Ce sous-profil ne résume pas toute ta façon de vivre la relation. Il montre plus précisément comment ta dimension anxieuse s'exprime chez toi, avec un fonctionnement plus nuancé et parfois changeant selon les moments. \n\n Ici, l'insécurité relationnelle semble bien présente, mais elle ne prend pas toujours la même forme ni la même intensité. Tu peux passer d'un moment où tu ressens fortement le doute, le besoin de proximité ou l'angoisse de perdre le lien, à un autre moment où tu retrouves plus de calme, de recul ou de maîtrise. Ton vécu émotionnel peut donc être assez inconstant : parfois très touché, parfois plus apaisé, parfois en recherche de réponses, parfois capable de laisser un peu plus d'espace. \n\n Ce sous-profil traduit souvent une sensibilité affective réelle, mais moins prévisible, moins stable dans son expression. Tu n'es pas forcément dans une hyperactivation permanente, ni dans une régulation solidement installée. Il peut y avoir chez toi une forme d'hésitation intérieure, de fluctuation, ou de tiraillement entre ce que tu ressens, ce que tu redoutes et la manière dont tu essaies de garder l'équilibre. \n\n Pas d'inquiétude cependant, c'est justement pour cela que tes déclencheurs anxieux sont particulièrement utiles à observer. Ils permettent de voir ce qui revient le plus souvent, ce qui fait varier ton état dans la relation, et ce qui active chez toi ce mélange de doute, de besoin de proximité et d'instabilité émotionnelle. Ils sont une vraie base pour que tu puisses mieux gérer ces oscillations et que tu puisses trouver des appuis pour gagner en sérénité, même quand le lien devient plus compliqué ou moins rassurant."
     },
     {
       "key": "avoidantRigid",
       "label": "Évitant rigide",
       "dimension": "avoidance",
-      "explanation": "Ton sous profil évitant s'exprime chez toi lorsque la relation devient plus proche, plus engageante ou plus chargée émotionnellement. \n\n Ici, la mise à distance semble fonctionner comme une protection assez forte. Quand le lien devient trop intense, trop présent ou trop vulnérable, tu peux rapidement ressentir le besoin de reprendre de l'espace, de filtrer ce que tu ressens, de te refermer ou de garder davantage le contrôle. Ce n'est pas forcément que l'autre fait quelque chose de mal. C'est souvent la proximité elle-même, ou ce qu'elle réveille en toi, qui devient difficile à supporter intérieurement. \n\n Ce sous-profil va souvent avec une tendance à verrouiller assez vite ce qui pourrait te rendre trop exposé émotionnellement. Tu peux avoir du mal à rester ouvert quand la relation implique davantage de dépendance mutuelle, de besoin, de transparence affective ou d'intimité réelle. Plus le lien devient fort, plus une part de toi peut ressentir le besoin de se protéger, de ralentir, de reprendre la main ou de couper avec ton/ta partenaire de façon parfois abrupte. \n\n Cette facette de ton attachement permet de mettre en lumière pourquoi tu perçois certaines relations comme pesantes alors même qu'elles comptent peut-être pour toi. Tes déclencheurs évitants permettent justement de voir plus précisément ce qui active ce besoin de fermeture, dans quelles situations il apparaît le plus, et ce que ton système cherche à éviter ou à contenir à travers cette protection.",
-      "rules": {
-        "eligibility": {
-          "dimension": "avoidance",
-          "levels": ["high"]
-        },
-        "coreRules": [
-          {
-            "tag": "proximityDiscomfort",
-            "levels": ["high"]
-          },
-          {
-            "tag": "emotionalContainment",
-            "levels": ["high"]
-          }
-        ],
-        "supportRules": [
-          {
-            "tag": "withdrawalUnderStress",
-            "levels": ["high"]
-          },
-          {
-            "tag": "controlNeed",
-            "levels": ["high"]
-          },
-          {
-            "tag": "autonomyNeed",
-            "levels": ["high"]
-          }
-        ],
-        "exclusionRules": [
-          {
-            "type": "profileConflict",
-            "profile": "avoidantAdaptive",
-            "reason": "Le profil évitant adaptatif ne doit pas être retenu si la proximité dérange fortement et que la fermeture émotionnelle est nettement élevée."
-          },
-          {
-            "type": "profileConflict",
-            "profile": "avoidantFlexible",
-            "reason": "Le profil évitant flexible ne doit pas être retenu si un pattern rigide net est déjà validé."
-          }
-        ],
-        "matchPolicy": "allCore_plus_oneSupport"
-      }
+      "explanation": "Ton sous profil évitant s'exprime chez toi lorsque la relation devient plus proche, plus engageante ou plus chargée émotionnellement. \n\n Ici, la mise à distance semble fonctionner comme une protection assez forte. Quand le lien devient trop intense, trop présent ou trop vulnérable, tu peux rapidement ressentir le besoin de reprendre de l'espace, de filtrer ce que tu ressens, de te refermer ou de garder davantage le contrôle. Ce n'est pas forcément que l'autre fait quelque chose de mal. C'est souvent la proximité elle-même, ou ce qu'elle réveille en toi, qui devient difficile à supporter intérieurement. \n\n Ce sous-profil va souvent avec une tendance à verrouiller assez vite ce qui pourrait te rendre trop exposé émotionnellement. Tu peux avoir du mal à rester ouvert quand la relation implique davantage de dépendance mutuelle, de besoin, de transparence affective ou d'intimité réelle. Plus le lien devient fort, plus une part de toi peut ressentir le besoin de se protéger, de ralentir, de reprendre la main ou de couper avec ton/ta partenaire de façon parfois abrupte. \n\n Cette facette de ton attachement permet de mettre en lumière pourquoi tu perçois certaines relations comme pesantes alors même qu'elles comptent peut-être pour toi. Tes déclencheurs évitants permettent justement de voir plus précisément ce qui active ce besoin de fermeture, dans quelles situations il apparaît le plus, et ce que ton système cherche à éviter ou à contenir à travers cette protection."
     },
     {
       "key": "avoidantFlexible",
       "label": "Évitant flexible",
       "dimension": "avoidance",
-      "explanation": "Ton sous-profil évitant montre un vrai besoin d'autonomie et d'espace dans la relation, mais sans fermeture excessive ni coupure brutale du lien. Quand la relation devient plus prenante, plus intense ou plus engageante, tu peux ressentir le besoin de souffler, de ralentir ou de retrouver ton rythme. Pour autant, cette prise de distance ne semble pas forcément passer par un rejet fort de l'autre ou par une fermeture totale. \n\n Tu sembles chercher à préserver ton équilibre sans rompre complètement la connexion. Il peut être important pour toi de ne pas te sentir absorbé, envahi ou trop dépendant du lien, tout en gardant malgré tout une certaine capacité à rester présent, lisible et relié à l'autre. L'évitement est donc bien là, mais sous une forme plus souple, plus modulable, moins rigide qu'un fonctionnement plus verrouillé. \n\n Ce sous-profil peut correspondre à quelqu'un qui a besoin d'air pour rester bien dans la relation, sans pour autant vouloir fuir systématiquement l'intimité. Cela donne souvent une manière d'aimer où l'espace personnel compte beaucoup, mais où le lien peut encore rester vivant et accessible quand le contexte est suffisamment rassurant. \n\n Tes déclencheurs évitants permettent justement d'aller plus loin dans cette lecture. Ils montrent ce qui active chez toi ce besoin de distance, dans quelles situations tu te sens le plus vite saturé ou sur la défensive, et ce qui peut t'aider à préserver ton espace sans te couper inutilement du lien.",
-      "rules": {
-        "eligibility": {
-          "dimension": "avoidance",
-          "levels": ["medium"]
-        },
-        "coreRules": [
-          {
-            "tag": "autonomyNeed",
-            "levels": ["medium", "high"]
-          },
-          {
-            "tag": "conflict",
-            "levels": ["low"]
-          },
-          {
-            "tag": "emotionalContainment",
-            "levels": ["low", "medium"]
-          },
-          {
-            "tag": "withdrawalUnderStress",
-            "levels": ["low", "medium"]
-          }
-        ],
-        "supportRules": [
-          {
-            "tag": "controlNeed",
-            "levels": ["medium"]
-          },
-          {
-            "tag": "proximityDiscomfort",
-            "levels": ["medium"]
-          }
-        ],
-        "exclusionRules": [
-          {
-            "type": "tagCombination",
-            "tags": ["proximityDiscomfort", "emotionalContainment"],
-            "levels": ["high", "high"],
-            "reason": "Un duo proximityDiscomfort high + emotionalContainment high oriente davantage vers un profil évitant rigide."
-          },
-          {
-            "type": "tag",
-            "tag": "withdrawalUnderStress",
-            "levels": ["high"],
-            "reason": "Un retrait sous stress élevé est trop défensif pour un profil évitant flexible."
-          },
-          {
-            "type": "profileConflict",
-            "profile": "avoidantRigid",
-            "reason": "Le profil évitant flexible ne doit pas être retenu si un pattern rigide net est déjà validé."
-          }
-        ],
-        "matchPolicy": "allCore"
-      }
+      "explanation": "Ton sous-profil évitant montre un vrai besoin d'autonomie et d'espace dans la relation, mais sans fermeture excessive ni coupure brutale du lien. Quand la relation devient plus prenante, plus intense ou plus engageante, tu peux ressentir le besoin de souffler, de ralentir ou de retrouver ton rythme. Pour autant, cette prise de distance ne semble pas forcément passer par un rejet fort de l'autre ou par une fermeture totale. \n\n Tu sembles chercher à préserver ton équilibre sans rompre complètement la connexion. Il peut être important pour toi de ne pas te sentir absorbé, envahi ou trop dépendant du lien, tout en gardant malgré tout une certaine capacité à rester présent, lisible et relié à l'autre. L'évitement est donc bien là, mais sous une forme plus souple, plus modulable, moins rigide qu'un fonctionnement plus verrouillé. \n\n Ce sous-profil peut correspondre à quelqu'un qui a besoin d'air pour rester bien dans la relation, sans pour autant vouloir fuir systématiquement l'intimité. Cela donne souvent une manière d'aimer où l'espace personnel compte beaucoup, mais où le lien peut encore rester vivant et accessible quand le contexte est suffisamment rassurant. \n\n Tes déclencheurs évitants permettent justement d'aller plus loin dans cette lecture. Ils montrent ce qui active chez toi ce besoin de distance, dans quelles situations tu te sens le plus vite saturé ou sur la défensive, et ce qui peut t'aider à préserver ton espace sans te couper inutilement du lien."
     },
     {
       "key": "avoidantAdaptive",
       "label": "Évitant adaptatif",
       "dimension": "avoidance",
-      "explanation": "Ton sous-profil évitant montre un besoin d'espace et d'autonomie qui reste présent, mais dans une forme plutôt équilibrée. La proximité peut parfois te demander un temps d'ajustement, surtout quand le lien devient plus intense ou plus engageant, sans pour autant déclencher automatiquement une fermeture forte ou un rejet du lien. \n\n Tu sembles avoir besoin de garder ton rythme, ta respiration et une certaine liberté intérieure pour te sentir bien dans la relation. Mais ce besoin d'air n'empêche pas forcément la connexion. Tu peux apprécier le lien, rester en contact et t'ouvrir, à condition de ne pas avoir le sentiment d'être absorbé, pressé ou enfermé dans une proximité que tu ne maîtrises plus. \n\n Ce sous-profil traduit souvent une manière de fonctionner plus nuancée, plus respirable, où l'évitement existe sans prendre toute la place. Il n'y a pas forcément de défense rigide ou de coupure nette, mais plutôt une vigilance autour de ton espace personnel, de ton confort émotionnel et de la façon dont l'intimité s'installe dans la relation. \n\n Tes déclencheurs évitants permettent de préciser cela de façon plus concrète. Ils montrent dans quelles situations ton besoin de distance s'active le plus, ce qui te fait te refermer plus vite, et comment tu peux mieux comprendre l'équilibre entre ton besoin d'espace et ta capacité à rester en lien.",
-      "rules": {
-        "eligibility": {
-          "dimension": "avoidance",
-          "levels": ["medium"]
-        },
-        "coreRules": [
-          {
-            "type": "majorityTagsAtLevel",
-            "tags": [
-              "proximityDiscomfort",
-              "autonomyNeed",
-              "emotionalContainment",
-              "controlNeed",
-              "withdrawalUnderStress"
-            ],
-            "level": "medium",
-            "minimumCount": 3
-          }
-        ],
-        "supportRules": [
-          {
-            "tag": "conflict",
-            "levels": ["low", "medium"]
-          }
-        ],
-        "exclusionRules": [
-          {
-            "type": "profileConflict",
-            "profile": "avoidantRigid",
-            "reason": "Le profil évitant adaptatif ne doit pas être retenu si un profil évitant rigide est clairement validé."
-          },
-          {
-            "type": "tag",
-            "tag": "withdrawalUnderStress",
-            "levels": ["high"],
-            "reason": "Un retrait sous stress élevé oriente vers un fonctionnement plus rigide que véritablement adaptatif."
-          },
-          {
-            "type": "tagCombination",
-            "tags": ["proximityDiscomfort", "emotionalContainment"],
-            "levels": ["high", "high"],
-            "reason": "Une combinaison fortement défensive est incompatible avec un profil évitant adaptatif."
-          }
-        ],
-        "matchPolicy": "eligibility_plus_majorityMedium_withoutOtherClearMatch"
-      }
+      "explanation": "Ton sous-profil évitant montre un besoin d'espace et d'autonomie qui reste présent, mais dans une forme plutôt équilibrée. La proximité peut parfois te demander un temps d'ajustement, surtout quand le lien devient plus intense ou plus engageant, sans pour autant déclencher automatiquement une fermeture forte ou un rejet du lien. \n\n Tu sembles avoir besoin de garder ton rythme, ta respiration et une certaine liberté intérieure pour te sentir bien dans la relation. Mais ce besoin d'air n'empêche pas forcément la connexion. Tu peux apprécier le lien, rester en contact et t'ouvrir, à condition de ne pas avoir le sentiment d'être absorbé, pressé ou enfermé dans une proximité que tu ne maîtrises plus. \n\n Ce sous-profil traduit souvent une manière de fonctionner plus nuancée, plus respirable, où l'évitement existe sans prendre toute la place. Il n'y a pas forcément de défense rigide ou de coupure nette, mais plutôt une vigilance autour de ton espace personnel, de ton confort émotionnel et de la façon dont l'intimité s'installe dans la relation. \n\n Tes déclencheurs évitants permettent de préciser cela de façon plus concrète. Ils montrent dans quelles situations ton besoin de distance s'active le plus, ce qui te fait te refermer plus vite, et comment tu peux mieux comprendre l'équilibre entre ton besoin d'espace et ta capacité à rester en lien."
     },
     {
       "key": "notSignificant",
       "label": "Non significatif",
       "dimension": "generic",
-      "explanation": "Aucun sous-profil net ne ressort sur cet axe. Cela signifie que, sur cette dimension précise, il n'y a pas de mode de fonctionnement secondaire suffisamment marqué pour qu'une étiquette claire s'impose. Les signaux existent peut-être, mais ils restent trop modérés, trop dispersés ou pas assez cohérents entre eux pour faire émerger un sous-profil vraiment représentatif. \n\n Ce résultat n'a rien d'anormal. Il peut apparaître lorsque ton fonctionnement est globalement plus stable, plus nuancé, ou simplement moins structuré autour d'un schéma secondaire précis. Il peut aussi vouloir dire que ce n'est pas le sous-profil qui raconte le mieux ce qui se passe chez toi sur cet axe. \n\n Dans ce cas, ce sont surtout tes déclencheurs qui deviennent les éléments les plus parlants. Eux permettent de voir beaucoup plus concrètement ce qui t'active, ce qui revient le plus souvent dans la relation, et la manière dont cette dimension s'exprime réellement chez toi, même sans sous-profil très marqué.",
-      "rules": {
-        "eligibility": {
-          "fallback": true
-        },
-        "coreRules": [
-          {
-            "type": "noClearProfileMatch"
-          }
-        ],
-        "supportRules": [
-          {
-            "type": "dimensionLevels",
-            "levels": ["low"]
-          }
-        ],
-        "exclusionRules": [
-          {
-            "type": "clearProfileMatchExists",
-            "reason": "Le sous-profil non significatif ne doit pas être retenu si un autre sous-profil est clairement validé sur la dimension."
-          }
-        ],
-        "matchPolicy": "fallback_if_no_clear_subprofile_match"
-      }
+      "explanation": "Aucun sous-profil net ne ressort sur cet axe. Cela signifie que, sur cette dimension précise, il n'y a pas de mode de fonctionnement secondaire suffisamment marqué pour qu'une étiquette claire s'impose. Les signaux existent peut-être, mais ils restent trop modérés, trop dispersés ou pas assez cohérents entre eux pour faire émerger un sous-profil vraiment représentatif. \n\n Ce résultat n'a rien d'anormal. Il peut apparaître lorsque ton fonctionnement est globalement plus stable, plus nuancé, ou simplement moins structuré autour d'un schéma secondaire précis. Il peut aussi vouloir dire que ce n'est pas le sous-profil qui raconte le mieux ce qui se passe chez toi sur cet axe. \n\n Dans ce cas, ce sont surtout tes déclencheurs qui deviennent les éléments les plus parlants. Eux permettent de voir beaucoup plus concrètement ce qui t'active, ce qui revient le plus souvent dans la relation, et la manière dont cette dimension s'exprime réellement chez toi, même sans sous-profil très marqué."
     }
   ]
 }
