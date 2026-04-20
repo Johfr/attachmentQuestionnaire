@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useBillingStore } from '~/stores/billing'
-import { firebaseClient } from '~/composables/firebase/init'
+import { firebaseClient } from '~/composables/firebase/useFirebaseClient.js'
 import { ATTACHMENT_AI_MAX_INPUT_CHARS, ATTACHMENT_AI_MIN_INPUT_CHARS } from '~/constants/attachmentAi'
 import { normalizeAiExchange } from '~/utils/aiExchange'
 import type { EntitySubType, EntityType, AccessType } from '~/types/billing'
 import type { AiExchange } from '~/types/questionnaireSessions'
-import Popin from '~/utils/Popin.vue'
+import Popin from '~/components/designSystem/Popin.vue'
 
 const billingStore = useBillingStore()
 

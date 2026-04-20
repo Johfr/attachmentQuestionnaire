@@ -1,4 +1,4 @@
-import { firebaseClient } from "~/composables/firebase/init.js"
+import { firebaseClient } from "~/composables/firebase/useFirebaseClient.js"
 
 
 // Créer un user avec email & mdp

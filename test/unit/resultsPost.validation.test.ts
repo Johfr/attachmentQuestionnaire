@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import questionsData from '../../app/assets/data/questions.json'
+import questionsData from '../../app/assets/data/attachment/questions.json'
 import type {
   AttachmentQuestion,
   ComputeAttachmentQuestionnaireResultsRequest,

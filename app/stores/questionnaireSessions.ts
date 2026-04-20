@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { collection, getDocs, query, where } from 'firebase/firestore'
-import { firebaseClient } from '~/composables/firebase/init.js'
+import { firebaseClient } from '~/composables/firebase/useFirebaseClient.js'
 import { useAuthStore } from '~/stores/auth'
 import type { QuestionnaireSession } from '~/types/questionnaireSessions'
 

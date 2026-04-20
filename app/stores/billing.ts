@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
-import { firebaseClient } from '~/composables/firebase/init'
+import { firebaseClient } from '~/composables/firebase/useFirebaseClient.js'
 import { collection, query, where, addDoc, getDocs, onSnapshot } from "firebase/firestore"
 import type { EntitySubType, EntityType, AccessType, EntityVersion, UserPayment, UserSubscription } from '~/types/billing'
 

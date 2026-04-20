@@ -3,7 +3,7 @@
  *
  * Mocks the Firebase SDK (client) before the Nuxt test environment
  * initializes the app. Without this, app.vue -> stores/auth ->
- * composables/firebase/init.js loads the Firebase SDK which uses protobufjs/long,
+ * composables/firebase/useFirebaseClient.js loads the Firebase SDK which uses protobufjs/long,
  * and that fails with "util.Long.fromNumber is not a function" in happy-dom.
  */
 

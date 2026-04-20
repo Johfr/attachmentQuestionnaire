@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { computeAttachmentQuestionnaireResults } from '../../server/utils/attachment/computeAttachmentQuestionnaireResults'
-import questionsData from '../../app/assets/data/questions.json'
+import questionsData from '../../app/assets/data/attachment/questions.json'
 
 describe('computeAttachmentQuestionnaireResults anxiousActivated matching', () => {
   it('matches anxiousActivated for the provided response set', () => {

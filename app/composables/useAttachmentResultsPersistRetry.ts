@@ -52,13 +52,13 @@
 
 import { useAttachmentQuestionnaireWizardStore } from '~/stores/attachmentQuestionnaireWizard'
 import { useAuthStore } from '~/stores/auth'
-import { firebaseClient } from '~/composables/firebase/init.js'
+import { firebaseClient } from '~/composables/firebase/useFirebaseClient.js'
 import type {
   AttachmentQuestion,
   AttachmentQuestionnaireDisplayResults,
   ComputeAttachmentResultsApiResponse,
 } from '~/types/attachmentQuestionnaireResults'
-import questions from '~/assets/data/questions.json'
+import questions from '~/assets/data/attachment/questions.json'
 
 // Délais fixes entre chaque tentative (ms). Modifiable ici sans toucher à la page.
 const RETRY_DELAYS_MS = [0, 2000, 8000, 20000] as const

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import questions from '~/assets/data/questions.json'
+import questions from '~/assets/data/attachment/questions.json'
 import type { QuestionResult, AttachmentQuestion } from '~/types/attachmentQuestionnaireResults'
 
 definePageMeta({

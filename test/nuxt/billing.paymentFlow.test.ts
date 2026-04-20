@@ -40,7 +40,7 @@ vi.mock('firebase/firestore', () => ({
   onSnapshot: firestoreMocks.onSnapshot,
 }))
 
-vi.mock('~/composables/firebase/init', () => ({
+vi.mock('~/composables/firebase/useFirebaseClient.js', () => ({
   firebaseClient: {
     db: {},
     app: {},

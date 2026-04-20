@@ -5,7 +5,7 @@ import { buildAttachmentQuestionnaireDisplayResult } from '../../utils/attachmen
 import { buildQuestionnaireSessionDoc } from '../../utils/attachment/buildQuestionnaireSessionDoc'
 import { adminAuth, adminDb } from '../../utils/firebaseAdmin'
 import { AttachmentValidationError, validateAttachmentResults, validateQuestionsMatchCanonical } from '../../utils/attachment/validateAttachmentResults'
-import questionsData from '../../../app/assets/data/questions.json'
+import questionsData from '../../../app/assets/data/attachment/questions.json'
 
 // Questions canoniques chargées côté serveur — jamais remplacées par le payload client.
 const CANONICAL_QUESTIONS = (questionsData as { questions: AttachmentQuestion[] }).questions

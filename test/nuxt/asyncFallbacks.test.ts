@@ -45,7 +45,7 @@ vi.mock('firebase/firestore', () => ({
   getDocs: firestoreMocks.getDocs,
 }))
 
-vi.mock('~/composables/firebase/init.js', () => ({
+vi.mock('~/composables/firebase/useFirebaseClient.js', () => ({
   firebaseClient: {
     db: {},
     app: {},
@@ -60,11 +60,11 @@ mockComponent('~/components/attachmentQuestionnaire/DoughnutChart.vue', () => ({
 mockComponent('~/components/attachmentQuestionnaire/PolarChart.vue', () => ({
   template: '<div class="stub-polar" />',
 }))
-mockComponent('~/utils/Accordeon.vue', () => ({
+mockComponent('~/components/designSystem/Accordeon.vue', () => ({
   props: ['title'],
   template: '<div class="stub-accordeon"><slot /></div>',
 }))
-mockComponent('~/utils/Popin.vue', () => ({
+mockComponent('~/components/designSystem/Popin.vue', () => ({
   props: ['modelValue'],
   emits: ['update:modelValue'],
   template: '<div class="stub-popin"><slot /></div>',

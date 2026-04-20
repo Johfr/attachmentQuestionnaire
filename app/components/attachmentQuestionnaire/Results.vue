@@ -10,13 +10,13 @@ import type { AiExchange } from '~/types/questionnaireSessions'
 import DoughnutChart from '~/components/attachmentQuestionnaire/DoughnutChart.vue'
 import PolarChart from '~/components/attachmentQuestionnaire/PolarChart.vue'
 import GoDeeper from '~/components/GoDeeper.vue'
-import Accordeon from '~/utils/Accordeon.vue'
+import Accordeon from '~/components/designSystem/Accordeon.vue'
 import { useBillingStore } from '~/stores/billing'
 import { useAuthStore } from '~/stores/auth'
 import { getProfileLabel } from '~/utils/attachmentProfileTranslations'
 import { normalizeAiExchange } from '~/utils/aiExchange'
-import regulationProfilesData from '~/assets/data/regulationProfiles.json'
-import globalProfilesData from '~/assets/data/globalProfiles.json'
+import regulationProfilesData from '~/assets/data/attachment/regulationProfiles.json'
+import globalProfilesData from '~/assets/data/attachment/globalProfiles.json'
 
 const props = defineProps<{
   docId: string,

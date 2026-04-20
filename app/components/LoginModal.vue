@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
-import LoginForm from "~/utils/LoginForm.vue"
+import LoginForm from "~/components/auth/LoginForm.vue"
 import type { AuthFormPayload } from '~/types/User'
 
 const authStore = useAuthStore()

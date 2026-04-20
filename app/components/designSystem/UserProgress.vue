@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, resolveComponent, watch, type Component } from 'vue'
-import Popin from '~/utils/Popin.vue'
+import Popin from '~/components/designSystem/Popin.vue'
 import { useUserAttachmentProgressStore } from '~/stores/userAttachmentProgress'
 import { useAuthStore } from '~/stores/auth'
 import { getProfileLabel } from '~/utils/attachmentProfileTranslations'

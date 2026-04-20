@@ -25,7 +25,7 @@ const mockWizardState = vi.hoisted(() => ({
 
 const mockApiHandler = vi.hoisted(() => vi.fn())
 
-vi.mock('~/composables/firebase/init', () => ({
+vi.mock('~/composables/firebase/useFirebaseClient.js', () => ({
   firebaseClient: {
     auth: authState,
   },

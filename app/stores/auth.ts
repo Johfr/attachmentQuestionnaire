@@ -1,8 +1,8 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { firebaseClient } from "~/composables/firebase/init.js"
+import { firebaseClient } from "~/composables/firebase/useFirebaseClient.js"
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
-import { createUserAccountWithEmailAndPassword, signInUserWithEmailAndPassword, signOutUser } from '~/composables/firebase/Authentification.js'
+import { createUserAccountWithEmailAndPassword, signInUserWithEmailAndPassword, signOutUser } from '~/composables/firebase/useFirebaseAuthentication.js'
 import type {
   AuthFormPayload,
   CurrentPartnerContext,

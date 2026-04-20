@@ -4,7 +4,7 @@ import {
   buildAttachmentQuestionnaireDisplayResult,
   resolveAttachmentQuestionnaireConflictDimension
 } from '../../server/utils/attachment/buildAttachmentQuestionnaireDisplayResult'
-import questionsData from '../../app/assets/data/questions.json'
+import questionsData from '../../app/assets/data/attachment/questions.json'
 
 const BASE_RESULTS = [
   { id: 1, dimension: 'anxiety', value: 3, tags: ['distanceSilence', 'fearOfLoss'] },

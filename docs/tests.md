@@ -16,7 +16,7 @@ Lancer tous les tests : `npx vitest --reporter=verbose --run`
 
 ## Architecture critique : mock Firebase global
 
-**Problème résolu** : Firebase SDK (chargé via `app.vue → stores/auth → composables/firebase/init.js`) utilise `protobufjs/long` qui crashe dans happy-dom avec `util.Long.fromNumber is not a function`.
+**Problème résolu** : Firebase SDK (chargé via `app.vue → stores/auth → composables/firebase/useFirebaseClient.js`) utilise `protobufjs/long` qui crashe dans happy-dom avec `util.Long.fromNumber is not a function`.
 
 **Solution** : `test/setup.nuxt.ts` est chargé via `setupFiles` dans `vitest.config.ts` (projet nuxt uniquement). Ce fichier mocke **tous** les modules Firebase avant l'initialisation de l'app Nuxt.
 

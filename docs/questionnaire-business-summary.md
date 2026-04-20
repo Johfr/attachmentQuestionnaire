@@ -169,8 +169,8 @@ Autrement dit :
 
 Pour le détail du moteur de calcul et des règles métier associées, voir aussi :
 
-- `app/assets/data/tagsDocumentation.json`
-- `app/assets/data/questions.json`
-- `app/assets/data/tagsProfils.json`
+- `app/assets/data/attachment/tagsDocumentation.json`
+- `app/assets/data/attachment/questions.json`
+- `app/assets/data/attachment/tagsProfils.json`
 - `docs/business-rules.md`
 - `docs/backend-questionnaires.md`

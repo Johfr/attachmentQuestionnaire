@@ -67,7 +67,7 @@ vi.mock('~/stores/questionnaireSessions', () => ({
   })),
 }))
 
-vi.mock('~/composables/firebase/init', () => ({
+vi.mock('~/composables/firebase/useFirebaseClient.js', () => ({
   firebaseClient: {
     auth: {
       currentUser: {

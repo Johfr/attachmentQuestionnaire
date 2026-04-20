@@ -28,9 +28,9 @@ vi.mock('firebase/firestore', () => ({
   serverTimestamp: firestoreMocks.serverTimestamp,
 }))
 
-vi.mock('~/composables/firebase/init.js', () => firebaseInitMock)
+vi.mock('~/composables/firebase/useFirebaseClient.js', () => firebaseInitMock)
 
-vi.mock('~/composables/firebase/Authentification.js', () => ({
+vi.mock('~/composables/firebase/useFirebaseAuthentication.js', () => ({
   createUserAccountWithEmailAndPassword: vi.fn(),
   signInUserWithEmailAndPassword: vi.fn(),
   signOutUser: vi.fn(),
