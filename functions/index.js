@@ -44,7 +44,7 @@ exports.onPaymentWritten = onDocumentWritten(
 )
 
 /**
- * onCoachingPaymentWritten
+ * onCoachingBookingPaymentWritten
  *
  * Triggered when a payment document is created or updated in customers/{uid}/payments/{paymentId}.
  * When a coaching payment becomes 'succeeded', creates a dedicated métier document in
@@ -55,7 +55,7 @@ exports.onPaymentWritten = onDocumentWritten(
  *   - skips if the payment was already succeeded before
  *   - skips if coachingBookings/{paymentId} already exists
  */
-exports.onCoachingPaymentWritten = onDocumentWritten(
+exports.onCoachingBookingPaymentWritten = onDocumentWritten(
   { document: 'customers/{uid}/payments/{paymentId}' },
   async (event) => {
     await syncPaymentToCoachingBooking(
