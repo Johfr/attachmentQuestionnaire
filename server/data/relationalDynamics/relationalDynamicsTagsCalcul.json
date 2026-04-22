@@ -1,0 +1,128 @@
+{
+  "questionnaireKey": "relationshipDestructionConstruction",
+  "version": "1.1.0",
+  "tagScore": {
+    "formula": "(sum(tagAnswers) / (occurrences * 4)) * 100",
+    "rounding": "nearestInteger",
+    "outputRange": {
+      "min": 0,
+      "max": 100
+    }
+  },
+  "thresholds": {
+    "low": {
+      "min": 0,
+      "max": 39,
+      "label": "faible"
+    },
+    "medium": {
+      "min": 40,
+      "max": 69,
+      "label": "modere"
+    },
+    "high": {
+      "min": 70,
+      "max": 100,
+      "label": "eleve"
+    }
+  },
+  "categoryScores": {
+    "destructionScore": {
+      "label": "Score global destructeur",
+      "formulaType": "average",
+      "tags": [
+        "withdrawal",
+        "inconsistency",
+        "lackOfResponse",
+        "noRepair",
+        "blameShift",
+        "denial",
+        "justification",
+        "emotionalPressure",
+        "overIdealization",
+        "devaluation",
+        "unpredictability",
+        "boundaryViolation",
+        "oneSidedEffort",
+        "realityDistortion"
+      ]
+    },
+    "constructionScore": {
+      "label": "Score global constructif",
+      "formulaType": "average",
+      "tags": [
+        "repair",
+        "accountability",
+        "consistency",
+        "engagement"
+      ]
+    },
+    "balanceScore": {
+      "label": "Balance relationnelle",
+      "formulaType": "normalizedDifference",
+      "left": "constructionScore",
+      "right": "destructionScore",
+      "formula": "((constructionScore - destructionScore) + 100) / 2",
+      "outputRange": {
+        "min": 0,
+        "max": 100
+      }
+    },
+    "instabilityScore": {
+      "label": "Instabilite",
+      "formulaType": "average",
+      "tags": [
+        "withdrawal",
+        "inconsistency",
+        "lackOfResponse",
+        "unpredictability"
+      ]
+    },
+    "controlScore": {
+      "label": "Controle",
+      "formulaType": "average",
+      "tags": [
+        "emotionalPressure",
+        "boundaryViolation",
+        "blameShift"
+      ]
+    },
+    "manipulationScore": {
+      "label": "Manipulation",
+      "formulaType": "average",
+      "tags": [
+        "justification",
+        "emotionalPressure",
+        "devaluation",
+        "blameShift"
+      ]
+    },
+    "gaslightingScore": {
+      "label": "Gaslighting",
+      "formulaType": "average",
+      "tags": [
+        "denial",
+        "realityDistortion"
+      ]
+    },
+    "loveBombingScore": {
+      "label": "Love bombing",
+      "formulaType": "average",
+      "tags": [
+        "overIdealization",
+        "inconsistency",
+        "devaluation"
+      ]
+    },
+    "repairCapacityScore": {
+      "label": "Reparation",
+      "formulaType": "average",
+      "tags": [
+        "repair",
+        "accountability",
+        "consistency",
+        "engagement"
+      ]
+    }
+  }
+}

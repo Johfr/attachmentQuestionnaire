@@ -50,6 +50,15 @@ export const useAuthStore = defineStore('auth', () => {
     return value === 'male' || value === 'female' ? value : null
   }
 
+  const normalizePhone = (value: unknown): string | null => {
+    if (typeof value !== 'string') {
+      return null
+    }
+
+    const trimmedValue = value.trim()
+    return trimmedValue ? trimmedValue : null
+  }
+
   const buildPartnerContext = ({ partnerName, partnerAge, partnerGender }: PartnerContextPayload) => {
     const normalizedName = (partnerName || '').trim() || null
     const normalizedAge = typeof partnerAge === 'number' ? partnerAge : null
@@ -193,11 +202,43 @@ export const useAuthStore = defineStore('auth', () => {
         age: (typeof data?.age === 'number' ? data.age : null),
         admin: isFirestoreAdmin,
         gender: normalizeGender(data?.gender),
+        phone: normalizePhone(data?.phone),
         password: '',
       } as UserLoginForm,
       partnerContext: normalizeStoredPartnerContext(data?.currentPartnerContext),
       questionnaireAccess: normalizeQuestionnaireAccess(data?.questionnaireAccess),
       isAdmin: isFirestoreAdmin,
+    }
+  }
+
+  const saveUserPhoneNumber = async (phone: string | null) => {
+    const currentUser = firebaseClient.auth.currentUser
+    if (!currentUser) return false
+
+    const normalizedPhone = normalizePhone(phone)
+    if (!normalizedPhone) return false
+
+    try {
+      await setDoc(
+        doc(firebaseClient.db, 'users', currentUser.uid),
+        {
+          phone: normalizedPhone,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      )
+
+      if (user.value) {
+        user.value = {
+          ...user.value,
+          phone: normalizedPhone,
+        }
+      }
+
+      return true
+    } catch (error) {
+      console.error('Error while saving user phone number:', error)
+      return false
     }
   }
 
@@ -333,6 +374,7 @@ export const useAuthStore = defineStore('auth', () => {
           name: userLoginForm.name || '',
           age: userLoginForm.age ?? null,
           gender: userLoginForm.gender ?? null,
+          phone: null,
           password: '',
         }
         currentPartnerContext.value = partnerContext
@@ -456,6 +498,7 @@ export const useAuthStore = defineStore('auth', () => {
     getQuestionnaireAccessEntry,
     getQuestionnaireCooldownStatus,
     savePartnerContext,
+    saveUserPhoneNumber,
     login,
     logout,
     initAuth

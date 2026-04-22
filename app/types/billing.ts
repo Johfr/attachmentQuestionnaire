@@ -1,9 +1,15 @@
 // billing.ts
 
-export type EntityType = 'questionnaire' | 'article' | 'formation' | 'ebook' | 'other' // à adapter selon les types de contenus proposés
-export type EntitySubType = 'attachment' | 'conscience' | 'compatibility' | 'ebook' | 'other' // à adapter selon les types de contenus proposés 
-export type AccessType = 'results' | 'ia' | 'ebook' | 'membership' | 'formation' | 'testLive'
+export type EntityType = 'questionnaire' | 'article' | 'formation' | 'ebook' | 'coaching' | 'other' // à adapter selon les types de contenus proposés
+export type EntitySubType = 'attachment' | 'conscience' | 'compatibility' | 'ebook' | 'coaching' | 'zen' | 'express' | 'other' // à adapter selon les types de contenus proposés 
+export type AccessType = 'results' | 'ia' | 'ebook' | 'membership' | 'formation' | 'testLive' | 'coachingZen' | 'coachingExpress'
 export type EntityVersion = 'v1' | 'v2' | 'v3' // à adapter selon les versions disponibles
+
+export type CheckoutContactPayload = {
+  email?: string | null
+  phone?: string | null
+  checkoutOrigin?: string
+}
 
 export type PaymentMetadata = {
   entityType?: string
@@ -13,6 +19,8 @@ export type PaymentMetadata = {
   docId?: string
   successUrl?: string
   checkoutOrigin?: string
+  customerEmail?: string
+  customerPhone?: string
 }
 
 export type UserPayment = {

@@ -17,6 +17,7 @@ export type User = {
   age: number | null
   admin?: boolean | null
   gender: Gender | null
+  phone: string | null
 
   createdAt: Timestamp
   updatedAt: Timestamp
@@ -53,6 +54,7 @@ export type UserLoginForm = {
   age?: number | null
   admin?: boolean | null
   gender?: Gender | null
+  phone?: string | null
 }
 
 export type AuthFormMode = 'login' | 'signup'

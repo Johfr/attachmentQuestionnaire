@@ -2,6 +2,7 @@ const { onDocumentWritten } = require('firebase-functions/v2/firestore')
 const { initializeApp } = require('firebase-admin/app')
 const { getFirestore, FieldValue } = require('firebase-admin/firestore')
 const { syncPaymentToSession } = require('./paymentSync')
+const { syncPaymentToCoachingBooking } = require('./coachingBookingSync')
 
 initializeApp()
 
@@ -28,6 +29,36 @@ exports.onPaymentWritten = onDocumentWritten(
   { document: 'customers/{uid}/payments/{paymentId}' },
   async (event) => {
     await syncPaymentToSession(
+      {
+        before: event.data?.before?.data(),
+        after: event.data?.after?.data(),
+        uid: event.params.uid,
+        paymentId: event.params.paymentId,
+      },
+      {
+        db,
+        serverTimestamp: FieldValue.serverTimestamp(),
+      },
+    )
+  },
+)
+
+/**
+ * onCoachingPaymentWritten
+ *
+ * Triggered when a payment document is created or updated in customers/{uid}/payments/{paymentId}.
+ * When a coaching payment becomes 'succeeded', creates a dedicated métier document in
+ * coachingBookings/{paymentId} so the future admin can manage booking validation / scheduling
+ * without depending on Stripe extension documents as the primary working surface.
+ *
+ * Idempotent:
+ *   - skips if the payment was already succeeded before
+ *   - skips if coachingBookings/{paymentId} already exists
+ */
+exports.onCoachingPaymentWritten = onDocumentWritten(
+  { document: 'customers/{uid}/payments/{paymentId}' },
+  async (event) => {
+    await syncPaymentToCoachingBooking(
       {
         before: event.data?.before?.data(),
         after: event.data?.after?.data(),

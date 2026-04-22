@@ -1,0 +1,214 @@
+{
+  "questionnaireKey": "relationshipDestructionConstruction",
+  "version": "1.1.0",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Dans ma relation, mon partenaire peut être très proche puis prendre soudainement de la distance sans raison claire.",
+      "tags": ["withdrawal", "inconsistency"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["instability"]
+    },
+    {
+      "id": 2,
+      "question": "Quand il y a un malaise entre nous, mon partenaire se ferme ou s'éloigne au lieu d'essayer de réparer.",
+      "tags": ["withdrawal", "noRepair"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["instability", "repair"]
+    },
+    {
+      "id": 3,
+      "question": "Il arrive que mon partenaire coupe le contact ou devienne distant sans vraiment m'expliquer pourquoi.",
+      "tags": ["withdrawal", "lackOfResponse"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["instability"]
+    },
+    {
+      "id": 4,
+      "question": "Le comportement de mon partenaire est difficile à anticiper, ce qui rend ma relation instable.",
+      "tags": ["inconsistency", "unpredictability"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["instability"]
+    },
+    {
+      "id": 5,
+      "question": "J'ai souvent l'impression de devoir compenser le manque de constance de mon partenaire pour que la relation tienne.",
+      "tags": ["inconsistency", "oneSidedEffort"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["instability", "manipulation"]
+    },
+    {
+      "id": 6,
+      "question": "Mon partenaire peut être très investi avec moi puis changer rapidement d'attitude sans cohérence.",
+      "tags": ["inconsistency", "overIdealization"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["instability", "loveBombing"]
+    },
+    {
+      "id": 7,
+      "question": "Quand j'exprime un problème, mon partenaire minimise ce que je ressens ou renverse la situation contre moi.",
+      "tags": ["blameShift", "denial"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["control", "gaslighting"]
+    },
+    {
+      "id": 8,
+      "question": "Dans ma relation, mon partenaire me fait parfois sentir responsable de ses réactions ou de son mal-être.",
+      "tags": ["blameShift", "emotionalPressure"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["control", "manipulation"]
+    },
+    {
+      "id": 9,
+      "question": "Quand quelque chose ne va pas, mon partenaire trouve souvent des raisons pour justifier son comportement en me mettant en cause.",
+      "tags": ["blameShift", "justification"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["control", "manipulation"]
+    },
+    {
+      "id": 10,
+      "question": "Mon partenaire peut reformuler les situations de manière à me faire douter de ma propre perception.",
+      "tags": ["blameShift", "realityDistortion"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["gaslighting"]
+    },
+    {
+      "id": 11,
+      "question": "Même quand un problème revient, j'ai l'impression que c'est surtout à moi de faire les efforts pour que ça avance.",
+      "tags": ["noRepair", "oneSidedEffort"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["repair", "manipulation"]
+    },
+    {
+      "id": 12,
+      "question": "Quand je pose une limite, mon partenaire peut ne pas la respecter sans chercher à réparer ensuite.",
+      "tags": ["noRepair", "boundaryViolation"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["control"]
+    },
+    {
+      "id": 13,
+      "question": "Après un conflit, mon partenaire peut rester silencieux ou distant sans faire de démarche pour réparer.",
+      "tags": ["noRepair", "lackOfResponse"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["repair"]
+    },
+    {
+      "id": 14,
+      "question": "Mon partenaire insiste ou met de la pression quand je ne vais pas dans son sens.",
+      "tags": ["emotionalPressure", "boundaryViolation"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["control"]
+    },
+    {
+      "id": 15,
+      "question": "Je me sens parfois obligé de faire plus d'efforts ou de m'adapter pour éviter une réaction négative de mon partenaire.",
+      "tags": ["emotionalPressure", "oneSidedEffort"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["control", "manipulation"]
+    },
+    {
+      "id": 16,
+      "question": "Quand j'exprime mon ressenti, mon partenaire réagit d'une manière qui me fait culpabiliser.",
+      "tags": ["emotionalPressure", "justification"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["manipulation"]
+    },
+    {
+      "id": 17,
+      "question": "Quand je parle d'un problème réel, mon partenaire nie ou minimise ce que je vis.",
+      "tags": ["realityDistortion", "denial"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["gaslighting"]
+    },
+    {
+      "id": 18,
+      "question": "Mon partenaire peut déformer la réalité puis me critiquer ou me rabaisser dans la foulée.",
+      "tags": ["realityDistortion", "devaluation"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["gaslighting", "manipulation"]
+    },
+    {
+      "id": 19,
+      "question": "Mon partenaire peut me valoriser fortement puis devenir froid ou critique sans transition.",
+      "tags": ["overIdealization", "devaluation"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["loveBombing"]
+    },
+    {
+      "id": 20,
+      "question": "Je ne sais pas toujours quand mon partenaire va répondre ou se rendre disponible.",
+      "tags": ["unpredictability", "lackOfResponse"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["instability"]
+    },
+    {
+      "id": 21,
+      "question": "Je continue parfois à faire des efforts même quand mes limites ne sont pas respectées.",
+      "tags": ["boundaryViolation", "oneSidedEffort"],
+      "type": "destructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["control"]
+    },
+    {
+      "id": 22,
+      "question": "Quand il y a un problème, mon partenaire reconnaît sa part et fait des efforts pour réparer.",
+      "tags": ["repair", "accountability"],
+      "type": "constructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["repair"]
+    },
+    {
+      "id": 23,
+      "question": "Après un conflit, mon partenaire agit concrètement pour apaiser la situation et retrouver une stabilité.",
+      "tags": ["repair", "consistency"],
+      "type": "constructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["repair", "instability"]
+    },
+    {
+      "id": 24,
+      "question": "Même quand c'est inconfortable, mon partenaire assume ses actes et reste engagé dans la relation.",
+      "tags": ["accountability", "engagement"],
+      "type": "constructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["repair"]
+    },
+    {
+      "id": 25,
+      "question": "Je peux compter sur une présence stable et régulière de mon partenaire dans ma relation.",
+      "tags": ["consistency", "engagement"],
+      "type": "constructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["instability"]
+    },
+    {
+      "id": 26,
+      "question": "Même après une difficulté, mon partenaire reste impliqué et cherche à reconstruire la relation.",
+      "tags": ["repair", "engagement"],
+      "type": "constructive",
+      "scale": { "min": 0, "max": 4 },
+      "categoryHint": ["repair"]
+    }
+  ]
+}

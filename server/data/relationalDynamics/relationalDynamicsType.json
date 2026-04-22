@@ -1,0 +1,132 @@
+{
+  "questionnaireKey": "relationshipDestructionConstruction",
+  "version": "1.0.0",
+  "derivedDynamics": [
+    {
+      "key": "intermittentReinforcement",
+      "label": "Renforcement intermittent probable",
+      "badge": "relationInstable",
+      "description": "La relation alterne des phases de distance ou d'instabilite avec des moments suffisants de reparation ou d'engagement pour maintenir l'attachement.",
+      "score": {
+        "formulaType": "average",
+        "tags": [
+          "inconsistency",
+          "unpredictability",
+          "withdrawal",
+          "repair",
+          "engagement"
+        ]
+      },
+      "conditions": {
+        "all": [
+          {
+            "tag": "inconsistency",
+            "operator": ">=",
+            "value": 60
+          },
+          {
+            "tag": "unpredictability",
+            "operator": ">=",
+            "value": 60
+          },
+          {
+            "any": [
+              {
+                "tag": "repair",
+                "operator": ">=",
+                "value": 40
+              },
+              {
+                "tag": "engagement",
+                "operator": ">=",
+                "value": 40
+              }
+            ]
+          }
+        ]
+      },
+      "levels": {
+        "low": {
+          "min": 0,
+          "max": 39,
+          "label": "faible"
+        },
+        "medium": {
+          "min": 40,
+          "max": 69,
+          "label": "modere"
+        },
+        "high": {
+          "min": 70,
+          "max": 100,
+          "label": "eleve"
+        }
+      },
+      "output": {
+        "showIfConditionsMatch": true,
+        "type": "advancedReading"
+      }
+    },
+    {
+      "key": "emotionalAddiction",
+      "label": "Dynamique addictive probable",
+      "badge": "relationAddictive",
+      "description": "La relation semble entretenir une boucle de manque, d'effort unilateral, d'instabilite et d'idealisation qui peut renforcer l'attachement malgre la souffrance.",
+      "score": {
+        "formulaType": "average",
+        "tags": [
+          "inconsistency",
+          "withdrawal",
+          "emotionalPressure",
+          "oneSidedEffort",
+          "overIdealization"
+        ]
+      },
+      "conditions": {
+        "all": [
+          {
+            "tag": "inconsistency",
+            "operator": ">=",
+            "value": 60
+          },
+          {
+            "tag": "withdrawal",
+            "operator": ">=",
+            "value": 60
+          },
+          {
+            "tag": "oneSidedEffort",
+            "operator": ">=",
+            "value": 60
+          },
+          {
+            "tag": "overIdealization",
+            "operator": ">=",
+            "value": 50
+          }
+        ]
+      },
+      "levels": {
+        "low": {
+          "min": 0,
+          "max": 39,
+          "label": "faible"
+        },
+        "medium": {
+          "min": 40,
+          "max": 69,
+          "label": "modere"
+        },
+        "high": {
+          "min": 70,
+          "max": 100,
+          "label": "eleve"
+        }
+      },
+      "output": {
+        "showIfConditionsMatch": true,
+        "type": "advancedReading"
+      }
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "questionnaireKey": "relationshipDestructionConstruction",
+  "version": "1.1.0",
+  "scale": {
+    "min": 0,
+    "max": 4,
+    "labels": {
+      "0": "jamais",
+      "1": "rarement",
+      "2": "parfois",
+      "3": "souvent",
+      "4": "tres souvent"
+    }
+  },
+  "tagTypes": {
+    "negative": [
+      "withdrawal",
+      "inconsistency",
+      "lackOfResponse",
+      "noRepair",
+      "blameShift",
+      "denial",
+      "justification",
+      "emotionalPressure",
+      "overIdealization",
+      "devaluation",
+      "unpredictability",
+      "boundaryViolation",
+      "oneSidedEffort",
+      "realityDistortion"
+    ],
+    "positive": [
+      "repair",
+      "accountability",
+      "consistency",
+      "engagement"
+    ]
+  },
+  "tags": [
+    {
+      "key": "withdrawal",
+      "type": "negative",
+      "questionIds": [1, 2, 3]
+    },
+    {
+      "key": "inconsistency",
+      "type": "negative",
+      "questionIds": [1, 4, 5]
+    },
+    {
+      "key": "lackOfResponse",
+      "type": "negative",
+      "questionIds": [3, 13, 20]
+    },
+    {
+      "key": "noRepair",
+      "type": "negative",
+      "questionIds": [2, 11, 12, 13]
+    },
+    {
+      "key": "blameShift",
+      "type": "negative",
+      "questionIds": [7, 8, 9, 10]
+    },
+    {
+      "key": "denial",
+      "type": "negative",
+      "questionIds": [7, 17]
+    },
+    {
+      "key": "justification",
+      "type": "negative",
+      "questionIds": [9, 16]
+    },
+    {
+      "key": "emotionalPressure",
+      "type": "negative",
+      "questionIds": [8, 14, 15, 16]
+    },
+    {
+      "key": "overIdealization",
+      "type": "negative",
+      "questionIds": [6, 19]
+    },
+    {
+      "key": "devaluation",
+      "type": "negative",
+      "questionIds": [18, 19]
+    },
+    {
+      "key": "unpredictability",
+      "type": "negative",
+      "questionIds": [4, 20]
+    },
+    {
+      "key": "boundaryViolation",
+      "type": "negative",
+      "questionIds": [12, 14, 21]
+    },
+    {
+      "key": "oneSidedEffort",
+      "type": "negative",
+      "questionIds": [5, 11, 15, 21]
+    },
+    {
+      "key": "realityDistortion",
+      "type": "negative",
+      "questionIds": [10, 17, 18]
+    },
+    {
+      "key": "repair",
+      "type": "positive",
+      "questionIds": [22, 23, 26]
+    },
+    {
+      "key": "accountability",
+      "type": "positive",
+      "questionIds": [22, 24]
+    },
+    {
+      "key": "consistency",
+      "type": "positive",
+      "questionIds": [23, 25]
+    },
+    {
+      "key": "engagement",
+      "type": "positive",
+      "questionIds": [24, 25, 26]
+    }
+  ]
+}

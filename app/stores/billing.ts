@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
 import { firebaseClient } from '~/composables/firebase/useFirebaseClient.js'
 import { collection, query, where, addDoc, getDocs, onSnapshot } from "firebase/firestore"
-import type { EntitySubType, EntityType, AccessType, EntityVersion, UserPayment, UserSubscription } from '~/types/billing'
+import type { CheckoutContactPayload, EntitySubType, EntityType, AccessType, EntityVersion, UserPayment, UserSubscription } from '~/types/billing'
 
 export const useBillingStore = defineStore('billing', () => {
   const authStore = useAuthStore()
@@ -51,6 +51,18 @@ export const useBillingStore = defineStore('billing', () => {
       mode: 'payment' as const,
       productId: runtimeConfig.public.stripeEbookProductId,
       productPriceId: runtimeConfig.public.stripeEbookPriceId,
+    },
+    coachingZen: {
+      price: 4500,
+      mode: 'payment' as const,
+      productId: runtimeConfig.public.stripeCoachingZenProductId,
+      productPriceId: runtimeConfig.public.stripeCoachingZenPriceId,
+    },
+    coachingExpress: {
+      price: 9900,
+      mode: 'payment' as const,
+      productId: runtimeConfig.public.stripeCoachingExpressProductId,
+      productPriceId: runtimeConfig.public.stripeCoachingExpressPriceId,
     },
     membership: {
       price: 699,
@@ -165,10 +177,20 @@ export const useBillingStore = defineStore('billing', () => {
     window.location.assign((data as { url: string }).url)
   }
 
-  const goToCheckout = async (entityType: EntityType, entitySubType: EntitySubType, accessType: AccessType, entityVersion: EntityVersion, successUrl: string, docId: string) => {
+  const goToCheckout = async (
+    entityType: EntityType,
+    entitySubType: EntitySubType,
+    accessType: AccessType,
+    entityVersion: EntityVersion,
+    successUrl: string,
+    docId: string,
+    contactPayload: CheckoutContactPayload = {},
+  ) => {
     const products: Record<AccessType, { price: number; mode: 'payment' | 'subscription', productId: string, productPriceId?: string, recurrence?: 'month' | 'year' }> = stripeCatalog
     const selectedProduct = products[accessType]
     const trimmedDocId = docId.trim()
+    const customerEmail = contactPayload.email?.trim() || user.value?.email?.trim() || null
+    const customerPhone = contactPayload.phone?.trim() || null
 
     if ((accessType === 'results' || accessType === 'ia') && !trimmedDocId) {
       throw new Error('La session est encore en cours de sauvegarde. Reessaie dans quelques instants.')
@@ -177,18 +199,28 @@ export const useBillingStore = defineStore('billing', () => {
     if (!selectedProduct.productPriceId) {
       throw new Error('Produit Stripe non configure pour cet environnement.')
     }
+
+    if ((accessType === 'coachingZen' || accessType === 'coachingExpress') && (!customerEmail || !customerPhone)) {
+      throw new Error('Renseigne ton email et ton numero de telephone pour reserver ta seance.')
+    }
     
     const successCheckoutUrl = accessType === 'ebook'
       ? `${window.location.origin}/user/profil?checkout=success`
       : accessType === 'testLive'
         ? `${window.location.origin}/admin?checkout=success`
-        : `${window.location.origin}/user/${successUrl}/results?sessionId=${trimmedDocId}`
+        : accessType === 'coachingZen'
+          ? `${window.location.origin}/user/profil?checkout=success&type=zen`
+          : accessType === 'coachingExpress'
+            ? `${window.location.origin}/user/profil?checkout=success&type=express`
+            : `${window.location.origin}/user/${successUrl}/results?sessionId=${trimmedDocId}`
 
     const cancelCheckoutUrl = accessType === 'ebook'
       ? `${window.location.origin}/ebook`
       : accessType === 'testLive'
         ? `${window.location.origin}/admin`
-        : `${window.location.origin}/user/profil/`
+        : accessType === 'coachingZen' || accessType === 'coachingExpress'
+          ? `${window.location.origin}/contact`
+          : `${window.location.origin}/user/profil/`
 
     const collectionRef = collection(firebaseClient.db, 'customers', user.value?.id ?? 'unknown_user', 'checkout_sessions')
 
@@ -207,8 +239,18 @@ export const useBillingStore = defineStore('billing', () => {
         entityVersion,
         successUrl,
         docId: trimmedDocId,
-        checkoutOrigin: accessType === 'testLive' ? 'admin' : 'app',
+        checkoutOrigin: contactPayload.checkoutOrigin || (accessType === 'testLive' ? 'admin' : entityType === 'coaching' ? 'contact' : 'app'),
+        customerEmail,
+        customerPhone,
       },
+      ...(customerEmail ? { customer_email: customerEmail } : {}),
+      ...(entityType === 'coaching'
+        ? {
+            phone_number_collection: {
+              enabled: true,
+            },
+          }
+        : {}),
       // Mirror metadata onto the PaymentIntent (payment mode) or Subscription (subscription mode)
       // so the Stripe Extension propagates it to customers/{uid}/payments or /subscriptions.
       // Without this, the Cloud Functions cannot read docId / accessType from those documents.
@@ -222,7 +264,9 @@ export const useBillingStore = defineStore('billing', () => {
                 entityVersion,
                 successUrl,
                 docId: trimmedDocId,
-                checkoutOrigin: accessType === 'testLive' ? 'admin' : 'app',
+                checkoutOrigin: contactPayload.checkoutOrigin || (accessType === 'testLive' ? 'admin' : entityType === 'coaching' ? 'contact' : 'app'),
+                customerEmail,
+                customerPhone,
               },
             },
           }
@@ -235,7 +279,9 @@ export const useBillingStore = defineStore('billing', () => {
                 entityVersion,
                 successUrl,
                 docId: trimmedDocId,
-                checkoutOrigin: accessType === 'testLive' ? 'admin' : 'app',
+                checkoutOrigin: contactPayload.checkoutOrigin || (accessType === 'testLive' ? 'admin' : entityType === 'coaching' ? 'contact' : 'app'),
+                customerEmail,
+                customerPhone,
               },
             },
           }),

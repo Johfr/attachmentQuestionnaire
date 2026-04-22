@@ -49,6 +49,11 @@ Ce fichier capture les regles de collaboration attendues pour les agents qui tra
 - coder simple, efficace, bonne pratique, lisible et dans le cadre pose par le user
 - Aucune regression n'est admise. fais bien attention à comprendre le code et à appliquer un correctif sans effet de bord ni regression. Si tu dois explorer le code plus profondément, fais le.
 
+## Instruction spcifique à chatGpt
+si un correctif t’oblige à introduire un nouveau mode d’auth, un nouveau flux backend, une nouvelle persistance, ou une hypothèse métier non demandée, tu dois t’arrêter et poser une question
+si ça reste dans le cadre existant, je code sans bruit
+si le template existe déjà, je modifie localement, je ne “refais” pas le composant
+
 ## Docs a consulter
 
 Quand le user demande de "prendre connaissance des docs", commencer en priorite par :

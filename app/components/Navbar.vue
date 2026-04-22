@@ -50,7 +50,7 @@ const handleDesktopPowerAction = async () => {
           Questionnaires
         </span>
       </RouterLink>
-      <routerLink to="/blog" class="flex flex-wrap justify-center flex-col md:flex-row">
+      <routerLink to="/blog" class="hidden md:flex flex-wrap justify-center flex-col md:flex-row">
         <LucideBookText :size="15" class="mb-1 md:mr-1 text-rust md:hidden md:mb-0" />
         <span class="text-[9px] md:text-xs text-theme-text">
           Blog
@@ -61,7 +61,14 @@ const handleDesktopPowerAction = async () => {
         <span class="text-[9px] md:text-xs text-theme-text">
           Ebook
         </span>
-      </RouterLink> 
+      </RouterLink>
+      <RouterLink to="/contact" class="flex flex-wrap justify-center flex-col md:flex-row">
+        <LucidePhoneCall :size="15" class="mb-1 md:mr-1 text-rust md:hidden md:mb-0" />
+        <span class="text-[9px] md:text-xs text-theme-text">
+          <span class="hidden md:inline-block">Prendre </span>
+          Rdv
+        </span>
+      </RouterLink>
       
       <!-- <RouterLink to="/attachment-questionnaire/results" class="flex flex-wrap justify-center flex-col md:flex-row">
         <LucideBarChart2 :size="15" class="mb-1 md:mr-1 text-rust md:hidden md:mb-0" />

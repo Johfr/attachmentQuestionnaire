@@ -85,6 +85,8 @@ const accessTypeLabels: Record<string, string> = {
   ebook: 'Ebook',
   results: 'Résultats détaillés',
   ia: 'Analyse IA personnalisée',
+  coachingZen: 'Rdv coaching zen',
+  coachingExpress: 'Rdv coaching express',
   membership: 'Premium mensuel',
   formation: 'Formation annuelle',
 }
@@ -130,10 +132,15 @@ const activeSubscriptionTags = computed(() => {
 })
 
 const ONE_SHOT_ACCESS_TYPES = new Set(['results', 'ia'])
+const COACHING_ACCESS_TYPES = new Set(['coachingZen', 'coachingExpress'])
 const EBOOK_DOWNLOAD_URL = '/downloads/ebook-anxieux-evitant-v1.pdf'
 
 const oneShotPayments = computed(() => {
   return billingStore.payments.filter(p => ONE_SHOT_ACCESS_TYPES.has(p.metadata.accessType ?? ''))
+})
+
+const coachingPayments = computed(() => {
+  return billingStore.payments.filter(p => COACHING_ACCESS_TYPES.has(p.metadata.accessType ?? ''))
 })
 
 const ebookPayments = computed(() => {
@@ -301,6 +308,40 @@ onMounted(() => {
             </p>
           </div>
         </RouterLink>
+      </div>
+    </section>
+
+    <!-- Mes Rdv -->
+    <section class="md:max-w-[48%]">
+      <h2 class="text-xl font-bold my-8">
+        Mes rdvs
+      </h2>
+
+      <p v-if="billingStore.isLoadingHistory" class="text-sm text-gray-500">Chargement...</p>
+      <p v-else-if="coachingPayments.length === 0" class="text-sm text-gray-500">
+        Tu n'as encore aucun rendez-vous réservé.
+      </p>
+
+      <div v-else class="space-y-3">
+        <div
+          v-for="payment in coachingPayments"
+          :key="payment.id"
+          class="rounded-2xl bg-theme-surfaceStaticCard p-4"
+        >
+          <div class="flex items-center justify-between">
+            <p class="font-bold text-gray-800">
+              {{ accessTypeLabels[payment.metadata.accessType ?? ''] ?? payment.metadata.accessType ?? 'Rdv coaching' }}
+            </p>
+            <span class="text-sm font-semibold text-gray-700">
+              {{ formatAmount(payment.amount, payment.currency) }}
+            </span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">
+            <span v-if="formatTimestamp(payment.created)">
+              Réservé le : {{ formatTimestamp(payment.created) }}
+            </span>
+          </p>
+        </div>
       </div>
     </section>
 

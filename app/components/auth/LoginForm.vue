@@ -150,8 +150,27 @@ const submit = (): { isValid: boolean, payload?: AuthFormPayload } => {
   }
 }
 
+const hasRequiredFieldsFilled = () => {
+  if (user.value) {
+    return true
+  }
+
+  if (isSignupMode.value) {
+    return Boolean(
+      name.value.trim()
+      && normalizeAgeInput()
+      && gender.value
+      && email.value.trim()
+      && password.value.trim(),
+    )
+  }
+
+  return Boolean(email.value.trim() && password.value.trim())
+}
+
 defineExpose({
   submit,
+  hasRequiredFieldsFilled,
 })
 </script>
 
@@ -235,6 +254,8 @@ defineExpose({
         <small v-if="touched.password && errors.password" class="mt-1 text-xs text-red-600">{{ errors.password }}</small>
       </label>
     </div>
+
+    <slot name="extra-fields" />
   </form>
 </template>
 
