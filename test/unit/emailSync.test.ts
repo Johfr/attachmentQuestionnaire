@@ -22,7 +22,6 @@ describe('emailSync', () => {
       ...ORIGINAL_ENV,
       NUXT_RESEND_API_KEY: 'resend-key',
       NUXT_MAIL_FROM: 'Relation anxieux-evitant <noreply@relation-anxieux-evitant.fr>',
-      NUXT_MAIL_REPLY_TO: 'admin@example.com',
       NUXT_CONTACT_ADMIN_EMAIL: 'admin@example.com',
     }
     vi.stubGlobal('fetch', vi.fn()
@@ -123,6 +122,49 @@ describe('emailSync', () => {
         confirmationMessageId: 'email-user-1',
         adminMessageId: 'email-admin-1',
         lastError: null,
+      },
+      updatedAt: 'SERVER_TIMESTAMP',
+    })
+  })
+
+  it('keeps the user confirmation sent when the coaching admin email is not configured', async () => {
+    process.env.NUXT_CONTACT_ADMIN_EMAIL = ''
+    vi.stubGlobal('fetch', vi.fn()
+      .mockImplementationOnce(() => makeFetchResponse('email-user-1')))
+    const paymentRef = makePaymentRef()
+
+    await syncPaymentConfirmationEmail(
+      {
+        before: { status: 'processing' },
+        after: {
+          status: 'succeeded',
+          amount: 4500,
+          currency: 'eur',
+          customer_email: 'user@example.com',
+        },
+        uid: 'user-1',
+        paymentId: 'payment-2',
+        metadata: {
+          accessType: 'coachingZen',
+          customerPhone: '0612345678',
+        },
+      },
+      {
+        paymentRef,
+        serverTimestamp: 'SERVER_TIMESTAMP',
+      },
+    )
+
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(paymentRef.update).toHaveBeenCalledWith({
+      appEmailStatus: {
+        confirmation: 'sent',
+        admin: 'failed',
+        confirmationSentAt: 'SERVER_TIMESTAMP',
+        adminSentAt: null,
+        confirmationMessageId: 'email-user-1',
+        adminMessageId: null,
+        lastError: 'Missing admin email configuration.',
       },
       updatedAt: 'SERVER_TIMESTAMP',
     })

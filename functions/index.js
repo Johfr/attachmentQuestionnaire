@@ -1,4 +1,5 @@
 const { onDocumentWritten } = require('firebase-functions/v2/firestore')
+const { defineSecret } = require('firebase-functions/params')
 const { initializeApp } = require('firebase-admin/app')
 const { getFirestore, FieldValue } = require('firebase-admin/firestore')
 const { extractPaymentMetadata, syncPaymentToSession } = require('./paymentSync')
@@ -8,6 +9,9 @@ const { syncPaymentConfirmationEmail } = require('./emailSync')
 initializeApp()
 
 const db = getFirestore()
+const resendApiKey = defineSecret('NUXT_RESEND_API_KEY')
+const mailFrom = defineSecret('NUXT_MAIL_FROM')
+const contactAdminEmail = defineSecret('NUXT_CONTACT_ADMIN_EMAIL')
 
 /**
  * onPaymentWritten
@@ -27,7 +31,10 @@ const db = getFirestore()
  * the metadata propagates from the Stripe Checkout Session to the PaymentIntent document.
  */
 exports.onPaymentWritten = onDocumentWritten(
-  { document: 'customers/{uid}/payments/{paymentId}' },
+  {
+    document: 'customers/{uid}/payments/{paymentId}',
+    secrets: [resendApiKey, mailFrom, contactAdminEmail],
+  },
   async (event) => {
     const before = event.data?.before?.data()
     const after = event.data?.after?.data()

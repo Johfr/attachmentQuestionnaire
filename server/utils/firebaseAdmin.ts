@@ -4,8 +4,20 @@ import { getAuth } from 'firebase-admin/auth'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
+function getFirebaseConfigProjectId() {
+  try {
+    const firebaseConfig = process.env.FIREBASE_CONFIG
+    if (!firebaseConfig) return ''
+    return JSON.parse(firebaseConfig).projectId || ''
+  } catch {
+    return ''
+  }
+}
+
 const FIREBASE_PROJECT_ID = process.env.NUXT_FIREBASE_PROJECT_ID
   || process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID
+  || process.env.GCLOUD_PROJECT
+  || getFirebaseConfigProjectId()
   || 'relation-anxieux-evitant'
 
 function loadCredential() {

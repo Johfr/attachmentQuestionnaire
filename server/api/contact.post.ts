@@ -14,7 +14,6 @@ type ResendEmailPayload = {
   to: string[]
   subject: string
   html: string
-  reply_to?: string[]
 }
 
 const MIN_MESSAGE_LENGTH = 10
@@ -33,6 +32,18 @@ const escapeHtml = (value: string) => {
 
 const normalizeText = (value: unknown) => {
   return typeof value === 'string' ? value.trim() : ''
+}
+
+const normalizeEnvValue = (value: unknown) => {
+  const normalized = normalizeText(value)
+  if (
+    (normalized.startsWith('"') && normalized.endsWith('"'))
+    || (normalized.startsWith("'") && normalized.endsWith("'"))
+  ) {
+    return normalized.slice(1, -1)
+  }
+
+  return normalized
 }
 
 const getClientIp = (event: H3Event) => {
@@ -144,7 +155,7 @@ export default defineEventHandler(async event => {
   if (!canSend) {
     throw createError({
       statusCode: 429,
-      statusMessage: 'Trop de messages envoyes en peu de temps. Reessaie un peu plus tard.',
+      statusMessage: 'Trop de messages envoyés en peu de temps. Réessaie un peu plus tard.',
     })
   }
 
@@ -183,10 +194,9 @@ export default defineEventHandler(async event => {
     updatedAt: FieldValue.serverTimestamp(),
   })
 
-  const resendApiKey = config.resendApiKey
-  const mailFrom = config.mailFrom
-  const mailReplyTo = config.mailReplyTo || email
-  const contactAdminEmail = config.contactAdminEmail
+  const resendApiKey = normalizeEnvValue(config.resendApiKey)
+  const mailFrom = normalizeEnvValue(config.mailFrom)
+  const contactAdminEmail = normalizeEnvValue(config.contactAdminEmail)
 
   if (!resendApiKey || !mailFrom || !contactAdminEmail) {
     await contactRef.update({
@@ -212,13 +222,12 @@ export default defineEventHandler(async event => {
     const adminMessageId = await sendEmail(resendApiKey, {
       from: mailFrom,
       to: [contactAdminEmail],
-      reply_to: [email],
       subject: adminSubject,
       html: `
         <p><strong>Email :</strong> ${escapeHtml(email)}</p>
-        <p><strong>UID :</strong> ${uid ? escapeHtml(uid) : 'Utilisateur non connecte'}</p>
-        <p><strong>Nom :</strong> ${escapeHtml(userSnapshot?.name || 'Non renseigne')}</p>
-        <p><strong>Telephone :</strong> ${escapeHtml(userSnapshot?.phone || 'Non renseigne')}</p>
+        <p><strong>UID :</strong> ${uid ? escapeHtml(uid) : 'Utilisateur non connecté'}</p>
+        <p><strong>Nom :</strong> ${escapeHtml(userSnapshot?.name || 'Non renseigné')}</p>
+        <p><strong>Téléphone :</strong> ${escapeHtml(userSnapshot?.phone || 'Non renseigné')}</p>
         <hr>
         <p>${safeMessage}</p>
       `,
@@ -227,11 +236,10 @@ export default defineEventHandler(async event => {
     const userMessageId = await sendEmail(resendApiKey, {
       from: mailFrom,
       to: [email],
-      reply_to: [mailReplyTo],
-      subject: 'Message bien recu',
+      subject: 'Message bien reçu',
       html: `
         <p>${greeting}</p>
-        <p>Ton message à bien été recu. Tu recevras un retour écris dans un délai de 48h maximum.</p>
+        <p>Ton message a bien été reçu. Tu recevras un retour écrit dans un délai de 48h maximum.</p>
         <p>Tu peux retrouver toutes les informations directement sur ton profil à l'adresse : <a href="https://relation-anxieux-evitant.web.app/user/profil">relation-anxieux-evitant.web.app/user/profil</a></p>
       `,
     })
@@ -260,6 +268,6 @@ export default defineEventHandler(async event => {
       updatedAt: FieldValue.serverTimestamp(),
     })
 
-    throw createError({ statusCode: 500, statusMessage: 'Message enregistre, mais email non envoye.' })
+    throw createError({ statusCode: 500, statusMessage: 'Message enregistré, mais email non envoyé.' })
   }
 })

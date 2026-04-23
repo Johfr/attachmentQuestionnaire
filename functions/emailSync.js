@@ -63,11 +63,22 @@ const getPaymentCustomerEmail = (paymentDoc = {}, metadata = {}) => {
     || null
 }
 
+const normalizeEnvValue = (value = '') => {
+  const normalized = String(value || '').trim()
+  if (
+    (normalized.startsWith('"') && normalized.endsWith('"'))
+    || (normalized.startsWith("'") && normalized.endsWith("'"))
+  ) {
+    return normalized.slice(1, -1)
+  }
+
+  return normalized
+}
+
 const getEmailConfig = () => ({
-  resendApiKey: process.env.NUXT_RESEND_API_KEY || '',
-  mailFrom: process.env.NUXT_MAIL_FROM || 'Relation anxieux-evitant <onboarding@resend.dev>',
-  mailReplyTo: process.env.NUXT_MAIL_REPLY_TO || '',
-  contactAdminEmail: process.env.NUXT_CONTACT_ADMIN_EMAIL || '',
+  resendApiKey: normalizeEnvValue(process.env.NUXT_RESEND_API_KEY),
+  mailFrom: normalizeEnvValue(process.env.NUXT_MAIL_FROM || 'Relation anxieux-evitant <onboarding@resend.dev>'),
+  contactAdminEmail: normalizeEnvValue(process.env.NUXT_CONTACT_ADMIN_EMAIL),
 })
 
 const syncPaymentConfirmationEmail = async ({ before, after, uid, paymentId, metadata }, { paymentRef, serverTimestamp }) => {
@@ -99,7 +110,6 @@ const syncPaymentConfirmationEmail = async ({ before, after, uid, paymentId, met
   try {
     const confirmationMessageId = await sendEmail({
       to: [email],
-      ...(config.mailReplyTo ? { reply_to: [config.mailReplyTo] } : {}),
       subject: 'Paiement bien pris en compte',
       html: `
         <p>Bonjour,</p>
@@ -110,26 +120,32 @@ const syncPaymentConfirmationEmail = async ({ before, after, uid, paymentId, met
 
     let adminMessageId = null
     let adminStatus = 'not_required'
+    let adminError = null
 
     if (COACHING_ACCESS_TYPES.has(accessType)) {
-      if (!config.contactAdminEmail) {
-        throw new Error('Missing admin email configuration.')
+      if (config.contactAdminEmail) {
+        try {
+          adminMessageId = await sendEmail({
+            to: [config.contactAdminEmail],
+            subject: `Nouvelle séance réservée - ${label}`,
+            html: `
+              <p><strong>Type :</strong> ${escapeHtml(label)}</p>
+              <p><strong>Montant :</strong> ${escapeHtml(amount)}</p>
+              <p><strong>Email :</strong> ${escapeHtml(email)}</p>
+              <p><strong>Téléphone :</strong> ${escapeHtml(metadata.customerPhone || 'Non renseigné')}</p>
+              <p><strong>UID :</strong> ${escapeHtml(uid || 'Non renseigné')}</p>
+              <p><strong>Payment ID :</strong> ${escapeHtml(paymentId)}</p>
+            `,
+          }, config)
+          adminStatus = 'sent'
+        } catch (error) {
+          adminStatus = 'failed'
+          adminError = error instanceof Error ? error.message : 'Unknown admin email error.'
+        }
+      } else {
+        adminStatus = 'failed'
+        adminError = 'Missing admin email configuration.'
       }
-
-      adminMessageId = await sendEmail({
-        to: [config.contactAdminEmail],
-        ...(config.mailReplyTo ? { reply_to: [config.mailReplyTo] } : {}),
-        subject: `Nouvelle séance réservée - ${label}`,
-        html: `
-          <p><strong>Type :</strong> ${escapeHtml(label)}</p>
-          <p><strong>Montant :</strong> ${escapeHtml(amount)}</p>
-          <p><strong>Email :</strong> ${escapeHtml(email)}</p>
-          <p><strong>Téléphone :</strong> ${escapeHtml(metadata.customerPhone || 'Non renseigné')}</p>
-          <p><strong>UID :</strong> ${escapeHtml(uid || 'Non renseigné')}</p>
-          <p><strong>Payment ID :</strong> ${escapeHtml(paymentId)}</p>
-        `,
-      }, config)
-      adminStatus = 'sent'
     }
 
     await paymentRef.update({
@@ -140,7 +156,7 @@ const syncPaymentConfirmationEmail = async ({ before, after, uid, paymentId, met
         adminSentAt: adminStatus === 'sent' ? serverTimestamp : null,
         confirmationMessageId,
         adminMessageId,
-        lastError: null,
+        lastError: adminError,
       },
       updatedAt: serverTimestamp,
     })

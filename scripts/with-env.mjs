@@ -27,7 +27,13 @@ const parseEnvFile = (fileContent) => {
     if (separatorIndex === -1) continue
 
     const key = line.slice(0, separatorIndex).trim()
-    const value = line.slice(separatorIndex + 1)
+    const rawValue = line.slice(separatorIndex + 1).trim()
+    const value = (
+      (rawValue.startsWith('"') && rawValue.endsWith('"'))
+      || (rawValue.startsWith("'") && rawValue.endsWith("'"))
+    )
+      ? rawValue.slice(1, -1)
+      : rawValue
 
     if (!key) continue
     parsed[key] = value
@@ -56,4 +62,3 @@ child.on('exit', (code, signal) => {
 
   process.exit(code ?? 0)
 })
-

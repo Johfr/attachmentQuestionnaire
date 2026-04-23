@@ -74,7 +74,6 @@ export default defineNuxtConfig({
     openAiPromptCacheRetention: process.env.NUXT_OPENAI_PROMPT_CACHE_RETENTION || 'in_memory',
     resendApiKey: process.env.NUXT_RESEND_API_KEY || '',
     mailFrom: process.env.NUXT_MAIL_FROM || 'Relation anxieux-evitant <onboarding@resend.dev>',
-    mailReplyTo: process.env.NUXT_MAIL_REPLY_TO || '',
     contactAdminEmail: process.env.NUXT_CONTACT_ADMIN_EMAIL || '',
     contactRateLimitMax: Number(process.env.NUXT_CONTACT_RATE_LIMIT_MAX || 3),
     contactRateLimitWindowMs: Number(process.env.NUXT_CONTACT_RATE_LIMIT_WINDOW_MS || 30 * 60 * 1000),

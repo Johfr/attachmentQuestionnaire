@@ -206,22 +206,25 @@ npm run build:test
 npm run deploy:test
 ```
 
-Pour un deploy plus safe et plus lisible en pratique, preferer souvent les commandes separees :
+Pour un deploy plus safe et plus lisible en pratique, preferer les commandes separees.
+Le projet a deux codebases Functions distinctes (`nuxt-ssr` et `custom`) : les deployer separement evite un melange de source entre le bundle Nitro `.output/server` et le dossier `functions/`.
 
 ```bash
 # 1) Build Nuxt SSR
 npm run build
 
-# 2) Deployer les functions
-firebase deploy --only functions:nuxt-ssr,functions:custom
+# 2) Deployer les functions custom + rules
+firebase deploy --only functions:custom,firestore:rules
 
-# 3) Deployer Hosting
-firebase deploy --only hosting
+# 3) Deployer Hosting + SSR Nuxt + rules
+firebase deploy --only hosting,functions:nuxt-ssr,firestore:rules
 ```
 
 > **Note CLI locale** : si la commande globale `firebase` est casse (ex : install globale corrompue sous Windows/pnpm), le fallback fiable pour ce projet est `npx firebase-tools ...`. Verifie sur cette passe Node 22 : `npx firebase-tools --version` retourne bien une CLI exploitable.
 
 Cette sequence evite les longues attentes d'un deploy complet quand seul Hosting ou les Functions doivent etre finalises, et permet aussi de finaliser rapidement Hosting si le deploy global bute sur un sujet operationnel annexe.
+
+> **Erreur deja rencontree** : un deploy global a deja tente de charger `onPaymentWritten` depuis le bundle Nitro au lieu de `functions/index.js`, avec l'erreur `Function 'onPaymentWritten' is not defined in the provided module`. Si cela reapparait, relancer les deploys cibles ci-dessus plutot qu'un deploy global.
 
 > **Point de vigilance** : `deploy`, `deploy:prod` et `deploy:test` changent l'alias Firebase actif via `firebase use ...`. Si tu alternes souvent entre les deux environnements dans le meme terminal, verifie toujours ton intention avant de lancer un deploy.
 
@@ -248,10 +251,10 @@ firebase deploy
 
 ```bash
 # Hosting + function SSR Nuxt
-firebase deploy --only hosting,functions:nuxt-ssr
+firebase deploy --only hosting,functions:nuxt-ssr,firestore:rules
 
 # Fonctions custom uniquement (dossier functions/)
-firebase deploy --only functions:custom
+firebase deploy --only functions:custom,firestore:rules
 
 # Firestore uniquement
 firebase deploy --only firestore

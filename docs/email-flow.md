@@ -28,15 +28,98 @@ Variables serveur à renseigner dans `.env.test` et `.env.prod` :
 NUXT_RESEND_API_KEY=
 NUXT_CONTACT_ADMIN_EMAIL=
 NUXT_MAIL_FROM="Relation anxieux-evitant <onboarding@resend.dev>"
-NUXT_MAIL_REPLY_TO=
 NUXT_CONTACT_RATE_LIMIT_MAX=3
 NUXT_CONTACT_RATE_LIMIT_WINDOW_MS=1800000
 ```
 
 `NUXT_MAIL_FROM` utilise `onboarding@resend.dev` tant que le site n'a pas de domaine propre vérifié dans Resend.
-`NUXT_MAIL_REPLY_TO` peut pointer vers l'adresse Gmail ou l'adresse pro qui doit recevoir les réponses.
 
 Important : `noreply@relation-anxieux-evitant.fr` ne peut pas être utilisé sans posséder et vérifier le domaine `relation-anxieux-evitant.fr` dans Resend.
+
+## État de configuration actuel
+
+Ce qui est en place :
+
+- `/api/contact` utilise les variables Nuxt SSR chargées depuis `.env.test` ou `.env.prod`
+- `functions/index.js` déclare le secret Firebase `NUXT_RESEND_API_KEY` sur `onPaymentWritten`
+- `functions/index.js` déclare aussi `NUXT_MAIL_FROM` et `NUXT_CONTACT_ADMIN_EMAIL` comme secrets Firebase sur `onPaymentWritten`
+- `functions/emailSync.js` lit toujours `process.env.NUXT_RESEND_API_KEY`
+- `NUXT_MAIL_FROM` a un fallback vers `Relation anxieux-evitant <onboarding@resend.dev>`
+- `NUXT_CONTACT_ADMIN_EMAIL` reste une variable nécessaire pour recevoir les emails admin liés au contact et au coaching
+- `NUXT_MAIL_REPLY_TO` n'est plus utilisé dans le scope actuel
+
+À faire côté Firebase avant de compter sur les emails post-paiement :
+
+```bash
+firebase use test
+firebase functions:secrets:set NUXT_RESEND_API_KEY
+firebase functions:secrets:set NUXT_MAIL_FROM
+firebase functions:secrets:set NUXT_CONTACT_ADMIN_EMAIL
+
+firebase use prod
+firebase functions:secrets:set NUXT_RESEND_API_KEY
+firebase functions:secrets:set NUXT_MAIL_FROM
+firebase functions:secrets:set NUXT_CONTACT_ADMIN_EMAIL
+```
+
+Les secrets doivent être créés sur chaque projet Firebase cible.
+Si un secret déclaré dans `functions/index.js` n'existe pas sur un projet, le deploy de la function peut échouer ou l'email post-paiement peut échouer au runtime.
+
+## Build, deploy et variables locales
+
+Les fichiers `.env.test` et `.env.prod` sont volontairement locaux et ignorés par Git.
+
+Pour Nuxt SSR, les scripts `dev:*`, `build:*` et `deploy:*` chargent le bon fichier via `scripts/with-env.mjs`.
+Les valeurs sont donc disponibles au moment du build et du deploy de la fonction SSR Nuxt.
+Ce mécanisme injecte directement les valeurs nécessaires à Nuxt, notamment :
+
+- `NUXT_RESEND_API_KEY`
+- `NUXT_CONTACT_ADMIN_EMAIL`
+- `NUXT_MAIL_FROM`
+- `NUXT_CONTACT_RATE_LIMIT_MAX`
+- `NUXT_CONTACT_RATE_LIMIT_WINDOW_MS`
+
+Attention : le codebase `functions` est séparé de Nuxt.
+Les Cloud Functions custom comme `functions/emailSync.js` ne doivent pas dépendre implicitement des fichiers `.env.test` / `.env.prod` racine au runtime Firebase.
+Avant un deploy custom functions, il faut s'assurer que les variables Resend sont aussi disponibles pour les Cloud Functions du projet cible via le mécanisme Firebase choisi pour l'environnement.
+
+Sans ces variables côté custom functions, les emails post-paiement peuvent échouer et écrire `appEmailStatus.lastError`.
+
+Pour les emails post-paiement, les secrets à configurer côté Firebase Functions sont :
+
+```bash
+firebase functions:secrets:set NUXT_RESEND_API_KEY
+firebase functions:secrets:set NUXT_MAIL_FROM
+firebase functions:secrets:set NUXT_CONTACT_ADMIN_EMAIL
+```
+
+La Cloud Function `onPaymentWritten` déclare déjà ces secrets dans ses options de trigger.
+Il faut donc les créer ou les mettre à jour sur le projet Firebase cible avant de déployer cette function.
+
+Pour la V1, les valeurs restent aussi dans `.env.test` et `.env.prod` pour Nuxt SSR :
+
+- `NUXT_MAIL_FROM`
+- `NUXT_CONTACT_ADMIN_EMAIL`
+- `NUXT_CONTACT_RATE_LIMIT_MAX`
+- `NUXT_CONTACT_RATE_LIMIT_WINDOW_MS`
+
+`NUXT_MAIL_FROM` a un fallback dans `functions/emailSync.js`.
+`NUXT_CONTACT_ADMIN_EMAIL` est nécessaire pour l'email admin des paiements coaching.
+Si cette variable manque côté Functions custom, l'email de confirmation user reste envoyé, mais l'email admin coaching passe en `appEmailStatus.admin: 'failed'`.
+
+Garde-fou : quand une variable liée aux emails change dans `.env.test` ou `.env.prod`, vérifier si elle est utilisée par Nuxt SSR uniquement ou aussi par `functions/`.
+Si elle est utilisée par `functions/`, mettre à jour le secret ou la configuration serveur correspondante avant deploy.
+
+Alertes importantes :
+
+- ne jamais renommer une variable email dans `.env.test` ou `.env.prod` sans chercher son usage dans `server/`, `functions/` et `nuxt.config.ts`
+- ne jamais mettre une clé Resend en `NUXT_PUBLIC_*`
+- si `NUXT_CONTACT_ADMIN_EMAIL` change et que les emails coaching admin ne partent plus, vérifier d'abord la configuration runtime des Cloud Functions custom
+- si un email contact fonctionne mais qu'un email post-paiement échoue, suspecter en priorité la différence entre Nuxt SSR et le codebase `functions`
+- si les règles Firestore changent, déployer aussi les rules, pas seulement hosting/functions
+
+Quand les règles Firestore changent, ne pas oublier de déployer aussi les rules.
+La section profil `Mes prises de contact` dépend de la règle de lecture sur `contactRequests`.
 
 ## Collection `contactRequests`
 
