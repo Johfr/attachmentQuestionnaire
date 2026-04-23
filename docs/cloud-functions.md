@@ -126,3 +126,58 @@ firebase deploy
 firebase functions:log --only onPaymentWritten
 firebase functions:log --only onSubscriptionWritten
 ```
+
+---
+
+## Emails transactionnels - Lot 2
+
+Le flow email contact est documenté dans `docs/email-flow.md`.
+
+Les confirmations automatiques après paiement réussi sont implémentées dans `functions/emailSync.js` et appelées depuis `onPaymentWritten`.
+
+### Objectif
+
+Depuis la Cloud Function qui observe `customers/{uid}/payments/{paymentId}` :
+
+- envoyer un email de confirmation au user après un paiement `results`, `ebook`, `coachingZen` ou `coachingExpress`
+- envoyer un email admin supplémentaire pour les achats coaching
+- ne pas créer de nouvelle collection métier pour les confirmations de paiement simples
+- conserver une trace légère dans le document paiement pour éviter les doublons via `appEmailStatus`
+
+### Message user attendu
+
+```text
+Ton paiement de xxx pour yyy a bien été pris en compte. Tu peux retrouver toutes tes infos de paiement directement dans ton profil sur relation-anxieux-evitant.web.app/user/profil.
+```
+
+### Coaching
+
+Pour le coaching, la fonction `onCoachingBookingPaymentWritten` crée déjà `coachingBookings/{paymentId}`.
+
+Le lot email complète ce flow avec :
+
+- email admin dès que la séance est payée
+- email user de confirmation
+- infos utiles dans l'email admin : `uid`, email, téléphone, type de séance, montant, `paymentId`
+
+### Idempotence
+
+Règles à respecter :
+
+- skip si `after.status !== 'succeeded'`
+- skip si `before.status === 'succeeded'`
+- skip si le statut d'email indique déjà un envoi réussi
+
+Champ recommandé dans le document paiement :
+
+```js
+appEmailStatus: {
+  confirmation: 'sent' | 'failed',
+  admin: 'sent' | 'failed' | 'not_required',
+  confirmationSentAt: Timestamp | null,
+  adminSentAt: Timestamp | null,
+  confirmationMessageId: string | null,
+  adminMessageId: string | null,
+  lastError: string | null,
+}
+```

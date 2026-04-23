@@ -1,8 +1,9 @@
 const { onDocumentWritten } = require('firebase-functions/v2/firestore')
 const { initializeApp } = require('firebase-admin/app')
 const { getFirestore, FieldValue } = require('firebase-admin/firestore')
-const { syncPaymentToSession } = require('./paymentSync')
+const { extractPaymentMetadata, syncPaymentToSession } = require('./paymentSync')
 const { syncPaymentToCoachingBooking } = require('./coachingBookingSync')
+const { syncPaymentConfirmationEmail } = require('./emailSync')
 
 initializeApp()
 
@@ -28,18 +29,40 @@ const db = getFirestore()
 exports.onPaymentWritten = onDocumentWritten(
   { document: 'customers/{uid}/payments/{paymentId}' },
   async (event) => {
+    const before = event.data?.before?.data()
+    const after = event.data?.after?.data()
+    const uid = event.params.uid
+    const paymentId = event.params.paymentId
+    const serverTimestamp = FieldValue.serverTimestamp()
+
     await syncPaymentToSession(
       {
-        before: event.data?.before?.data(),
-        after: event.data?.after?.data(),
-        uid: event.params.uid,
-        paymentId: event.params.paymentId,
+        before,
+        after,
+        uid,
+        paymentId,
       },
       {
         db,
-        serverTimestamp: FieldValue.serverTimestamp(),
+        serverTimestamp,
       },
     )
+
+    if (after && event.data?.after) {
+      await syncPaymentConfirmationEmail(
+        {
+          before,
+          after,
+          uid,
+          paymentId,
+          metadata: extractPaymentMetadata(after),
+        },
+        {
+          paymentRef: event.data.after.ref,
+          serverTimestamp,
+        },
+      )
+    }
   },
 )
 

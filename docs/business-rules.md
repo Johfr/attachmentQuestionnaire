@@ -213,6 +213,116 @@ Point important :
 
 ---
 
+## Page contact et coaching
+
+### Role metier de la page
+
+La page `/contact` sert deux usages distincts :
+
+- presenter les offres de coaching
+- permettre au user d'envoyer une question ou une demande de contact hors paiement
+
+Ces deux usages ne doivent pas etre melanges :
+
+- le formulaire de contact ne cree pas de paiement
+- le checkout coaching reste lie aux boutons de reservation des offres
+- aucun user anonyme ne doit etre cree uniquement pour envoyer un message
+
+### Formulaire de contact
+
+Regle metier :
+
+- si le user est connecte, la demande est enrichie avec les donnees connues du user
+- si le user n'est pas connecte, on accepte quand meme sa demande
+- dans ce cas, on stocke uniquement `email + message`
+
+La demande est stockee dans :
+
+`contactRequests/{contactRequestId}`
+
+Donnees attendues :
+
+- `email`
+- `message`
+- `uid` si user connu, sinon `null`
+- `userSnapshot` si user connu
+- `antiSpam`
+- `mailStatus`
+- `createdAt`
+- `updatedAt`
+
+Le formulaire passe par :
+
+`POST /api/contact`
+
+La route serveur :
+
+- valide les champs
+- applique un honeypot
+- applique un rate limit configurable
+- ecrit la demande en Firestore
+- envoie un email admin via Resend
+- envoie un email de confirmation au user via Resend
+- met a jour `mailStatus`
+
+### Email utilise
+
+Tant que le site n'a pas de nom de domaine propre verifie dans Resend, l'expediteur utilise est :
+
+`Relation anxieux-evitant <onboarding@resend.dev>`
+
+Point bloquant :
+
+- `noreply@relation-anxieux-evitant.fr` ne peut pas etre utilise sans posseder et verifier le domaine `relation-anxieux-evitant.fr`
+
+Evolution possible :
+
+- acheter un domaine
+- verifier le domaine dans Resend
+- basculer `NUXT_MAIL_FROM` vers `noreply@domaine`
+- utiliser une vraie adresse de reception ou un forwarding pour les reponses
+
+### Anti-spam
+
+Etat actuel :
+
+- honeypot
+- rate limit par `uid` si user connecte
+- rate limit par hash d'IP si user non connecte
+
+Evolution restante :
+
+- brancher un captcha, recommande : Cloudflare Turnstile
+
+Le captcha doit completer le honeypot et le rate limit, pas les remplacer.
+
+### Coaching payant
+
+Les offres de coaching passent par Stripe Checkout.
+
+Au paiement reussi :
+
+- `coachingBookings/{paymentId}` est cree par Cloud Function
+- un email de confirmation est envoye au user
+- un email admin est envoye pour signaler la nouvelle seance
+
+Le mail admin coaching doit contenir les informations utiles a la prise de contact :
+
+- email user
+- telephone user si disponible
+- type de seance
+- montant
+- `uid`
+- `paymentId`
+
+Point important :
+
+- les confirmations email post-paiement sont gerees cote Cloud Functions
+- elles ne doivent pas dependre du front
+- elles doivent rester idempotentes pour eviter les doubles envois
+
+---
+
 ## Ce qu'il ne faut pas casser
 
 - un user connecte bloque ne doit pas pouvoir relancer normalement depuis l'intro
@@ -223,6 +333,8 @@ Point important :
 - un achat one-shot de resultats doit continuer a debloquer toutes les sessions du meme questionnaire
 - l'expiration d'un membership ou d'une formation ne doit pas supprimer les achats one-shot deja acquis
 - l'achat IA ne doit jamais etre transforme en acces global durable
+- le formulaire de contact doit rester utilisable par un user non connecte sans creer de user anonyme
+- les emails de paiement ne doivent pas etre envoyes deux fois pour le meme paiement
 
 ---
 

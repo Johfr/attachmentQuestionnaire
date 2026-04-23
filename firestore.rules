@@ -19,6 +19,11 @@ service cloud.firestore {
     }
 
     // Blog articles — public read, server-only writes.
+    match /contactRequests/{requestId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.uid;
+      allow write: if false; // server-only writes via /api/contact
+    }
+
     match /articles/{articleId} {
       allow read: if true;
       allow write: if false;

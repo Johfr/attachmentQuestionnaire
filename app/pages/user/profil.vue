@@ -2,6 +2,7 @@
 import UserProgress from '~/components/designSystem/UserProgress.vue'
 import { useAuthStore } from '~/stores/auth'
 import { useBillingStore } from '~/stores/billing'
+import { useContactRequestsStore } from '~/stores/contactRequests'
 import { useQuestionnaireSessionsStore } from '~/stores/questionnaireSessions'
 import type { QuestionnaireSession } from '~/types/questionnaireSessions'
 import { getProfileLabel } from '~/utils/attachmentProfileTranslations'
@@ -16,6 +17,7 @@ useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
 
 const authStore = useAuthStore()
 const billingStore = useBillingStore()
+const contactRequestsStore = useContactRequestsStore()
 const sessionsStore = useQuestionnaireSessionsStore()
 const { isDarkMode, initThemeMode, toggleThemeMode } = useThemeMode()
 const isLoggedIn = computed(() => authStore.isLoggedIn)
@@ -68,6 +70,7 @@ watch(
         await Promise.all([
           sessionsStore.loadSessions(shouldForceSessionsReload),
           billingStore.loadPurchaseHistory(),
+          contactRequestsStore.loadRequests(),
         ])
       } catch {
         dashboardLoadError.value = 'Certaines donnees de ton espace perso sont temporairement indisponibles.'
@@ -77,6 +80,7 @@ watch(
 
     dashboardLoadError.value = null
     sessionsStore.reset()
+    contactRequestsStore.reset()
   },
   { immediate: true },
 )
@@ -256,8 +260,8 @@ onMounted(() => {
         Historique de mes résultats
       </h2>
 
-      <p v-if="sessionsStore.isLoading" class="text-sm text-gray-500">Chargement de ton historique...</p>
-      <p v-else-if="historySessions.length === 0" class="text-sm text-gray-500">
+      <p v-if="sessionsStore.isLoading" class="text-sm text-theme-muted">Chargement de ton historique...</p>
+      <p v-else-if="historySessions.length === 0" class="text-sm text-theme-muted">
         Tu n'as encore aucun résultat enregistré.
       </p>
       
@@ -270,7 +274,7 @@ onMounted(() => {
         >
           <div class="">
             <!-- Initial du user + partner -->
-            <p class="flex my-2 text-xs uppercase text-gray-400">
+            <p class="flex my-2 text-xs uppercase text-theme-muted">
               <span class="flex justify-center items-center w-6 h-6 p-2 rounded-full bg-primary" :title="user?.name">
                 {{ user?.name?.split('')[0] }}
               </span>
@@ -280,16 +284,16 @@ onMounted(() => {
             </p>
 
             <!-- Profil global -->
-            <p class="font-bold text-gray-800 mt-1">{{ getProfileLabel(session.result.globalProfile) }}</p>
+            <p class="font-bold text-theme-text mt-1">{{ getProfileLabel(session.result.globalProfile) }}</p>
             
             <!-- Type de questionaire -->
-            <p class=" my-1 text-sm text-gray-400">
+            <p class=" my-1 text-sm text-theme-muted">
               {{ entitySubTypeLabels[session.questionnaireType] ?? session.questionnaireType }} • {{ formatSessionDate(session) }}
             </p>
           </div>
 
           <!-- Scores d'évitement et d'anxiété -->
-          <div class="flex flex-col items-center md:flex-row md:justify-start gap-2 text-xs uppercase text-gray-400">
+          <div class="flex flex-col items-center md:flex-row md:justify-start gap-2 text-xs uppercase text-theme-muted">
             <p class="flex flex-col items-center">
               <span>
                 Avoidance
@@ -317,31 +321,85 @@ onMounted(() => {
         Mes rdvs
       </h2>
 
-      <p v-if="billingStore.isLoadingHistory" class="text-sm text-gray-500">Chargement...</p>
-      <p v-else-if="coachingPayments.length === 0" class="text-sm text-gray-500">
+      <p v-if="billingStore.isLoadingHistory" class="text-sm text-theme-muted">Chargement...</p>
+      <p v-else-if="coachingPayments.length === 0" class="text-sm text-theme-muted">
         Tu n'as encore aucun rendez-vous réservé.
       </p>
 
-      <div v-else class="space-y-3">
+      <div v-if="coachingPayments.length > 0" class="space-y-3">
         <div
           v-for="payment in coachingPayments"
           :key="payment.id"
           class="rounded-2xl bg-theme-surfaceStaticCard p-4"
         >
           <div class="flex items-center justify-between">
-            <p class="font-bold text-gray-800">
+            <p class="font-bold text-theme-text">
               {{ accessTypeLabels[payment.metadata.accessType ?? ''] ?? payment.metadata.accessType ?? 'Rdv coaching' }}
             </p>
-            <span class="text-sm font-semibold text-gray-700">
+            <span class="text-sm font-semibold text-theme-text">
               {{ formatAmount(payment.amount, payment.currency) }}
             </span>
           </div>
-          <p class="text-xs text-gray-400 mt-1">
+          <p class="text-xs text-theme-muted mt-1">
             <span v-if="formatTimestamp(payment.created)">
               Réservé le : {{ formatTimestamp(payment.created) }}
             </span>
           </p>
         </div>
+      </div>
+      
+      <!-- v-if="!billingStore.isLoadingHistory && coachingPayments.length === 0" -->
+      <div  class="mt-3">
+        <!-- icone rdv -->
+        <RouterLink
+        to="/contact"
+        class="inline-flex items-center gap-2 py-3 px-5 text-sm font-semibold bg-theme-button text-theme-buttonText rounded-3xl hover:opacity-90 transition-all"
+        >
+          <LucideCalendar1 :size="20" class="mb-1 md:mr-1" />
+          Prendre rdv
+        </RouterLink>
+      </div>
+    </section>
+
+    <!-- Mes prises de contact -->
+    <section class="md:max-w-[48%]">
+      <h2 class="text-xl font-bold my-8">
+        Mes prises de contact
+      </h2>
+
+      <p v-if="contactRequestsStore.isLoading" class="text-sm text-theme-muted">Chargement...</p>
+      <p v-else-if="contactRequestsStore.sortedRequests.length === 0" class="text-sm text-theme-muted">
+        Tu n'as encore envoyé aucun message.
+      </p>
+
+      <div v-else class="space-y-3">
+        <details
+          v-for="request in contactRequestsStore.sortedRequests"
+          :key="request.id"
+          class="group rounded-2xl bg-theme-surfaceStaticCard p-4"
+        >
+          <summary class="cursor-pointer list-none">
+            <div class="flex items-center justify-between gap-4">
+              <p class="font-bold text-theme-text">
+                Message envoyé
+              </p>
+              <div class="flex items-center gap-3 text-xs text-theme-muted">
+                <span>
+                  {{ formatTimestamp(request.createdAt) || 'Date indisponible' }}
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="group-open:hidden">Déplier</span>
+                  <span class="hidden group-open:inline">Replier</span>
+                  <LucideChevronRight :size="16" class="transition-transform duration-300 group-open:rotate-90" />
+                </span>
+              </div>
+            </div>
+          </summary>
+
+          <p class="mt-4 whitespace-pre-line text-sm text-theme-muted">
+            {{ request.message }}
+          </p>
+        </details>
       </div>
     </section>
 
@@ -351,8 +409,8 @@ onMounted(() => {
         Mes ebooks
       </h2>
 
-      <p v-if="billingStore.isLoadingHistory" class="text-sm text-gray-500">Chargement...</p>
-      <p v-else-if="ebookPayments.length === 0" class="text-sm text-gray-500">
+      <p v-if="billingStore.isLoadingHistory" class="text-sm text-theme-muted">Chargement...</p>
+      <p v-else-if="ebookPayments.length === 0" class="text-sm text-theme-muted">
         Tu n'as encore aucun ebook disponible.
       </p>
 
@@ -360,10 +418,10 @@ onMounted(() => {
         <div class="rounded-2xl bg-theme-surfaceStaticCard p-4">
           <div class="flex items-center justify-between gap-4">
             <div>
-              <p class="font-bold text-gray-800">
+              <p class="font-bold text-theme-text">
                 Ebook : Tout comprendre sur la relation anxieux-evitant
               </p>
-              <p class="text-xs text-gray-500 mt-1">
+              <p class="text-xs text-theme-muted mt-1">
                 Telechargement disponible depuis ton espace perso.
               </p>
             </div>
@@ -389,8 +447,8 @@ onMounted(() => {
           Gérer mon abonnement
         </h2>
 
-        <p v-if="billingStore.isLoadingHistory" class="text-sm text-gray-500">Chargement...</p>
-        <p v-else-if="billingStore.subscriptions.length === 0" class="text-sm text-gray-500">
+        <p v-if="billingStore.isLoadingHistory" class="text-sm text-theme-muted">Chargement...</p>
+        <p v-else-if="billingStore.subscriptions.length === 0" class="text-sm text-theme-muted">
           Tu n'as aucun abonnement pour le moment.
         </p>
 
@@ -402,7 +460,7 @@ onMounted(() => {
               class="rounded-2xl bg-theme-surfaceStaticCard p-4"
             >
               <div class="flex items-center justify-between">
-                <p class="font-bold text-gray-800">
+                <p class="font-bold text-theme-text">
                   {{ accessTypeLabels[sub.metadata.accessType ?? ''] ?? sub.metadata.accessType ?? 'Abonnement' }}
                 </p>
                 <span
@@ -415,13 +473,13 @@ onMounted(() => {
                   {{ subscriptionStatusLabels[sub.status] ?? sub.status }}
                 </span>
               </div>
-              <p v-if="sub.metadata.entitySubType" class="text-xs text-gray-500 mt-1">
+              <p v-if="sub.metadata.entitySubType" class="text-xs text-theme-muted mt-1">
                 {{ entitySubTypeLabels[sub.metadata.entitySubType] ?? sub.metadata.entitySubType }}
               </p>
               <p v-if="sub.cancel_at_period_end" class="text-xs text-red-500 mt-1">
                 Annulation prévue à la fin de la période en cours
               </p>
-              <p class="text-xs text-gray-400 mt-1">
+              <p class="text-xs text-theme-muted mt-1">
                 <span v-if="formatTimestamp(sub.created)">Depuis le {{ formatTimestamp(sub.created) }}</span>
                 <span v-if="formatTimestamp(sub.current_period_end)"> • Prochaine échéance : {{ formatTimestamp(sub.current_period_end) }}</span>
               </p>
@@ -447,8 +505,8 @@ onMounted(() => {
           Mes achats
         </h2>
 
-        <p v-if="billingStore.isLoadingHistory" class="text-sm text-gray-500">Chargement...</p>
-        <p v-else-if="oneShotPayments.length === 0" class="text-sm text-gray-500">
+        <p v-if="billingStore.isLoadingHistory" class="text-sm text-theme-muted">Chargement...</p>
+        <p v-else-if="oneShotPayments.length === 0" class="text-sm text-theme-muted">
           Tu n'as encore aucun achat.
         </p>
 
@@ -459,20 +517,20 @@ onMounted(() => {
             class="rounded-2xl bg-theme-surfaceStaticCard p-4"
           >
             <div class="flex items-center justify-between">
-              <p class="font-bold text-gray-800">
+              <p class="font-bold text-theme-text">
                 {{ accessTypeLabels[payment.metadata.accessType ?? ''] ?? payment.metadata.accessType ?? 'Achat' }}
               </p>
-              <span class="text-sm font-semibold text-gray-700">
+              <span class="text-sm font-semibold text-theme-text">
                 {{ formatAmount(payment.amount, payment.currency) }}
               </span>
             </div>
-            <p v-if="payment.metadata.entitySubType" class="text-xs text-gray-500 mt-1">
+            <p v-if="payment.metadata.entitySubType" class="text-xs text-theme-muted mt-1">
               <span class="capitalize">
                 {{ payment.metadata.entityType }}
               </span>
               : {{ entitySubTypeLabels[payment.metadata.entitySubType] ?? payment.metadata.entitySubType }}
             </p>
-            <p class="text-xs text-gray-400 mt-1">
+            <p class="text-xs text-theme-muted mt-1">
               <span v-if="formatTimestamp(payment.created)">
                 Acheté le : {{ formatTimestamp(payment.created) }}
               </span>
@@ -483,23 +541,3 @@ onMounted(() => {
     </div>
   </div>  
 </template>
-
-<style lang="scss" scoped>
-.bg-white {
-  background-color: var(--card);
-}
-
-.border-gray-200 {
-  border-color: var(--border);
-}
-
-.text-gray-800,
-.text-gray-700 {
-  color: var(--text);
-}
-
-.text-gray-500,
-.text-gray-400 {
-  color: var(--text-muted);
-}
-</style>

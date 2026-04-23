@@ -5,6 +5,7 @@ import type { AccessType, CheckoutContactPayload, EntitySubType, EntityType } fr
 import type { AuthFormPayload } from '~/types/User'
 import Popin from '~/components/designSystem/Popin.vue'
 import LoginForm from '~/components/auth/LoginForm.vue'
+import { firebaseClient } from '~/composables/firebase/useFirebaseClient'
 
 type PopinKey = 'coaching-zen' | 'coaching-express' | string
 type LoginFormExpose = {
@@ -37,9 +38,16 @@ const showPopin = ref(false)
 const popinType = ref<PopinKey>('')
 const phone = ref('')
 const loginFormData = ref<LoginFormExpose | null>(null)
+const contactEmail = ref('')
+const contactMessage = ref('')
+const contactWebsite = ref('')
+const isContactSubmitting = ref(false)
+const contactErrorMessage = ref('')
+const contactSuccessMessage = ref('')
 
 const normalizePhoneInput = (value: string) => value.replace(/\D/g, '')
 const isFrenchMobileOrLandline = (value: string) => /^0\d{9}$/.test(normalizePhoneInput(value))
+const isEmailValid = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
 
 const getCheckoutErrorMessage = (error: unknown) => {
   if (!(error instanceof Error)) {
@@ -90,6 +98,12 @@ const isCheckoutButtonDisabled = computed(() => {
   }
 
   return !(loginFormData.value?.hasRequiredFieldsFilled?.() ?? false)
+})
+
+const isContactButtonDisabled = computed(() => {
+  if (isContactSubmitting.value) return true
+  if (user.value) return false
+  return !isEmailValid(contactEmail.value)
 })
 
 const ensureAuthenticatedUser = async () => {
@@ -173,6 +187,63 @@ const goToCheckout = async (
     errorMessage.value = getCheckoutErrorMessage(error)
   } finally {
     checkoutType.value = null
+  }
+}
+
+const getContactErrorMessage = (error: unknown) => {
+  const fetchError = error as { data?: { statusMessage?: string }; message?: string }
+  return fetchError?.data?.statusMessage
+    || fetchError?.message
+    || 'Impossible d envoyer ton message pour le moment.'
+}
+
+const submitContactForm = async (event?: Event) => {
+  if (isContactSubmitting.value) return
+
+  const form = event?.currentTarget instanceof HTMLFormElement ? event.currentTarget : null
+  const formData = form ? new FormData(form) : null
+  const submittedEmail = typeof formData?.get('email') === 'string' ? String(formData.get('email')).trim() : contactEmail.value
+  const submittedMessage = typeof formData?.get('message') === 'string' ? String(formData.get('message')).trim() : contactMessage.value
+  const submittedWebsite = typeof formData?.get('website') === 'string' ? String(formData.get('website')).trim() : contactWebsite.value
+
+  contactErrorMessage.value = ''
+  contactSuccessMessage.value = ''
+
+  if (!user.value && !isEmailValid(submittedEmail)) {
+    contactErrorMessage.value = 'Renseigne une adresse email valide.'
+    return
+  }
+
+  if (!submittedMessage) {
+    contactErrorMessage.value = 'Renseigne ton message.'
+    return
+  }
+
+  isContactSubmitting.value = true
+
+  try {
+    const token = await firebaseClient.auth.currentUser?.getIdToken()
+    await $fetch('/api/contact', {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: {
+        email: user.value?.email || submittedEmail,
+        message: submittedMessage,
+        website: submittedWebsite,
+      },
+    })
+
+    contactMessage.value = ''
+    contactWebsite.value = ''
+    form?.reset()
+    if (!user.value) {
+      contactEmail.value = ''
+    }
+    contactSuccessMessage.value = 'Ton message a bien ete envoye.'
+  } catch (error) {
+    contactErrorMessage.value = getContactErrorMessage(error)
+  } finally {
+    isContactSubmitting.value = false
   }
 }
 </script>
@@ -335,6 +406,40 @@ const goToCheckout = async (
           <p class="">
             Après la réservation, tu recevras un <strong>email de confirmation</strong> avec les détails de ta séance. Je te contacterai ensuite pour convenir d'une date et d'une heure qui te conviennent. Tu pourras également me poser toutes les questions que tu souhaites avant la séance.
           </p>
+        </div>
+
+        <div class="rounded-3xl bg-theme-surfaceStaticCard p-6 w-full md:max-w-[49%]">
+          <h3 class="mb-9 text-lg md:text-xl uppercase">Un problème ? Une question ? Besoin de plus d'informations ?</h3>
+
+          <form @submit.prevent="submitContactForm">
+            <label v-if="!user" for="email" class="flex flex-col mt-2 text-sm text-theme-text">
+              Ton adresse email
+              <input v-model="contactEmail" type="email" id="email" name="email" autocomplete="email" placeholder="Ton adresse email" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
+            </label>
+            <label class="hidden" aria-hidden="true" tabindex="-1">
+              Site web
+              <input v-model="contactWebsite" type="text" name="website" tabindex="-1" autocomplete="off" />
+            </label>
+            <label for="message" class="flex flex-col mt-4 text-sm text-theme-text">
+              Ton message
+              <textarea id="message" name="message" rows="4" placeholder="Décris ton problème ou pose ta question ici..." class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted"></textarea>
+            </label>
+            <p v-if="contactErrorMessage" class="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              {{ contactErrorMessage }}
+            </p>
+            <p v-if="contactSuccessMessage" class="mt-4 rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700">
+              {{ contactSuccessMessage }}
+            </p>
+            <button type="submit" class="mt-5 px-4 py-4 bg-theme-button text-theme-buttonText rounded-full w-full disabled:opacity-60" :disabled="isContactButtonDisabled">
+              <span v-if="isContactSubmitting">
+                <LucideLoader class="animate-spin inline-block mr-2" :size="18" />
+                Envoi...
+              </span>
+              <span v-else>
+                Envoyer
+              </span>
+            </button>
+          </form>
         </div>
       </div>
     </section>
