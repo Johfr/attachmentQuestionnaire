@@ -67,6 +67,13 @@ Ne pas partager des fonctions metier entre questionnaires tant que le besoin com
 - `questionnaireSessions/{sessionId}`: contexte relationnel, reponses, resultats calcules, billingInfo (acces payes par le user)
 - `questionnaireSessions/{sessionId}/aiExchange/result`: entree user, sortie IA, statut de generation
 
+### Note projet - relicats IA
+
+- au `25/04/2026`, les nouvelles `questionnaireSessions` ne stockent plus l'objet `aiExchange` directement dans le document parent
+- les anciennes sessions peuvent encore contenir cet objet en base: il faut donc garder une lecture tolerante tant que le nettoyage BDD n'est pas fait
+- des traces IA restent volontairement dans `firestore.rules`, `firestore.indexes.json` et dans certaines docs tant que le module n'est pas supprime pour de bon
+- le moment venu, prevoir un script de migration pour supprimer `aiExchange` des documents `questionnaireSessions` existants afin de depolluer la base
+
 ### Flow recommande (cas 1)
 
 Le flux ci-dessous decrit la cible architecturale. A date, le front relance encore le meme endpoint `POST /api/attachment/results` et il n'y a pas encore de statut `pending_retry` expose dans le type `QuestionnaireSession`.
