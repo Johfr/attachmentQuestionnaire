@@ -2,7 +2,13 @@ import { FieldValue } from 'firebase-admin/firestore'
 import { adminDb } from '../../../utils/firebaseAdmin'
 import { getAuthenticatedUid } from '../../../utils/getAuthenticatedUid'
 import { isResultsSharingEnabled } from '../../../utils/siteConfig'
-import { normalizeText } from '../../../utils/attachment/partnerShare'
+import {
+  escapeHtml,
+  getBaseUrl,
+  normalizeEnvValue,
+  normalizeText,
+  sendEmail,
+} from '../../../utils/attachment/partnerShare'
 
 type ValidatePartnerShareBody = {
   sourceSessionId?: string
@@ -28,6 +34,46 @@ const getAvailableTargetSessions = async (uid: string) => {
       const relationContext = (session.relationContext ?? {}) as Record<string, unknown>
       return relationContext.partnerShareStatus !== 'linked'
     })
+}
+
+const sendPartnerShareLinkedEmail = async (
+  event: Parameters<typeof defineEventHandler>[0],
+  sourceUserData: Record<string, unknown>,
+  currentUserData: Record<string, unknown>,
+) => {
+  const sourceUserEmail = normalizeEmail(sourceUserData.email)
+  if (!sourceUserEmail) {
+    return
+  }
+
+  const config = useRuntimeConfig(event)
+  const resendApiKey = normalizeEnvValue(config.resendApiKey)
+  const mailFrom = normalizeEnvValue(config.mailFrom)
+
+  if (!resendApiKey || !mailFrom) {
+    return
+  }
+
+  const partnerName = normalizeText(currentUserData.name) || 'Ton/ta partenaire'
+  const profileUrl = `${getBaseUrl(event)}/user/profil`
+  const subject = `${partnerName} a accepté ta demande de partage`
+  const html = `
+    <p>Bonne nouvelle,</p>
+    <p>${escapeHtml(partnerName)} a accepté ta demande de partage.</p>
+    <p>Vos résultats sont maintenant liés et tu peux les consulter depuis ton profil :</p>
+    <p><a href="${profileUrl}">${profileUrl}</a></p>
+  `
+
+  try {
+    await sendEmail(resendApiKey, {
+      from: mailFrom,
+      to: [sourceUserEmail],
+      subject,
+      html,
+    })
+  } catch (error) {
+    console.error('Partner share linked email failed:', error)
+  }
 }
 
 export default defineEventHandler(async (event) => {
@@ -134,6 +180,8 @@ export default defineEventHandler(async (event) => {
       updatedAt: FieldValue.serverTimestamp(),
     }, { merge: true }),
   ])
+
+  await sendPartnerShareLinkedEmail(event, sourceUserData, currentUserData)
 
   return { ok: true }
 })

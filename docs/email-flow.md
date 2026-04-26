@@ -42,6 +42,13 @@ Important :
 - pour ouvrir cette feature, il faudra acheter un domaine, par exemple chez OVH, puis le vérifier dans Resend
 - en attendant, laisser `appConfig/global.features.resultsSharing = false`
 
+Mode transitoire partage partenaire :
+
+- le workflow partenaire est temporairement décorrélé de Resend
+- la demande de partage est enregistrée en base, mais l'email n'est pas encore envoyé
+- le flow n'est autorisé que si la session a déjà accès aux résultats via `billingInfo`
+- quand le domaine sera prêt, il faudra rebrancher l'appel Resend dans `POST /api/attachment/partner-share`
+
 ## État de configuration actuel
 
 Ce qui est en place :

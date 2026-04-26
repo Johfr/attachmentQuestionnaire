@@ -204,14 +204,18 @@ export const useBillingStore = defineStore('billing', () => {
       throw new Error('Renseigne ton email et ton numero de telephone pour reserver ta seance.')
     }
     
+    const shouldReturnToProfile = (accessType === 'results' || accessType === 'ia') && successUrl.startsWith('profil')
+
     const successCheckoutUrl = accessType === 'ebook'
       ? `${window.location.origin}/user/profil?checkout=success`
       : accessType === 'testLive'
         ? `${window.location.origin}/admin?checkout=success`
-        : accessType === 'coachingZen'
+      : accessType === 'coachingZen'
           ? `${window.location.origin}/user/profil?checkout=success&type=zen`
           : accessType === 'coachingExpress'
             ? `${window.location.origin}/user/profil?checkout=success&type=express`
+            : shouldReturnToProfile
+              ? `${window.location.origin}/user/${successUrl}`
             : `${window.location.origin}/user/${successUrl}/results?sessionId=${trimmedDocId}`
 
     const cancelCheckoutUrl = accessType === 'ebook'

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { User } from 'firebase/auth'
 import { firebaseClient } from "~/composables/firebase/useFirebaseClient.js"
 import Popin from '~/components/designSystem/Popin.vue'
 import UserProgress from '~/components/designSystem/UserProgress.vue'
@@ -45,10 +46,15 @@ const isIncomingPartnerSharesLoading = ref(false)
 const incomingPartnerShareError = ref<string | null>(null)
 const selectedIncomingPartnerShareTargetSessions = ref<Record<string, string>>({})
 const isPartnerSharePopinOpen = ref(false)
+const isPartnerSharePaywallPopinOpen = ref(false)
 const shareSessionId = ref<string | null>(null)
 const partnerShareEmail = ref('')
 const partnerShareError = ref<string | null>(null)
 const isSendingPartnerShare = ref(false)
+const partnerSharePaywallSessionId = ref<string | null>(null)
+const partnerSharePaywallError = ref<string | null>(null)
+const isPartnerShareCheckoutLoading = ref(false)
+const checkingPartnerShareAccessSessionId = ref<string | null>(null)
 const partnerShareFeedbackState = ref<'idle' | 'sending' | 'success'>('idle')
 const validatingPartnerShareSessionId = ref<string | null>(null)
 
@@ -83,8 +89,8 @@ const partnerShareOverlayTitle = computed(() => {
 })
 const partnerShareOverlayMessage = computed(() => {
   return partnerShareFeedbackState.value === 'sending'
-    ? 'La demande de partage est en cours d’envoi.'
-    : 'Ton invitation a bien été envoyée.'
+    ?'La demande de partage est en cours d’enregistrement.'
+    : 'L\'envoi du message est en cours. Tu seras notifié par mail dès réception.'
 })
 
 const resolveDate = (value: unknown): Date | null => {
@@ -185,7 +191,7 @@ const SUBSCRIPTION_ACCESS_TYPES = new Set(['membership', 'formation'])
 
 const activeSubscriptionTags = computed(() => {
   return billingStore.subscriptions
-    .filter(s => (s.status === 'active' || s.status === 'trialing') && SUBSCRIPTION_ACCESS_TYPES.has(s.metadata.accessType ?? ''))
+    .filter(s => (s.status === 'active' || s.status === 'trialing') && SUBSCRIPTION_ACCESS_TYPES.has(s.metadata.accessType || ''))
     .map(s => s.metadata.accessType as string)
     .filter((v, i, a) => a.indexOf(v) === i)
 })
@@ -195,11 +201,11 @@ const COACHING_ACCESS_TYPES = new Set(['coachingZen', 'coachingExpress'])
 const EBOOK_DOWNLOAD_URL = '/downloads/ebook-anxieux-evitant-v1.pdf'
 
 const oneShotPayments = computed(() => {
-  return billingStore.payments.filter(p => ONE_SHOT_ACCESS_TYPES.has(p.metadata.accessType ?? ''))
+  return billingStore.payments.filter(p => ONE_SHOT_ACCESS_TYPES.has(p.metadata.accessType || ''))
 })
 
 const coachingPayments = computed(() => {
-  return billingStore.payments.filter(p => COACHING_ACCESS_TYPES.has(p.metadata.accessType ?? ''))
+  return billingStore.payments.filter(p => COACHING_ACCESS_TYPES.has(p.metadata.accessType || ''))
 })
 
 const ebookPayments = computed(() => {
@@ -235,10 +241,10 @@ const waitForAuthenticatedUser = async () => {
     return firebaseClient.auth.currentUser
   }
 
-  return await new Promise<typeof firebaseClient.auth.currentUser>((resolve) => {
+  return await new Promise<User | null>((resolve) => {
     let settled = false
 
-    const finalize = (value: typeof firebaseClient.auth.currentUser) => {
+    const finalize = (value: User | null) => {
       if (settled) return
       settled = true
       resolve(value)
@@ -290,8 +296,8 @@ async function loadIncomingPartnerShareRequests() {
   try {
     const token = await getAuthToken()
     if (!token) {
-      incomingPartnerShareError.value = 'Les demandes de partage sont temporairement indisponibles.'
-      return incomingPartnerShareRequests.value
+      incomingPartnerShareError.value = 'Impossible de vérifier ton compte pour le moment.'
+    return incomingPartnerShareRequests.value
     }
 
     const requests = await $fetch<typeof incomingPartnerShareRequests.value>('/api/attachment/partner-share/pending', {
@@ -323,22 +329,68 @@ const resetPartnerShareForm = () => {
   isSendingPartnerShare.value = false
 }
 
-const openPartnerSharePopin = (session: QuestionnaireSession) => {
-  if (!isResultsSharingEnabled.value) {
-    return
-  }
-
-  shareSessionId.value = session.id
-  partnerShareEmail.value = session.relationContext?.partnerEmail ?? ''
-  partnerShareError.value = null
-  isPartnerSharePopinOpen.value = true
-}
-
 watch(isPartnerSharePopinOpen, isOpen => {
   if (!isOpen) {
     resetPartnerShareForm()
   }
 })
+
+const resetPartnerSharePaywall = () => {
+  partnerSharePaywallSessionId.value = null
+  partnerSharePaywallError.value = null
+  isPartnerShareCheckoutLoading.value = false
+}
+
+watch(isPartnerSharePaywallPopinOpen, isOpen => {
+  if (!isOpen) {
+    resetPartnerSharePaywall()
+  }
+})
+
+const hasPartnerShareAccess = (session: QuestionnaireSession) => {
+  const billingInfo = session.billingInfo || {}
+
+  return Boolean(
+    billingInfo.hasPaidResults
+    || billingInfo.hasPaidIa
+    || billingInfo.hasPaidMembership
+    || billingInfo.hasPaidFormation,
+  )
+}
+
+const openPartnerShareFormPopin = (session: QuestionnaireSession) => {
+  shareSessionId.value = session.id
+  partnerShareEmail.value = session.relationContext?.partnerEmail || ''
+  partnerShareError.value = null
+  isPartnerSharePopinOpen.value = true
+}
+
+const openPartnerSharePaywallPopin = (session: QuestionnaireSession) => {
+  partnerSharePaywallSessionId.value = session.id
+  partnerSharePaywallError.value = null
+  isPartnerSharePaywallPopinOpen.value = true
+}
+
+const openPartnerSharePopin = async (session: QuestionnaireSession) => {
+  if (!isResultsSharingEnabled.value || checkingPartnerShareAccessSessionId.value) {
+    return
+  }
+
+  checkingPartnerShareAccessSessionId.value = session.id
+  partnerShareError.value = null
+  partnerSharePaywallError.value = null
+
+  try {
+    if (hasPartnerShareAccess(session)) {
+      openPartnerShareFormPopin(session)
+      return
+    }
+
+    openPartnerSharePaywallPopin(session)
+  } finally {
+    checkingPartnerShareAccessSessionId.value = null
+  }
+}
 
 const getPartnerDisplayName = (session: QuestionnaireSession) => {
   return session.relationContext?.partnerFirstName
@@ -379,7 +431,7 @@ const getAvailableSessionsForIncomingRequest = () => {
       return false
     }
 
-    const relationContext = session.relationContext ?? {}
+    const relationContext = session.relationContext || {}
     return relationContext.partnerShareStatus !== 'linked'
   })
 }
@@ -403,6 +455,30 @@ const formatIncomingRequestTargetSessionLabel = (session: QuestionnaireSession) 
 
   return parts.join(' • ')
 }
+const handlePartnerShareCheckout = async () => {
+  if (!partnerSharePaywallSessionId.value || isPartnerShareCheckoutLoading.value) {
+    return
+  }
+
+  isPartnerShareCheckoutLoading.value = true
+  partnerSharePaywallError.value = null
+
+  try {
+    await billingStore.goToCheckout(
+      'questionnaire',
+      'attachment',
+      'results',
+      'v1',
+      'profil?results-historic=1',
+      partnerSharePaywallSessionId.value,
+    )
+  } catch (error: any) {
+    partnerSharePaywallError.value = error?.message || 'Impossible d’ouvrir la page de paiement pour le moment.'
+  } finally {
+    isPartnerShareCheckoutLoading.value = false
+  }
+}
+
 const handleSendPartnerShare = async () => {
   if (!isResultsSharingEnabled.value || !shareSessionId.value || !isPartnerShareEmailValid.value || isSendingPartnerShare.value) {
     return
@@ -443,7 +519,7 @@ const handleSendPartnerShare = async () => {
     partnerShareError.value = error?.data?.statusMessage
       || error?.statusMessage
       || error?.message
-      || 'Impossible d’envoyer le message pour le moment.'
+      || 'Impossible d’enregistrer la demande pour le moment.'
   } finally {
     isSendingPartnerShare.value = false
   }
@@ -459,7 +535,7 @@ const closePartnerShareOverlay = () => {
 
 const handleValidatePartnerShare = async (sourceSessionId: string) => {
   if (!isResultsSharingEnabled.value) {
-    incomingPartnerShareError.value = 'Le partage de résultats est temporairement indisponible.'
+    incomingPartnerShareError.value = 'Impossible de vérifier ton compte pour le moment.'
     return
   }
 
@@ -471,7 +547,7 @@ const handleValidatePartnerShare = async (sourceSessionId: string) => {
   const targetSessionId = getSelectedIncomingTargetSessionId(sourceSessionId)
 
   if (!targetSessionId) {
-    incomingPartnerShareError.value = 'Choisis la session à lier avant de valider cette demande.'
+    incomingPartnerShareError.value = 'Impossible de vérifier ton compte pour le moment.'
     return
   }
 
@@ -559,8 +635,8 @@ watch(
 
 <template>
   <div>
-    <!-- <h2>RÃƒÆ’Ã‚Â©ussis ta relation ou mets y fin de faÃƒÆ’Ã‚Â§on saine</h2>
-    <p>RÃƒÆ’Ã‚Â©duis ta panique et/ou ta fuite en adoptant des comportements sains et protecteurs.</p> -->
+    <!-- <h2>Réussis ta relation ou mets y fin de façon saine</h2>
+    <p>Réduis ta panique et/ou ta fuite en adoptant des comportements sains et protecteurs.</p> -->
     
     <!-- <DesignSystemPageSectionHeading :isHeading="true" title="Mon profil" sectionSpacing="mt-8 mb-12" /> -->
 
@@ -590,7 +666,7 @@ watch(
             :key="tag"
             class="rounded-full bg-theme-successBadgeBg px-3 py-1 text-xs font-semibold text-theme-successBadgeText"
           >
-            {{ accessTypeLabels[tag] ?? tag }}
+            {{ accessTypeLabels[tag] || tag }}
           </span>
         </div>
 
@@ -687,7 +763,7 @@ watch(
                 Demande reçue le {{ formatTimestamp(request.requestedAt) || 'Date indisponible' }}
               </p>
               <!-- <p class="mt-1 text-sm text-theme-muted">
-                {{ getProfileLabel(request.sourceGlobalProfile || 'mixedProfile') }} • Évitement {{ request.sourceAvoidanceScore ?? '--' }}% • Anxiété {{ request.sourceAnxietyScore ?? '--' }}%
+                {{ getProfileLabel(request.sourceGlobalProfile || 'mixedProfile') }} • Évitement {{ request.sourceAvoidanceScore ?'--' }}% • Anxiété {{ request.sourceAnxietyScore ?'--' }}%
               </p> -->
             </div>
 
@@ -748,7 +824,7 @@ watch(
               
               <!-- Type de questionnaire -->
               <p class="my-1 text-sm text-theme-muted">
-                {{ entitySubTypeLabels[session.questionnaireType] ?? session.questionnaireType }} • {{ formatSessionDate(session) }}
+                {{ entitySubTypeLabels[session.questionnaireType] || session.questionnaireType }} • {{ formatSessionDate(session) }}
               </p>
             </div>
 
@@ -780,26 +856,34 @@ watch(
           />
 
           <!-- results du partenaire -->
-          <div v-if="hasLinkedPartnerResult(session)" class="rounded-2xl bg-theme-surfaceStaticCard p-4 md:min-w-[280px]">
-            <p class="flex my-2 text-xs uppercase text-theme-muted">
-              <span
-                v-if="getPartnerInitial(session)"
-                class="flex justify-center items-center w-6 h-6 p-2 rounded-full bg-secondary"
-                :title="getPartnerDisplayName(session) || undefined"
-              >
-                {{ getPartnerInitial(session) }}
-              </span>
-            </p>
-            <p class="font-bold text-theme-text">
-              Résultat partenaire
-            </p>
-            <p class="mt-1 text-sm text-theme-muted">
-              {{ getProfileLabel(session.relationContext.partnerGlobalStyle || 'mixedProfile') }}
-            </p>
-            <p class="mt-1 text-xs text-theme-muted">
-              {{ formatTimestamp(session.relationContext.partnerCompletedAt) || 'Date indisponible' }}
-            </p>
-            <div class="mt-3 flex gap-4 text-xs uppercase text-theme-muted">
+          <div
+            v-if="hasLinkedPartnerResult(session)"
+            class="flex justify-between items-center gap-4 md:max-w-[50%] rounded-2xl border border-transparent bg-theme-surfaceStaticCard p-4 transition-colors hover:border-theme-button md:items-end"
+          >
+            <div>
+              <p class="flex my-2 text-xs uppercase text-theme-muted">
+                <span
+                  v-if="getPartnerInitial(session)"
+                  class="flex justify-center items-center w-6 h-6 p-2 rounded-full bg-secondary"
+                  :title="getPartnerDisplayName(session) || undefined"
+                >
+                  {{ getPartnerInitial(session) }}
+                </span>
+              </p>
+              <p class="font-bold text-theme-text">
+                Résultat partenaire
+              </p>
+              <p class="mt-1 text-sm text-theme-muted">
+                {{ getProfileLabel(session.relationContext.partnerGlobalStyle || 'mixedProfile') }}
+              </p>
+              <p class="mt-1 text-xs text-theme-muted">
+                {{ formatTimestamp(session.relationContext.partnerCompletedAt) || 'Date indisponible' }}
+              </p>
+            </div>
+            
+            <!-- Scores d'évitement et d'anxiété -->
+            <div class="flex flex-col items-center gap-2 text-xs uppercase text-theme-muted md:flex-row md:justify-start">
+            <!-- <div class="mt-3 flex gap-4 text-xs uppercase text-theme-muted"> -->
               <p class="flex flex-col">
                 <span>Avoidance</span>
                 <span class="font-bold text-blue-500">{{ session.relationContext.partnerAvoidanceScore }}%</span>
@@ -818,12 +902,17 @@ watch(
             <button
               v-else-if="isResultsSharingEnabled"
               type="button"
-              class="flex items-center gap-2 mx-auto md:mx-0 rounded-3xl bg-theme-button px-5 py-3 text-xs font-semibold text-theme-buttonText transition-all hover:opacity-90"
+              class="flex items-center gap-2 mx-auto md:mx-0 rounded-3xl bg-theme-button px-5 py-3 text-xs font-semibold text-theme-buttonText transition-all hover:opacity-90 disabled:opacity-60"
+              :disabled="checkingPartnerShareAccessSessionId === session.id"
               @click="openPartnerSharePopin(session)"
           >
-            <LucideShare2 :size="16" class="inline-block" />
-            Invite
-            {{ user?.gender === 'female' ? 'ton partenaire' : 'ta partenaire' }}
+            <LucideLoader v-if="checkingPartnerShareAccessSessionId === session.id" :size="16" class="animate-spin" />
+            <LucideShare2 v-else :size="16" class="inline-block" />
+            <span v-if="checkingPartnerShareAccessSessionId === session.id">Vérification...</span>
+            <span v-else>
+              Invite
+              {{ user?.gender === 'female' ? 'ton partenaire' : 'ta partenaire' }}
+            </span>
           </button>
         </div>
       </div>
@@ -857,7 +946,7 @@ watch(
         >
           <div class="flex items-center justify-between">
             <p class="font-bold text-theme-text">
-              {{ accessTypeLabels[payment.metadata.accessType ?? '' ] ?? payment.metadata.accessType ?? 'Rdv coaching' }}
+              {{ accessTypeLabels[payment.metadata.accessType || ''] || payment.metadata.accessType || 'Rdv coaching' }}
             </p>
             <span class="text-sm font-semibold text-theme-text">
               {{ formatAmount(payment.amount, payment.currency) }}
@@ -933,7 +1022,7 @@ watch(
                 Ebook : Tout comprendre sur la relation anxieux-evitant
               </p>
               <p class="text-xs text-theme-muted mt-1">
-                Telechargement disponible depuis ton espace perso.
+                T?l?chargement disponible depuis ton espace perso.
               </p>
             </div>
 
@@ -943,7 +1032,7 @@ watch(
               class="inline-flex items-center gap-2 py-3 px-5 text-sm font-semibold bg-theme-button text-theme-buttonText rounded-3xl hover:opacity-90 transition-all"
             >
               <LucideDownload :size="16" />
-              Telecharger
+              T?l?charger
             </a>
           </div>
         </div>
@@ -972,7 +1061,7 @@ watch(
             >
               <div class="flex items-center justify-between">
                 <p class="font-bold text-theme-text">
-                  {{ accessTypeLabels[sub.metadata.accessType ?? '' ] ?? sub.metadata.accessType ?? 'Abonnement' }}
+                  {{ accessTypeLabels[sub.metadata.accessType || ''] || sub.metadata.accessType || 'Abonnement' }}
                 </p>
                 <span
                   class="rounded-full px-2 py-1 text-xs font-semibold"
@@ -981,11 +1070,11 @@ watch(
                     'bg-red-100 text-red-600': sub.status !== 'active' && sub.status !== 'trialing',
                   }"
                 >
-                  {{ subscriptionStatusLabels[sub.status] ?? sub.status }}
+                  {{ subscriptionStatusLabels[sub.status] || sub.status }}
                 </span>
               </div>
               <p v-if="sub.metadata.entitySubType" class="mt-1 text-xs text-theme-muted">
-                {{ entitySubTypeLabels[sub.metadata.entitySubType] ?? sub.metadata.entitySubType }}
+                {{ entitySubTypeLabels[sub.metadata.entitySubType] || sub.metadata.entitySubType }}
               </p>
               <p v-if="sub.cancel_at_period_end" class="mt-1 text-xs text-red-500">
                 Annulation prévue à la fin de la période en cours
@@ -1003,7 +1092,7 @@ watch(
               @click="handleOpenPortal"
             >
               <LucideLoader2 v-if="isPortalLoading" :size="16" class="animate-spin" />
-              {{ isPortalLoading ? 'Redirection...' : 'Gérer mon abonnement sur Stripe' }}
+              {{ isPortalLoading ?'Redirection...' : 'Gérer mon abonnement sur Stripe' }}
             </button>
             <p v-if="portalError" class="mt-2 text-xs text-red-500">{{ portalError }}</p>
           </div>
@@ -1029,7 +1118,7 @@ watch(
           >
             <div class="flex items-center justify-between">
               <p class="font-bold text-theme-text">
-                {{ accessTypeLabels[payment.metadata.accessType ?? '' ] ?? payment.metadata.accessType ?? 'Achat' }}
+                {{ accessTypeLabels[payment.metadata.accessType || ''] || payment.metadata.accessType || 'Achat' }}
               </p>
               <span class="text-sm font-semibold text-theme-text">
                 {{ formatAmount(payment.amount, payment.currency) }}
@@ -1039,7 +1128,7 @@ watch(
               <span class="capitalize">
                 {{ payment.metadata.entityType }}
               </span>
-              : {{ entitySubTypeLabels[payment.metadata.entitySubType] ?? payment.metadata.entitySubType }}
+              : {{ entitySubTypeLabels[payment.metadata.entitySubType] || payment.metadata.entitySubType }}
             </p>
             <p class="mt-1 text-xs text-theme-muted">
               <span v-if="formatTimestamp(payment.created)">
@@ -1050,6 +1139,31 @@ watch(
         </div>
       </section>
     </div>
+    <Popin v-model="isPartnerSharePaywallPopinOpen">
+      <div class="text-theme-text">
+        <h3 class="text-2xl font-bold">
+          Débloque tes résultats
+        </h3>
+        <p class="mt-3 text-sm text-theme-muted">
+          Tu dois d'abord débloquer tes résultats avant de pouvoir faire ta demande.
+        </p>
+
+        <p v-if="partnerSharePaywallError" class="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+          {{ partnerSharePaywallError }}
+        </p>
+
+        <button
+          type="button"
+          class="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-theme-button px-4 py-4 text-sm font-semibold text-theme-buttonText disabled:opacity-60"
+          :disabled="!partnerSharePaywallSessionId || isPartnerShareCheckoutLoading"
+          @click="handlePartnerShareCheckout"
+        >
+          <LucideLoader v-if="isPartnerShareCheckoutLoading" :size="18" class="animate-spin" />
+          <span>{{ isPartnerShareCheckoutLoading ?'Redirection...' : 'Débloquer mes résultats pour 1,99 €' }}</span>
+        </button>
+      </div>
+    </Popin>
+
     <Popin v-model="isPartnerSharePopinOpen">
       <div class="text-theme-text">
         <h3 class="text-2xl font-bold">

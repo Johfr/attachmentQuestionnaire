@@ -50,6 +50,34 @@ Tant que ce domaine n'est pas acheté et vérifié :
 - les users ne peuvent pas recevoir les invitations de partage
 - la feature doit rester désactivée via `appConfig/global.features.resultsSharing`
 
+## Mode transitoire actuel
+
+Tant que le domaine n'est pas prêt, le flow de partage reste dans un mode MVP transitoire :
+
+- le bouton de partage reste visible si `appConfig/global.features.resultsSharing === true`
+- au clic, on vérifie uniquement `questionnaireSessions/{sessionId}.billingInfo`
+- si la session n'a pas d'accès résultats (`hasPaidResults`, `hasPaidIa`, `hasPaidMembership`, `hasPaidFormation`), on ouvre une popin d'incitation à l'achat
+- le bouton de cette popin renvoie directement vers la checkout `results`
+- le retour Stripe se fait sur `/user/profil?results-historic=1`
+- si la session a déjà accès aux résultats, on ouvre la vraie popin de partage
+- à l'envoi, la demande est enregistrée en base mais aucun email Resend n'est envoyé pour l'instant
+
+Message user actuel après enregistrement :
+
+- `Tu seras notifié par mail dès réception.`
+
+Quand le domaine sera prêt, il faudra :
+
+- réactiver l'envoi réel via Resend dans `POST /api/attachment/partner-share`
+- remettre à jour le texte de confirmation si nécessaire
+- prévoir un script de reprise pour les demandes déjà enregistrées pendant cette phase transitoire
+
+À noter :
+
+- l'email de notification après validation de la liaison peut, lui, rester branché
+- s'il échoue, la liaison Firestore reste la source de vérité
+- un simple rechargement du profil suffit alors pour voir le résultat lié
+
 ## Cas 1
 
 Le partenaire existe déjà et a déjà une session `attachment` terminée.
@@ -67,6 +95,7 @@ Le partenaire existe déjà et a déjà une session `attachment` terminée.
 9. B choisit la session de A à relier via le sélecteur.
 10. B valide la demande.
 11. Les deux sessions sont enrichies en miroir avec le snapshot utile du partenaire.
+12. A reçoit ensuite un email de confirmation si la configuration Resend est disponible.
 
 ### Règles importantes
 
@@ -157,6 +186,7 @@ Chaque session liée ou en attente peut porter :
 
 - `pending` doit rester tolérant sur la casse de l'email pour ne pas rater d'anciennes données
 - `validate` ne doit jamais retomber sur une logique "latest session"
+- l'email post-validation dans `validate` est en best-effort : jamais bloquant pour la liaison
 - les tests ciblés du workflow sont :
   - `test/unit/partnerSharing.sessionLinking.test.ts`
   - `test/nuxt/profile.partnerSharing.test.ts`

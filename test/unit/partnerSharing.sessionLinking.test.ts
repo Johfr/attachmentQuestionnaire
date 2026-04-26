@@ -29,6 +29,12 @@ describe('POST /api/attachment/partner-share', () => {
         partnerAge: null,
         partnerGender: null,
       },
+      billingInfo: {
+        hasPaidResults: true,
+        hasPaidIa: false,
+        hasPaidMembership: false,
+        hasPaidFormation: false,
+      },
     }
     const userDoc = options?.userDoc ?? {
       name: 'Johan',
@@ -183,9 +189,10 @@ describe('POST /api/attachment/partner-share', () => {
       ok: true,
       partnerExists: true,
       status: 'awaiting_validation',
+      deliveryMode: 'manual_queue',
     })
 
-    expect(sendEmailMock).toHaveBeenCalledOnce()
+    expect(sendEmailMock).not.toHaveBeenCalled()
     expect(sessionSetMock).toHaveBeenCalledWith({
       relationContext: expect.objectContaining({
         partnerEmail: 'partner@example.com',
@@ -208,6 +215,7 @@ describe('POST /api/attachment/partner-share', () => {
       ok: true,
       partnerExists: false,
       status: 'invite_sent',
+      deliveryMode: 'manual_queue',
     })
 
     expect(sessionSetMock).toHaveBeenCalledWith({
@@ -275,8 +283,19 @@ describe('POST /api/attachment/partner-share/validate', () => {
       },
     }))
 
+    const sendEmailMock = vi.fn().mockResolvedValue({ id: 'mail-2' })
+
+    vi.stubGlobal('useRuntimeConfig', vi.fn(() => ({
+      resendApiKey: 'resend-key',
+      mailFrom: 'Relation anxieux-evitant <onboarding@resend.dev>',
+    })))
+
     vi.doMock('../../server/utils/attachment/partnerShare', () => ({
+      escapeHtml: (value: string) => value,
+      getBaseUrl: () => 'https://relation-anxieux-evitant-test.web.app',
+      normalizeEnvValue: (value: unknown) => typeof value === 'string' ? value.trim() : '',
       normalizeText: (value: unknown) => typeof value === 'string' ? value.trim() : '',
+      sendEmail: sendEmailMock,
       getLatestAttachmentSessionForUid: vi.fn(),
     }))
 

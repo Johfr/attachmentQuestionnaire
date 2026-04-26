@@ -23,6 +23,7 @@ const mockBillingStore = vi.hoisted(() => ({
   isLoadingHistory: false,
   loadPurchaseHistory: vi.fn().mockResolvedValue(undefined),
   openCustomerPortal: vi.fn().mockResolvedValue(undefined),
+  goToCheckout: vi.fn().mockResolvedValue(undefined),
 }))
 
 const mockContactRequestsStore = vi.hoisted(() => ({
@@ -52,6 +53,14 @@ const mockFirebaseClient = vi.hoisted(() => ({
       getIdToken: vi.fn().mockResolvedValue('token-123'),
     },
   },
+  onAuthStateChanged: vi.fn((_auth: unknown, onSuccess: (user: unknown) => void) => {
+    onSuccess(mockFirebaseClient.auth.currentUser)
+    return vi.fn()
+  }),
+}))
+
+const pendingRequestsState = vi.hoisted(() => ({
+  requests: [] as Array<Record<string, unknown>>,
 }))
 
 vi.mock('~/stores/auth', () => ({
@@ -82,26 +91,6 @@ vi.mock('~/stores/questionnaireSessions', async () => {
       reset: state.reset,
     })),
   }
-  it('hides partner sharing UI when the feature flag is disabled', async () => {
-    mockSiteConfigStore.isResultsSharingEnabled = false
-    pendingRequestsState.requests = [{
-      sourceSessionId: 'source-session-1',
-      senderUid: 'user-2',
-      senderName: 'Camille',
-      senderEmail: 'partner@example.com',
-      requestedAt: { seconds: 1714300000, nanoseconds: 0 },
-      sourceCompletedAt: { seconds: 1714300000, nanoseconds: 0 },
-      sourceGlobalProfile: 'mixedProfile',
-      sourceAnxietyScore: 53,
-      sourceAvoidanceScore: 43,
-    }]
-
-    const wrapper = await mountSuspended(ProfilePage)
-
-    expect(wrapper.text()).not.toContain('Demandes de partage reÃ§ues')
-    expect(wrapper.text()).not.toMatch(/Invite (ton|ta) partenaire/)
-    expect(wrapper.find('[data-testid="partner-share-email-input"]').exists()).toBe(false)
-  })
 })
 
 vi.mock('~/stores/siteConfig', () => ({
@@ -127,10 +116,6 @@ mockComponent('~/components/designSystem/Popin.vue', () => ({
   template: '<div v-if="modelValue"><slot /></div>',
 }))
 
-const pendingRequestsState = vi.hoisted(() => ({
-  requests: [] as Array<Record<string, unknown>>,
-}))
-
 registerEndpoint('/api/attachment/partner-share/pending', {
   method: 'GET',
   handler: () => pendingRequestsState.requests,
@@ -141,7 +126,7 @@ registerEndpoint('/api/attachment/partner-share', {
   handler: async () => ({ ok: true, partnerExists: false, status: 'invite_sent' }),
 })
 
-const makeSession = (): QuestionnaireSession => ({
+const makeSession = (overrides: Partial<QuestionnaireSession> = {}): QuestionnaireSession => ({
   id: 'session-1',
   uid: 'user-1',
   questionnaireType: 'attachment',
@@ -177,6 +162,7 @@ const makeSession = (): QuestionnaireSession => ({
     lastAttemptAt: null,
     lastErrorCode: null,
   },
+  ...overrides,
 })
 
 describe('profile partner sharing flow', () => {
@@ -185,12 +171,32 @@ describe('profile partner sharing flow', () => {
     mockSessionsState.sessions = [makeSession()]
     mockSessionsState.loadSessions.mockClear().mockResolvedValue(undefined)
     mockBillingStore.loadPurchaseHistory.mockClear().mockResolvedValue(undefined)
+    mockBillingStore.goToCheckout.mockClear().mockResolvedValue(undefined)
     mockContactRequestsStore.loadRequests.mockClear().mockResolvedValue(undefined)
     mockSiteConfigStore.isResultsSharingEnabled = true
     mockSiteConfigStore.loadConfig.mockClear().mockResolvedValue(undefined)
   })
 
-  it('opens the share popin and requires a valid email before allowing the send action', async () => {
+  it('opens the paywall popin when the user has not unlocked the results yet', async () => {
+    const wrapper = await mountSuspended(ProfilePage)
+
+    await wrapper.findAll('button').find(node => /Invite (ton|ta) partenaire/.test(node.text()))!.trigger('click')
+
+    expect(wrapper.text()).toContain("Débloque tes résultats")
+    expect(wrapper.text()).toContain("Tu dois d'abord débloquer tes résultats avant de pouvoir faire ta demande.")
+    expect(wrapper.text()).toContain("Débloquer mes résultats pour 1,99 €")
+  })
+
+  it('opens the share popin and requires a valid email when the results are unlocked', async () => {
+    mockSessionsState.sessions = [makeSession({
+      billingInfo: {
+        hasPaidResults: true,
+        hasPaidIa: false,
+        hasPaidMembership: false,
+        hasPaidFormation: false,
+      },
+    })]
+
     const wrapper = await mountSuspended(ProfilePage)
 
     await wrapper.findAll('button').find(node => /Invite (ton|ta) partenaire/.test(node.text()))!.trigger('click')
@@ -207,33 +213,43 @@ describe('profile partner sharing flow', () => {
   })
 
   it('replaces the sharing CTA with a sent state after a successful share request', async () => {
+    mockSessionsState.sessions = [makeSession({
+      billingInfo: {
+        hasPaidResults: true,
+        hasPaidIa: false,
+        hasPaidMembership: false,
+        hasPaidFormation: false,
+      },
+    })]
+
     const wrapper = await mountSuspended(ProfilePage)
 
     await wrapper.findAll('button').find(node => /Invite (ton|ta) partenaire/.test(node.text()))!.trigger('click')
 
     const emailInput = wrapper.get('[data-testid="partner-share-email-input"]')
     await emailInput.setValue('partner@example.com')
-
     await wrapper.get('[data-testid="partner-share-submit"]').trigger('click')
 
     wrapper.unmount()
 
-    mockSessionsState.sessions = [
-      {
-        ...makeSession(),
-        relationContext: {
-          partnerFirstName: null,
-          partnerAge: null,
-          partnerGender: null,
-          partnerEmail: 'partner@example.com',
-          partnerInviteSentAt: { seconds: 1714300000, nanoseconds: 0 } as any,
-          partnerShareStatus: 'invite_sent',
-        },
+    mockSessionsState.sessions = [makeSession({
+      billingInfo: {
+        hasPaidResults: true,
+        hasPaidIa: false,
+        hasPaidMembership: false,
+        hasPaidFormation: false,
       },
-    ]
+      relationContext: {
+        partnerFirstName: null,
+        partnerAge: null,
+        partnerGender: null,
+        partnerEmail: 'partner@example.com',
+        partnerInviteSentAt: { seconds: 1714300000, nanoseconds: 0 } as any,
+        partnerShareStatus: 'invite_sent',
+      },
+    })]
 
     const reloadedWrapper = await mountSuspended(ProfilePage)
-
     expect(reloadedWrapper.text()).toContain('Demande envoyée le')
   })
 
@@ -260,30 +276,24 @@ describe('profile partner sharing flow', () => {
     })
   })
 
-  it('renders the linked partner snapshot when both sessions are connected', async () => {
-    mockSessionsState.sessions = [
-      {
-        ...makeSession(),
-        relationContext: {
-          partnerFirstName: 'Camille',
-          partnerAge: 37,
-          partnerGender: 'female',
-          partnerEmail: 'partner@example.com',
-          partnerUid: 'user-2',
-          partnerQuestionnaireSessionId: 'session-2',
-          partnerGlobalStyle: 'globallySecure',
-          partnerAnxietyScore: 24,
-          partnerAvoidanceScore: 18,
-          partnerCompletedAt: { seconds: 1714300000, nanoseconds: 0 } as any,
-          partnerShareStatus: 'linked',
-        },
-      },
-    ]
+  it('hides partner sharing UI when the feature flag is disabled', async () => {
+    mockSiteConfigStore.isResultsSharingEnabled = false
+    pendingRequestsState.requests = [{
+      sourceSessionId: 'source-session-1',
+      senderUid: 'user-2',
+      senderName: 'Camille',
+      senderEmail: 'partner@example.com',
+      requestedAt: { seconds: 1714300000, nanoseconds: 0 },
+      sourceCompletedAt: { seconds: 1714300000, nanoseconds: 0 },
+      sourceGlobalProfile: 'mixedProfile',
+      sourceAnxietyScore: 53,
+      sourceAvoidanceScore: 43,
+    }]
 
     const wrapper = await mountSuspended(ProfilePage)
 
-    expect(wrapper.text()).toContain('Résultat partenaire')
-    expect(wrapper.text()).toContain('24%')
-    expect(wrapper.text()).toContain('18%')
+    expect(wrapper.text()).not.toContain('Demandes de partage re?ues')
+    expect(wrapper.text()).not.toMatch(/Invite (ton|ta) partenaire/)
+    expect(wrapper.find('[data-testid="partner-share-email-input"]').exists()).toBe(false)
   })
 })
