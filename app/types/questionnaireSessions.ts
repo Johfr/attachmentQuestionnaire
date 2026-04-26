@@ -5,6 +5,13 @@ export type QuestionnaireVersion = 'v1'
 export type QuestionnaireSessionStatus = 'draft' | 'completed' | 'archived'
 export type QuestionnairePersistStatus = 'persisted'
 export type AiExchangeStatus = 'not_purchased' | 'pending' | 'generated' | 'failed'
+export type PartnerShareStatus = 'invite_sent' | 'awaiting_validation' | 'linked'
+export type QuestionnaireGlobalProfile =
+  | 'globallySecure'
+  | 'anxious'
+  | 'dismissiveAvoidant'
+  | 'fearfulAvoidant'
+  | 'mixedProfile'
 
 export type QuestionnaireSession = {
   id: string
@@ -25,6 +32,15 @@ export type QuestionnaireSession = {
     partnerFirstName: string | null
     partnerAge: number | null
     partnerGender: 'male' | 'female' | null
+    partnerEmail?: string | null
+    partnerUid?: string | null
+    partnerQuestionnaireSessionId?: string | null
+    partnerGlobalStyle?: QuestionnaireGlobalProfile | null
+    partnerAnxietyScore?: number | null
+    partnerAvoidanceScore?: number | null
+    partnerCompletedAt?: Timestamp | null
+    partnerInviteSentAt?: Timestamp | null
+    partnerShareStatus?: PartnerShareStatus | null
   }
 
   answers: Array<{
@@ -38,12 +54,7 @@ export type QuestionnaireSession = {
     anxietyScore: number
     avoidanceScore: number
 
-    globalProfile:
-      | 'globallySecure'
-      | 'anxious'
-      | 'dismissiveAvoidant'
-      | 'fearfulAvoidant'
-      | 'mixedProfile'
+    globalProfile: QuestionnaireGlobalProfile
 
     anxietySubProfile:
       | 'anxiousActivated'

@@ -7,6 +7,11 @@ export type AttachmentQuestionnaireWizardStep =
   | 'questionnaire'
   | 'results'
 
+export type PartnerShareSource = {
+  uid: string
+  questionnaireSessionId: string
+}
+
 export const useAttachmentQuestionnaireWizardStore = defineStore(
   'attachmentQuestionnaireWizard',
   () => {
@@ -15,6 +20,7 @@ export const useAttachmentQuestionnaireWizardStore = defineStore(
     const isCompleted = ref(false)
 
     const result = ref<QuestionResult[] | null>(null)
+    const partnerShareSource = ref<PartnerShareSource | null>(null)
 
     const start = () => {
       hasStarted.value = true
@@ -23,6 +29,14 @@ export const useAttachmentQuestionnaireWizardStore = defineStore(
 
     const goToIntroduction = () => {
       currentStep.value = 'introduction'
+    }
+
+    const setPartnerShareSource = (payload: PartnerShareSource | null) => {
+      partnerShareSource.value = payload
+    }
+
+    const clearPartnerShareSource = () => {
+      partnerShareSource.value = null
     }
 
     const complete = (payload: QuestionResult[]) => {
@@ -36,6 +50,7 @@ export const useAttachmentQuestionnaireWizardStore = defineStore(
       hasStarted.value = false
       isCompleted.value = false
       result.value = null
+      partnerShareSource.value = null
     }
 
     return {
@@ -43,8 +58,11 @@ export const useAttachmentQuestionnaireWizardStore = defineStore(
       hasStarted,
       isCompleted,
       result,
+      partnerShareSource,
       start,
       goToIntroduction,
+      setPartnerShareSource,
+      clearPartnerShareSource,
       complete,
       reset
     }

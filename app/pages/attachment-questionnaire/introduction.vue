@@ -5,6 +5,7 @@ import type { AuthFormPayload } from '~/types/User'
 
 const questionnaireWizardStore = useAttachmentQuestionnaireWizardStore()
 const authStore = useAuthStore()
+const route = useRoute()
 const user = computed(() => authStore.user)
 const currentPartnerContext = computed(() => authStore.currentPartnerContext)
 const authErrorMessage = ref<string | null>(null)
@@ -12,6 +13,20 @@ const accessBlockedMessage = ref<string | null>(null)
 const isSubmitting = ref(false)
 
 onMounted(async () => {
+  const invitedByUid = typeof route.query.uid === 'string' ? route.query.uid.trim() : ''
+  const invitedByQuestionnaireSessionId = typeof route.query.questionnaireSessionId === 'string'
+    ? route.query.questionnaireSessionId.trim()
+    : ''
+
+  if (invitedByUid && invitedByQuestionnaireSessionId) {
+    questionnaireWizardStore.setPartnerShareSource({
+      uid: invitedByUid,
+      questionnaireSessionId: invitedByQuestionnaireSessionId,
+    })
+  } else {
+    questionnaireWizardStore.clearPartnerShareSource()
+  }
+
   if (!user.value) return
   await authStore.loadCurrentPartnerContext()
 })

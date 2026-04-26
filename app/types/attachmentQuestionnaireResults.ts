@@ -175,6 +175,10 @@ export type ComputeAttachmentQuestionnaireResultsRequest = {
     partnerFirstName: string | null
     partnerAge: number | null
     partnerGender: 'male' | 'female' | null
+    partnerShareSource?: {
+      uid: string
+      questionnaireSessionId: string
+    } | null
   } | null
 }
 

@@ -49,6 +49,11 @@ describe('useAttachmentQuestionnaireWizardStore', () => {
       const store = useAttachmentQuestionnaireWizardStore()
       expect(store.result).toBeNull()
     })
+
+    it('partnerShareSource is null', () => {
+      const store = useAttachmentQuestionnaireWizardStore()
+      expect(store.partnerShareSource).toBeNull()
+    })
   })
 
   // ── start() ───────────────────────────────────────────────────────────────
@@ -115,6 +120,33 @@ describe('useAttachmentQuestionnaireWizardStore', () => {
     })
   })
 
+  describe('partnerShareSource helpers', () => {
+    it('stores the invitation source when provided from the introduction link', () => {
+      const store = useAttachmentQuestionnaireWizardStore()
+      store.setPartnerShareSource({
+        uid: 'user-1',
+        questionnaireSessionId: 'session-1',
+      })
+
+      expect(store.partnerShareSource).toEqual({
+        uid: 'user-1',
+        questionnaireSessionId: 'session-1',
+      })
+    })
+
+    it('clears the invitation source explicitly', () => {
+      const store = useAttachmentQuestionnaireWizardStore()
+      store.setPartnerShareSource({
+        uid: 'user-1',
+        questionnaireSessionId: 'session-1',
+      })
+
+      store.clearPartnerShareSource()
+
+      expect(store.partnerShareSource).toBeNull()
+    })
+  })
+
   // ── reset() ───────────────────────────────────────────────────────────────
 
   describe('reset()', () => {
@@ -127,6 +159,7 @@ describe('useAttachmentQuestionnaireWizardStore', () => {
       expect(store.hasStarted).toBe(false)
       expect(store.isCompleted).toBe(false)
       expect(store.result).toBeNull()
+      expect(store.partnerShareSource).toBeNull()
     })
 
     it('fully restores initial state after start()', () => {

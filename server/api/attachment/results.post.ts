@@ -12,6 +12,109 @@ const CANONICAL_QUESTIONS = (questionsData as { questions: AttachmentQuestion[] 
 const QUESTIONNAIRE_TYPE = 'attachment'
 const QUESTIONNAIRE_COOLDOWN_DAYS = 30
 
+const normalizeText = (value: unknown) => typeof value === 'string' ? value.trim() : ''
+const normalizeGender = (value: unknown) => value === 'male' || value === 'female' ? value : null
+
+const mirrorPartnerSessionsFromInvitation = async (options: {
+  sourceUid: string
+  sourceSessionId: string
+  targetUid: string
+  targetSessionId: string
+  targetCompletedAt: Timestamp
+  targetResult: {
+    globalProfile: string
+    anxietyScore: number
+    avoidanceScore: number
+  }
+}) => {
+  if (options.sourceUid === options.targetUid) {
+    return
+  }
+
+  const sourceSessionRef = adminDb.collection('questionnaireSessions').doc(options.sourceSessionId)
+  const sourceSessionSnap = await sourceSessionRef.get()
+  if (!sourceSessionSnap.exists) {
+    return
+  }
+
+  const sourceSession = sourceSessionSnap.data() as Record<string, any> | undefined
+  if (
+    !sourceSession
+    || sourceSession.uid !== options.sourceUid
+    || sourceSession.questionnaireType !== 'attachment'
+    || sourceSession.status !== 'completed'
+  ) {
+    return
+  }
+
+  const [sourceUserSnap, targetUserSnap] = await Promise.all([
+    adminDb.collection('users').doc(options.sourceUid).get(),
+    adminDb.collection('users').doc(options.targetUid).get(),
+  ])
+
+  const sourceUserData = sourceUserSnap.data() ?? {}
+  const targetUserData = targetUserSnap.data() ?? {}
+  const sourceRelationContext = sourceSession.relationContext ?? {}
+  const sourcePartnerFirstName = normalizeText(targetUserData.name) || sourceRelationContext.partnerFirstName || null
+  const sourcePartnerAge = typeof targetUserData.age === 'number'
+    ? targetUserData.age
+    : (sourceRelationContext.partnerAge ?? null)
+  const sourcePartnerGender = normalizeGender(targetUserData.gender) ?? sourceRelationContext.partnerGender ?? null
+  const sourcePartnerEmail = normalizeText(targetUserData.email) || sourceRelationContext.partnerEmail || null
+
+  const linkedSourceRelationContext = {
+    ...sourceRelationContext,
+    partnerFirstName: sourcePartnerFirstName,
+    partnerAge: sourcePartnerAge,
+    partnerGender: sourcePartnerGender,
+    partnerEmail: sourcePartnerEmail,
+    partnerUid: options.targetUid,
+    partnerQuestionnaireSessionId: options.targetSessionId,
+    partnerGlobalStyle: options.targetResult.globalProfile,
+    partnerAnxietyScore: options.targetResult.anxietyScore,
+    partnerAvoidanceScore: options.targetResult.avoidanceScore,
+    partnerCompletedAt: options.targetCompletedAt,
+    partnerShareStatus: 'linked',
+  }
+
+  const targetSessionRef = adminDb.collection('questionnaireSessions').doc(options.targetSessionId)
+  const targetSessionSnap = await targetSessionRef.get()
+  const targetSession = targetSessionSnap.data() as Record<string, any> | undefined
+  const targetRelationContext = targetSession?.relationContext ?? {}
+  const targetPartnerFirstName = normalizeText(sourceUserData.name) || targetRelationContext.partnerFirstName || null
+  const targetPartnerAge = typeof sourceUserData.age === 'number'
+    ? sourceUserData.age
+    : (targetRelationContext.partnerAge ?? null)
+  const targetPartnerGender = normalizeGender(sourceUserData.gender) ?? targetRelationContext.partnerGender ?? null
+  const targetPartnerEmail = normalizeText(sourceUserData.email) || targetRelationContext.partnerEmail || null
+
+  const linkedTargetRelationContext = {
+    ...targetRelationContext,
+    partnerFirstName: targetPartnerFirstName,
+    partnerAge: targetPartnerAge,
+    partnerGender: targetPartnerGender,
+    partnerEmail: targetPartnerEmail,
+    partnerUid: options.sourceUid,
+    partnerQuestionnaireSessionId: options.sourceSessionId,
+    partnerGlobalStyle: sourceSession.result?.globalProfile ?? null,
+    partnerAnxietyScore: sourceSession.result?.anxietyScore ?? null,
+    partnerAvoidanceScore: sourceSession.result?.avoidanceScore ?? null,
+    partnerCompletedAt: sourceSession.completedAt ?? null,
+    partnerShareStatus: 'linked',
+  }
+
+  await Promise.all([
+    sourceSessionRef.set({
+      relationContext: linkedSourceRelationContext,
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true }),
+    targetSessionRef.set({
+      relationContext: linkedTargetRelationContext,
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true }),
+  ])
+}
+
 export default defineEventHandler(async event => {
   // — Input validation --------------------------------------------------------------
   const body = await readBody<ComputeAttachmentQuestionnaireResultsRequest>(event)
@@ -79,7 +182,13 @@ export default defineEventHandler(async event => {
         uid,
         computedResults,
         body.results,
-        body.relationContext ?? null,
+        body.relationContext
+          ? {
+              partnerFirstName: body.relationContext.partnerFirstName,
+              partnerAge: body.relationContext.partnerAge,
+              partnerGender: body.relationContext.partnerGender,
+            }
+          : null,
       )
       const docRef = await adminDb.collection('questionnaireSessions').add({
         ...sessionDoc,
@@ -104,6 +213,28 @@ export default defineEventHandler(async event => {
 
       sessionId = docRef.id
       persisted = true
+
+      const partnerShareSourceUid = normalizeText(body.relationContext?.partnerShareSource?.uid)
+      const partnerShareSourceSessionId = normalizeText(body.relationContext?.partnerShareSource?.questionnaireSessionId)
+
+      if (partnerShareSourceUid && partnerShareSourceSessionId) {
+        try {
+          await mirrorPartnerSessionsFromInvitation({
+            sourceUid: partnerShareSourceUid,
+            sourceSessionId: partnerShareSourceSessionId,
+            targetUid: uid,
+            targetSessionId: docRef.id,
+            targetCompletedAt: Timestamp.fromMillis(nowMs),
+            targetResult: {
+              globalProfile: computedResults.attachmentProfilesByDimension.globalStyle,
+              anxietyScore: computedResults.averageScores.find(score => score.dimension === 'anxiety')?.average ?? 0,
+              avoidanceScore: computedResults.averageScores.find(score => score.dimension === 'avoidance')?.average ?? 0,
+            },
+          })
+        } catch (error) {
+          console.error('[results.post] Partner session mirror failed:', error)
+        }
+      }
     } catch (err) {
       const error = err as { code?: string; message?: string }
       persistErrorCode = error?.code ?? 'unknown'

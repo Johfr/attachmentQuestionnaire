@@ -255,6 +255,32 @@ body {
   background-color: var(--bg);
   color: var(--text);
 }
+
+.theme-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  color: var(--text);
+  background-color: var(--surface-form-input);
+  background-image: none;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.theme-select::-ms-expand {
+  display: none;
+}
+
+.theme-select option {
+  color: var(--text);
+  background-color: var(--surface-form-input);
+}
+
+.theme-select-icon {
+  color: var(--text-muted);
+}
+
 fieldset {
   margin: 0;
   padding: 0;

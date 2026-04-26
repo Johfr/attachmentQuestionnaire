@@ -112,17 +112,19 @@ export function useAttachmentResultsPersistRetry() {
   const callApi = async (): Promise<ComputeAttachmentResultsApiResponse> => {
     const token = await getFirebaseIdToken()
     const partnerCtx = authStore.currentPartnerContext
+    const partnerShareSource = questionnaireWizardStore.partnerShareSource
     return $fetch<ComputeAttachmentResultsApiResponse>('/api/attachment/results', {
       method: 'POST',
       headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: {
         results: questionnaireWizardStore.result,
         questions: questionList,
-        relationContext: partnerCtx
+        relationContext: partnerCtx || partnerShareSource
           ? {
-              partnerFirstName: partnerCtx.firstName,
-              partnerAge: partnerCtx.age,
-              partnerGender: partnerCtx.gender,
+              partnerFirstName: partnerCtx?.firstName ?? null,
+              partnerAge: partnerCtx?.age ?? null,
+              partnerGender: partnerCtx?.gender ?? null,
+              partnerShareSource,
             }
           : null,
       },

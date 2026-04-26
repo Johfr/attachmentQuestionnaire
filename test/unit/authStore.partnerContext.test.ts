@@ -13,7 +13,7 @@ const firebaseInitMock = vi.hoisted(() => ({
     auth: {
       currentUser: {
         uid: 'user-123',
-        email: 'alex@example.com',
+        email: 'prenom@example.com',
       },
     },
     db: {},
@@ -47,8 +47,8 @@ describe('useAuthStore partner context persistence', () => {
     firestoreMocks.getDoc.mockResolvedValue({
       exists: () => true,
       data: () => ({
-        email: 'alex@example.com',
-        name: 'Alex',
+        email: 'prenom@example.com',
+        name: 'Prenom',
         age: 31,
         currentPartnerContext: {
           firstName: 'Camille',
