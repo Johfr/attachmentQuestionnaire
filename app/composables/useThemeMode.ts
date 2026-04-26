@@ -23,7 +23,7 @@ export const useThemeMode = () => {
       return
     }
 
-    applyThemeMode('light')
+    applyThemeMode('dark')
   }
 
   const toggleThemeMode = () => {

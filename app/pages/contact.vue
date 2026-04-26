@@ -261,7 +261,7 @@ const submitContactForm = async (event?: Event) => {
     </div>
 
     <section>
-      <h2 class="text-2xl md:text-2xl uppercase text-theme-text mb-6">Profite d'une séance de coaching personnalisée</h2>
+      <h2 class="text-2xl md:text-2xl uppercase text-theme-text mb-6">Profite d'une séance personnalisée</h2>
 
       <div class="md:flex md:justify-between gap-3 space-y-7 text-theme-text md:space-y-0">
         <div class="rounded-3xl bg-theme-surfaceStaticCard p-6 md:max-w-[49%]">
@@ -331,7 +331,7 @@ const submitContactForm = async (event?: Event) => {
           <ul class="text-xs md:text-base list-inside space-y-5">
             <li class="flex">
               <LucideLeaf class="min-w-8 inline-block text-rust" />
-              <span class="pl-2"><strong>60 minutes de coaching par téléphone</strong></span>
+              <span class="pl-2"><strong>60 minutes d'échange par téléphone</strong></span>
             </li>
             <li class="flex">
               <LucideLeaf class="min-w-8 inline-block text-rust" />
@@ -366,7 +366,7 @@ const submitContactForm = async (event?: Event) => {
           <ul class="text-xs md:text-base list-inside space-y-5">
             <li class="flex">
               <LucideRocket class="min-w-8 inline-block text-rust" />
-              <span class="pl-2"><strong>45 minutes de coaching par téléphone</strong></span>
+              <span class="pl-2"><strong>45 minutes d'échange par téléphone</strong></span>
             </li>
             <li class="flex">
               <LucideRocket class="min-w-8 inline-block text-rust" />

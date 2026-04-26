@@ -202,7 +202,7 @@ defineExpose({
     <div v-if="!user && currentForm === 'signup'" class="flex flex-col text-sm">
       <label for="userFirstName" class="mt-2 flex flex-col text-sm">
         Ton prenom*
-        <input v-model="name" @blur="touchAndValidate('name')" type="text" id="userFirstName" name="userFirstName" autocomplete="given-name" placeholder="Ex: Alex" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
+        <input v-model="name" @blur="touchAndValidate('name')" type="text" id="userFirstName" name="userFirstName" autocomplete="given-name" placeholder="Ex: Johan" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.name && errors.name" class="mt-1 text-xs text-red-600">{{ errors.name }}</small>
       </label>
       <label for="userAge" class="mt-2 flex flex-col text-sm">
@@ -227,7 +227,7 @@ defineExpose({
       <!-- email -->
       <label for="userEmailSignup" class="mt-2 flex flex-col text-sm">
         Ton email*
-        <input v-model="email" @blur="touchAndValidate('email')" type="email" id="userEmailSignup" name="userEmail" autocomplete="email" placeholder="Ex: alex@example.com" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
+        <input v-model="email" @blur="touchAndValidate('email')" type="email" id="userEmailSignup" name="userEmail" autocomplete="email" placeholder="Ex: prenom@example.com" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.email && errors.email" class="mt-1 text-xs text-red-600">{{ errors.email }}</small>
       </label>
       <!-- password -->
@@ -245,7 +245,7 @@ defineExpose({
       <!-- <h3 class="mt-0 text-xs font-semibold uppercase">A propos de toi</h3> -->
       <label for="userEmailLogin" class="mt-2 flex flex-col text-sm">
         Ton email*
-        <input v-model="email" @blur="touchAndValidate('email')" type="email" id="userEmailLogin" name="userEmailLogin" autocomplete="email" placeholder="Ex: alex@example.com" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
+        <input v-model="email" @blur="touchAndValidate('email')" type="email" id="userEmailLogin" name="userEmailLogin" autocomplete="email" placeholder="Ex: prenom@example.com" class="mt-2 rounded-2xl border border-solid border-theme-formInputBorder bg-theme-surfaceFormInput p-3 text-sm text-theme-text placeholder:text-theme-muted" />
         <small v-if="touched.email && errors.email" class="mt-1 text-xs text-red-600">{{ errors.email }}</small>
       </label>
       <label for="userPasswordLogin" class="mt-2 flex flex-col text-sm">
