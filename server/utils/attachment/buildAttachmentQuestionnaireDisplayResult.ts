@@ -2,11 +2,15 @@ import type {
   AttachmentDimension,
   AttachmentQuestionnaireResults,
   AttachmentQuestionnaireDisplayResults,
+  ConflictTagLevelAdvices,
+  ConflictTagLevelText,
   DoughnutDataset,
   PolarTagDataItem,
   RegulationIndex,
   TagDefinition,
   TagDisplayItem,
+  TagLevelAdvices,
+  TagLevelText,
   TagsResultsByDimension
 } from '../../../app/types/attachmentQuestionnaireResults'
 import tagProfilesData from '../../data/attachment/tagProfiles.json'
@@ -15,7 +19,7 @@ const TAG_TRANSLATIONS: Record<string, string> = {
   distanceSilence: 'Distance/Silence',
   validationRequired: 'Validation requise',
   quickRepair: 'Réparation rapide',
-  proximityDiscomfort: 'Inconfort de proximité',
+  proximityDiscomfort: 'Inconfort émotionnelle',
   conflict: 'Conflit',
   autonomyNeed: "Besoin d'autonomie",
   fearOfLoss: 'Peur de la perte',
@@ -29,6 +33,51 @@ const ANXIETY_COLOR = '#bae6fd'
 const AVOIDANCE_COLOR = '#fecdd3'
 const CONFLICT_COLOR = '#f97316'
 const CHART_BG_COLOR = '#fefefe1c'
+
+const isConflictTagLevelText = (
+  value: TagDefinition['associatedBehaviors'],
+): value is ConflictTagLevelText => {
+  return !Array.isArray(value)
+    && typeof value === 'object'
+    && value !== null
+    && ('anxiety' in value || 'avoidance' in value)
+}
+
+const isConflictTagLevelAdvices = (
+  value: TagDefinition['advices'],
+): value is ConflictTagLevelAdvices => {
+  return typeof value === 'object'
+    && value !== null
+    && ('anxiety' in value || 'avoidance' in value)
+}
+
+export const resolveAssociatedBehaviors = (
+  associatedBehaviors: TagDefinition['associatedBehaviors'],
+  dimension: AttachmentDimension,
+  regulationLevel: RegulationIndex['regulationLevel'],
+): string => {
+  if (Array.isArray(associatedBehaviors)) {
+    return associatedBehaviors.join('\n')
+  }
+
+  if (isConflictTagLevelText(associatedBehaviors)) {
+    return associatedBehaviors[dimension]?.[regulationLevel] ?? ''
+  }
+
+  return (associatedBehaviors as TagLevelText)?.[regulationLevel] ?? ''
+}
+
+export const resolveAdvices = (
+  advices: TagDefinition['advices'],
+  dimension: AttachmentDimension,
+  regulationLevel: RegulationIndex['regulationLevel'],
+): string[] => {
+  if (isConflictTagLevelAdvices(advices)) {
+    return advices[dimension]?.[regulationLevel] ?? []
+  }
+
+  return (advices as TagLevelAdvices)?.[regulationLevel] ?? []
+}
 
 export const resolveAttachmentQuestionnaireConflictDimension = (
   regulationData: AttachmentQuestionnaireResults['regulationIndexByDimension']
@@ -78,9 +127,17 @@ const buildTagsResults = (
         label: tagDefinition.label,
         indicator: tagDefinition.indicator,
         trigger: tagDefinition.trigger,
-        associatedBehaviors: tagDefinition.associatedBehaviors,
+        associatedBehaviors: resolveAssociatedBehaviors(
+          tagDefinition.associatedBehaviors,
+          dimension,
+          triggerItem.regulationLevel,
+        ),
         outputText: tagDefinition.outputTexts[triggerItem.regulationLevel],
-        advices: tagDefinition.advices[triggerItem.regulationLevel]
+        advices: resolveAdvices(
+          tagDefinition.advices,
+          dimension,
+          triggerItem.regulationLevel,
+        )
       })
     })
 

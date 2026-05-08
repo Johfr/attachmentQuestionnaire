@@ -169,7 +169,7 @@ const scrollToPremiumZone = () => {
   <p v-if="graphData.completionDate" class="sr-only">
     {{ graphData.completionDate }}
   </p>
-  <div class="donuts-container flex justify-evenly rounded-3xl bg-theme-surfaceLinkCard py-8 md:justify-center md:gap-20">
+  <!-- <div class="donuts-container flex justify-evenly rounded-3xl bg-theme-surfaceLinkCard py-8 md:justify-center md:gap-20">
     <div class="w-[125px] h-[125px] md:w-[250px] md:h-[250px]">
       <DoughnutChart
         :labels="anxietyLabel"
@@ -198,7 +198,7 @@ const scrollToPremiumZone = () => {
         :segment-border-color="'var(--results-donut-track)'"
       />
     </div>
-  </div>
+  </div> -->
 
   <section class="my-8">
     <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left text-theme-text">
@@ -206,8 +206,8 @@ const scrollToPremiumZone = () => {
     </h2>
     
     <!--  class="md:flex md:justify-start md:gap-4" -->
+    <!-- md:flex-1 md:max-w-[48%] -->
     <div>
-       <!-- md:flex-1 md:max-w-[48%] -->
       <div class="mb-3 rounded-3xl bg-theme-surfaceResultsGlobalProfile p-5">
         <h3 class="text-md mb-3 font-bold text-theme-text">
           <component :is="getProfileIcon(globalProfileKey)" :size="20" class="inline-block mr-2" />
@@ -243,7 +243,7 @@ const scrollToPremiumZone = () => {
                 <component :is="getProfileIcon(getSubProfile(dimension))" :size="20" class="inline-block mr-2" />
                 Sous profil :
                 <span v-if="!hasBasicAccess">
-                  Debloque l'acces
+                  Voir ton sous profil
                 </span>
                 <span v-else>
                   {{ getProfileLabel(getSubProfile(dimension)) }}
@@ -272,8 +272,8 @@ const scrollToPremiumZone = () => {
             >
               <button type="button" @click="scrollToPremiumZone">
                 <div class="text-center">
-                  <p class="mb-2 font-bold text-theme-text opacity-35">
-                    Debloque l'acces a tes sous profils anxieux et evitants
+                  <p class="mb-2 max-w-[50%] mx-auto font-bold text-theme-text opacity-35">
+                    Comprends ce qui se passe sur ton axe {{ dimension === 'anxiety' ? 'anxieux' : 'évitant' }}
                     <LucideCornerRightDown :size="24" class="inline-block ml-2 text-theme-text" />
                   </p>
                 </div>
@@ -285,7 +285,7 @@ const scrollToPremiumZone = () => {
     </div>
   </section>
 
-  <div class="mb-3 rounded-3xl border-l-4 border-l-theme-button bg-theme-surfaceStaticCard text-theme-text md:flex-1 md:max-w-[340%]">
+  <!-- <div class="mb-3 rounded-3xl border-l-4 border-l-theme-button bg-theme-surfaceStaticCard text-theme-text md:flex-1 md:max-w-[340%]">
     <Accordeon title="Explication des resultats">
       <div class="md:flex md:flex-row-reverse md:justify-between md:items-center">
         <div class="md:max-w-[48%]">
@@ -342,10 +342,10 @@ const scrollToPremiumZone = () => {
         </p>
       </div>
     </Accordeon>
-  </div>
+  </div> -->
 
   <section v-if="hasBasicAccess" class="my-8">
-    <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left text-theme-text">Repartition detaillee des declencheurs</h2>
+    <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left text-theme-text">Repartition detaillée de ce qui te fait douter et/ou te pousse dans tes retranchements</h2>
     <div class="my-12 justify-center md:w-144 md:h-144 mx-auto flex">
       <PolarChart :tags="tagData" :width="'600px'" :height="'600px'" />
     </div>
@@ -353,8 +353,11 @@ const scrollToPremiumZone = () => {
 
   <section class="my-8">
     <div v-for="dimension in ['anxiety', 'avoidance']" :key="dimension">
-      <h2 class="text-xl text-center font-bold my-5 md:text-2xl md:text-left text-theme-text">
-        {{ dimension === 'anxiety' ? 'Declencheurs anxieux' : 'Declencheurs evitants' }}
+      <h2
+      class="text-xl text-center font-bold my-5 md:text-2xl md:text-left text-theme-text"
+      :class="dimension === 'anxiety' ? 'text-primary' : 'text-secondary'"
+      >
+        {{ dimension === 'anxiety' ? 'Ce qui te fait paniquer' : 'Ce qui te fait fuir' }}
       </h2>
 
       <div class="md:flex md:flex-wrap md:justify-center md:gap-4">
@@ -387,7 +390,7 @@ const scrollToPremiumZone = () => {
             >
               <LucideMinusCircle v-if="isProfileExplanationOpen(tag.trigger)" :size="14" class="inline-block mr-1" />
               <LucidePlusCircle v-else :size="14" class="inline-block mr-1" />
-              Trigger : {{ tag.tag }}
+              {{ tag.tag }}
             </p>
             <p
               class="text-white p-1 rounded-md text-xs"
@@ -412,19 +415,22 @@ const scrollToPremiumZone = () => {
               {{ tag.label }}
             </h3>
 
-            <p class="mb-3 text-sm text-theme-muted whitespace-pre-line">
+            <!-- <p class="mb-3 text-sm text-theme-muted whitespace-pre-line">
               <strong>Indicateur :</strong>
               {{ tag.indicator }}
-            </p>
+            </p> -->
 
-            <p class="text-sm text-theme-muted whitespace-pre-line">
+            <!-- <p class="text-sm text-theme-muted whitespace-pre-line">
               {{ tag.trigger }}
-            </p>
+            </p> -->
 
             <div class="rounded-3xl p-5 md:flex-1">
-              <LucideUserCircle :size="20" class="inline-block mr-2" />
-              <strong>Ce genre de profil :</strong>
-              <ul
+              <LucideBan :size="20" class="inline-block mr-2" />
+              <strong>Les erreurs que tu as probablement déjà faites :</strong>
+              <p class="mt-3 mb-3 text-sm text-theme-muted first-letter:uppercase whitespace-pre-line">
+                {{ tag.associatedBehaviors }}
+              </p>
+              <!-- <ul
                 class="pl-5 max-h-16 overflow-hidden text-sm text-theme-muted line-clamp-2"
                 :class="{ 'max-h-full line-clamp-none md:max-h-full': isProfileExplanationOpen(tag.label) }"
               >
@@ -435,26 +441,27 @@ const scrollToPremiumZone = () => {
                 >
                   {{ behavior }}
                 </li>
-              </ul>
-              <p
+              </ul> -->
+              <!-- <p
                 :data-testid="`trigger-behaviors-toggle-${tag.key}`"
                 class="block w-full p-3 text-right text-xs cursor-pointer text-theme-button"
                 @click="toggleProfileExplanation(tag.label)"
               >
                 {{ isProfileExplanationOpen(tag.label) ? 'Réduire...' : 'Lire la suite...' }}
-              </p>
+              </p> -->
             </div>
 
-            <p class="text-sm text-theme-muted whitespace-pre-line">
+            <!-- <p class="text-sm text-theme-muted whitespace-pre-line">
               <strong>Te concernant : </strong>{{ tag.outputText }}
-            </p>
+            </p> -->
 
             <div class="rounded-3xl p-5 md:flex-1">
               <LucideLightbulb :size="20" class="inline-block mr-2" />
-              <strong>Mon conseil</strong>
+              <strong>Quoi faire maintenant ?</strong>
+                <!-- class="pl-5 max-h-16 overflow-hidden text-sm text-theme-muted line-clamp-2"
+                :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen(tag.key) }" -->
               <ul
-                class="pl-5 max-h-16 overflow-hidden text-sm text-theme-muted line-clamp-2"
-                :class="{ 'max-h-full line-clamp-none': isProfileExplanationOpen(tag.key) }"
+                class="pl-5 max-h-full text-sm text-theme-muted"
               >
                 <li
                   v-for="(advice, index) in tag.advices"
@@ -464,13 +471,13 @@ const scrollToPremiumZone = () => {
                   {{ advice }}
                 </li>
               </ul>
-              <p
+              <!-- <p
                 :data-testid="`trigger-advices-toggle-${tag.key}`"
                 class="block w-full p-3 text-right text-xs cursor-pointer text-theme-button"
                 @click="toggleProfileExplanation(tag.key)"
               >
                 {{ isProfileExplanationOpen(tag.key) ? 'Réduire...' : 'Lire la suite...' }}
-              </p>
+              </p> -->
             </div>
           </div>
 
@@ -482,7 +489,7 @@ const scrollToPremiumZone = () => {
             <button type="button" @click="scrollToPremiumZone">
               <div class="text-sm text-center md:text-md">
                 <p class="mb-2 font-bold text-theme-text opacity-35">
-                  Debloque l'acces a ce resultat
+                  Voir quoi faire maintenant
                   <LucideCornerRightDown :size="24" class="inline-block ml-2 text-theme-text" />
                 </p>
               </div>

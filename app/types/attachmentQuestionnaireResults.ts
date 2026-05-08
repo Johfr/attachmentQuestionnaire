@@ -60,13 +60,18 @@ export type AverageScore = {
   intensityLevel: IntensityLevel
 }
 
+export type TagLevelText = Record<RegulationLevel, string>
+export type TagLevelAdvices = Record<RegulationLevel, string[]>
+export type ConflictTagLevelText = Record<AttachmentDimension, TagLevelText>
+export type ConflictTagLevelAdvices = Record<AttachmentDimension, TagLevelAdvices>
+
 export type TagDefinition = {
   key: string
   indicator: string
   trigger: string
-  associatedBehaviors: string[]
+  associatedBehaviors: string[] | TagLevelText | ConflictTagLevelText
   outputTexts: Record<RegulationLevel, string>
-  advices: Record<RegulationLevel, string[]>
+  advices: TagLevelAdvices | ConflictTagLevelAdvices
   label: string
 }
 
@@ -77,7 +82,7 @@ export type TagDisplayItem = {
   label: string
   indicator: string
   trigger: string
-  associatedBehaviors: string[]
+  associatedBehaviors: string
   outputText: string
   advices: string[]
 }

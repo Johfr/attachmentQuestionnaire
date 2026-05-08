@@ -1158,8 +1158,9 @@ watch(
           :disabled="!partnerSharePaywallSessionId || isPartnerShareCheckoutLoading"
           @click="handlePartnerShareCheckout"
         >
-          <LucideLoader v-if="isPartnerShareCheckoutLoading" :size="18" class="animate-spin" />
-          <span>{{ isPartnerShareCheckoutLoading ?'Redirection...' : 'Débloquer mes résultats pour 1,99 €' }}</span>
+        <span>{{ isPartnerShareCheckoutLoading ?'Redirection...' : 'Débloquer mes résultats pour 1,99 €' }}</span>
+        <LucideLoader v-if="isPartnerShareCheckoutLoading" :size="18" class="animate-spin" />
+          <LucideExternalLink v-if="!isPartnerShareCheckoutLoading" :size="18" aria-hidden="true" />
         </button>
       </div>
     </Popin>

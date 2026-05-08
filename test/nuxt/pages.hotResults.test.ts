@@ -176,7 +176,9 @@ describe('attachment-questionnaire/results (hot / first render)', () => {
 
     const wrapper = await mountSuspended(HotResultsPage)
 
-    expect(wrapper.text()).toContain('Debloque l\'acces a tes sous profils anxieux et evitants')
+    expect(wrapper.text()).toContain('Voir ton sous profil')
+    expect(wrapper.text()).toContain('Comprends ce qui se passe sur ton axe anxieux')
+    expect(wrapper.text()).toContain('Comprends ce qui se passe sur ton axe évitant')
     expect(wrapper.text()).toContain('Lorem ipsum')
   })
 

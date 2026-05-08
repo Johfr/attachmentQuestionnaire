@@ -20,6 +20,7 @@ Ce fichier capture les regles de collaboration attendues pour les agents qui tra
 - les tests cibles lies au changement peuvent etre lances par defaut
 - privilegier les tests cibles avant la suite complete
 - si une commande de test echoue a cause du sandbox ou d'un `EPERM` / `spawn`, l'agent peut demander automatiquement une escalation pour relancer la meme commande
+- si un test echoue avec `spawn EPERM` / `esbuild` dans cet environnement, l'agent doit relancer directement la meme commande hors sandbox plutot que considerer cela comme un signal de regression produit
 - ne pas lancer de commandes lourdes ou inutiles si un test cible suffit
 - ne lancer aucun test sans demande explicite du user
 
@@ -48,6 +49,14 @@ Ce fichier capture les regles de collaboration attendues pour les agents qui tra
 - rester simple dans la conception, il s'agir d'un mvp en v1. Inutile de surcharger le code comme si c'était un ecommerce. Le but n'est pas de créer une usine à gaz.
 - coder simple, efficace, bonne pratique, lisible et dans le cadre pose par le user
 - Aucune regression n'est admise. fais bien attention à comprendre le code et à appliquer un correctif sans effet de bord ni regression. Si tu dois explorer le code plus profondément, fais le.
+
+## Encodage
+
+- considerer `UTF-8` comme la source de verite pour les fichiers texte du depot
+- ne pas prendre l'affichage PowerShell comme preuve suffisante d'un probleme d'encodage
+- si un texte semble corrompu dans le terminal, verifier d'abord le contenu disque en lecture `utf8`
+- eviter les reecritures shell de masse sur les fichiers texte si un edit cible suffit
+- en cas de doute sur un mojibake, corriger le contenu reel du fichier, pas seulement son affichage console
 
 ## Instruction spcifique à chatGpt
 si un correctif t’oblige à introduire un nouveau mode d’auth, un nouveau flux backend, une nouvelle persistance, ou une hypothèse métier non demandée, tu dois t’arrêter et poser une question

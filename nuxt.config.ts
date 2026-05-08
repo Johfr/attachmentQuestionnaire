@@ -1,4 +1,4 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+﻿// https://nuxt.com/docs/api/configuration/nuxt-config
 // import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
@@ -10,6 +10,12 @@ export default defineNuxtConfig({
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
       titleTemplate: '%s | Relation anxieux-évitant',
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/favicon-96x96.png' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+      ],
       meta: [
         { name: 'description', content: 'Comprends l\'attachement adulte et la dynamique anxieux-évitant. Test gratuit, analyses personnalisées et ressources pour mieux vivre tes relations amoureuses.' },
         { property: 'og:type', content: 'website' },
@@ -105,3 +111,4 @@ export default defineNuxtConfig({
     },
   },
 })
+

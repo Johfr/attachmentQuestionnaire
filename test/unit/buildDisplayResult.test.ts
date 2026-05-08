@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { computeAttachmentQuestionnaireResults } from '../../server/utils/attachment/computeAttachmentQuestionnaireResults'
 import {
   buildAttachmentQuestionnaireDisplayResult,
+  resolveAdvices,
+  resolveAssociatedBehaviors,
   resolveAttachmentQuestionnaireConflictDimension
 } from '../../server/utils/attachment/buildAttachmentQuestionnaireDisplayResult'
 import questionsData from '../../app/assets/data/attachment/questions.json'
@@ -78,7 +80,7 @@ describe('buildAttachmentQuestionnaireDisplayResult', () => {
     expect(item).toHaveProperty('label')
     expect(item).toHaveProperty('indicator')
     expect(item).toHaveProperty('trigger')
-    expect(Array.isArray(item.associatedBehaviors)).toBe(true)
+    expect(typeof item.associatedBehaviors).toBe('string')
     expect(item).toHaveProperty('outputText')
     expect(Array.isArray(item.advices)).toBe(true)
   })
@@ -192,5 +194,58 @@ describe('resolveAttachmentQuestionnaireConflictDimension', () => {
   it('returns null when both dimensions are empty', () => {
     const regulationData = { anxiety: [], avoidance: [] }
     expect(resolveAttachmentQuestionnaireConflictDimension(regulationData)).toBeNull()
+  })
+})
+
+describe('conflict-specific trigger content resolution', () => {
+  it('resolves associatedBehaviors from dimension + level for conflict', () => {
+    const associatedBehaviors = {
+      anxiety: {
+        low: 'anxiety low behavior',
+        medium: 'anxiety medium behavior',
+        high: 'anxiety high behavior',
+      },
+      avoidance: {
+        low: 'avoidance low behavior',
+        medium: 'avoidance medium behavior',
+        high: 'avoidance high behavior',
+      },
+    }
+
+    expect(resolveAssociatedBehaviors(associatedBehaviors, 'anxiety', 'high')).toBe('anxiety high behavior')
+    expect(resolveAssociatedBehaviors(associatedBehaviors, 'avoidance', 'medium')).toBe('avoidance medium behavior')
+  })
+
+  it('resolves advices from dimension + level for conflict', () => {
+    const advices = {
+      anxiety: {
+        low: ['anxiety low advice'],
+        medium: ['anxiety medium advice'],
+        high: ['anxiety high advice'],
+      },
+      avoidance: {
+        low: ['avoidance low advice'],
+        medium: ['avoidance medium advice'],
+        high: ['avoidance high advice'],
+      },
+    }
+
+    expect(resolveAdvices(advices, 'anxiety', 'high')).toEqual(['anxiety high advice'])
+    expect(resolveAdvices(advices, 'avoidance', 'medium')).toEqual(['avoidance medium advice'])
+  })
+
+  it('keeps standard trigger formats compatible', () => {
+    expect(resolveAssociatedBehaviors(['first', 'second'], 'anxiety', 'low')).toBe('first\nsecond')
+    expect(resolveAssociatedBehaviors({
+      low: 'low behavior',
+      medium: 'medium behavior',
+      high: 'high behavior',
+    }, 'avoidance', 'medium')).toBe('medium behavior')
+
+    expect(resolveAdvices({
+      low: ['low advice'],
+      medium: ['medium advice'],
+      high: ['high advice'],
+    }, 'anxiety', 'low')).toEqual(['low advice'])
   })
 })

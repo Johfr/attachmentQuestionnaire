@@ -15,7 +15,7 @@ const questionnaires = [
     id: 1,
     icon: 'Link',
     title: 'Questionnaire d\'attachement adulte',
-    description: 'Découvre ton style d\'attachement et reçois des conseils personnalisés pour mieux comprendre comment tu fonctionnes dans tes relations.',
+    description: 'Découvre ton style d\'attachement en 10 minutes. Reçois des explications claires sur tes schémas + des conseils précis pour arrêter de reproduire les mêmes erreurs.',
     image: '/img/bg-questionnaire.png',
     link: '/attachment-questionnaire/introduction',
     duration: '8-15 min',
@@ -87,10 +87,13 @@ const showMore = ref(false)
         sectionSpacing="my-10"
       >
         <p class="mt-6 text-sm text-theme-text md:max-w-[75%]">
-          Comprends l'attachement adulte et la dynamique anxieux-évitant. Construis ta relation de rêve. Reconnais tes schémas et ceux de ta partenaire. Apprends à dissocier l'évitement des comportements toxiques.
+          Comprends enfin pourquoi tu tournes en rond dans tes relations.
+          L'un cherche désespérément de la proximité pendant que l'autre s'éloigne.
+          Ce n'est pas un problème de caractère, c'est un schéma d'attachement anxieux-évitant.
         </p>
         <p class="mt-2 text-sm text-theme-text md:max-w-[75%] hidden md:block">
-          Passe le questionnaire d'attachement adulte gratuit pour découvrir ton style (anxieux, évitant, sécure, désorganisé) et reçois des conseils personnalisés pour mieux comprendre tes schémas relationnels.
+          Passe le questionnaire gratuit et découvre ton style d'attachement (anxieux, évitant, sécurisé ou désorganisé).
+          Reçois des conseils concrets et personnalisés pour briser ce cycle et construire une relation plus saine et apaisée.
         </p>
 
       </DesignSystemPageSectionHeading>
@@ -116,17 +119,29 @@ const showMore = ref(false)
       <h2 class="text-xl font-semibold mb-4">La dynamique anxieux-évitant</h2>
 
       <div :class="{ 'line-clamp-6': !showMore }" class="text-sm text-theme-muted mb-3">
-        <p class="">
-          Dans de nombreuses relations, un schéma se répète : l'un cherche plus de proximité, l'autre prend de la distance. Ce n'est pas une incompatibilité de caractère, c'est souvent la signature d'une dynamique anxieux-évitant, l'une des configurations relationnelles les plus répandues et les moins comprises.
+        <p class="mb-3">
+          Dans beaucoup de couples le même scénario se répète sans fin :
+          L'un a constamment peur d'être abandonné et cherche plus de proximité tandis que l'autre se sent étouffé et prend de la distance.
         </p>
-        <p class="">
-          La personne avec un attachement anxieux ressent intensément le silence, l'absence de réponse, le retrait. Elle interprète ces signaux comme les preuves d'un désengagement imminent et cherche à rétablir la connexion — parfois au point d'aggraver la situation. De son côté, la personne avec un attachement évitant valorise son espace intérieur, perçoit les demandes de connexion comme oppressantes et se replie davantage. Ce cycle d'activation-fuite peut durer des années sans que ni l'un ni l'autre ne comprenne vraiment ce qui se joue.
+        <p class="mb-3">
+          Ce n'est pas une simple incompatibilité de caractères. C'est le cycle classique <strong>anxieux-évitant</strong>, l'une des dynamiques relationnelles les plus fréquentes et les plus destructrices.
         </p>
-        <p class="">
-          La peur de l'abandon, la jalousie, le besoin de réassurance, la distance émotionnelle, les ruptures à répétition : ces comportements ne sont pas des défauts de caractère. Ils sont souvent le fruit d'un style d'attachement construit tôt, en réponse à ce que l'environnement a appris au système nerveux sur la fiabilité de l'autre.
+        <p class="mb-3">
+          La personne anxieuse vit le silence ou le retrait comme une menace vitale. Elle poursuit, questionne, a besoin d'être rassurée.
+          De l'autre côté, la personne évitante perçoit ces demandes comme oppressantes et se referme encore plus.
         </p>
-        <p class="">
-          Comprendre son profil d'attachement — anxieux activé, anxieux régulé, évitant rigide, évitant flexible, sécure ou désorganisé — est la première étape concrète pour sortir de ces schémas. Ce n'est pas une condamnation. C'est une clé.
+        <p class="mb-3">
+          Ce cercle vicieux de poursuite-fuite peut durer des années, générant frustration, ressentiment et épuisement des deux côtés.
+        </p>
+        <p class="mb-3">
+          La peur de l'abandon, le besoin incessant de réassurance, la distance émotionnelle, les ruptures à répétition… tous ces comportements ne sont pas des « défauts » ou des caprices. Ils sont le résultat d'un système nerveux qui a appris très tôt comment l'autre allait (ou non) répondre à ses besoins.
+        </p>
+        <p class="mb-3">
+          Comprendre ton profil d'attachement — que tu sois <strong>anxieux activé</strong>, <strong>anxieux régulé</strong>, <strong>évitant rigide</strong>, <strong>évitant flexible</strong>, <strong>sécure</strong> ou <strong>désorganisé</strong> — est la première étape concrète pour sortir de ce schéma.        
+        </p>
+        <p class="mb-3">
+          Ce n'est pas une condamnation.
+          C'est une explication. Et surtout, c'est une clé.
         </p>
       </div>
 

@@ -55,7 +55,7 @@ const DISPLAY_RESULTS_FIXTURE: AttachmentQuestionnaireDisplayResults = {
         indicator: 'Besoin de reassurance',
         trigger: 'Peur de perdre le lien',
         regulationLevel: 'high',
-        associatedBehaviors: ['cherche a rassurer', 'surveille les signes de distance'],
+        associatedBehaviors: 'cherche a rassurer\nsurveille les signes de distance',
         outputText: 'Tu peux vite te sentir active quand le lien devient flou.',
         advices: ['ralentir avant de reagir', 'revenir aux faits'],
       },
@@ -68,7 +68,7 @@ const DISPLAY_RESULTS_FIXTURE: AttachmentQuestionnaireDisplayResults = {
         indicator: 'Besoin de recul',
         trigger: 'Trop de proximite ressentie',
         regulationLevel: 'medium',
-        associatedBehaviors: ['prend de la distance', 'retarde certaines conversations'],
+        associatedBehaviors: 'prend de la distance\nretarde certaines conversations',
         outputText: 'Tu peux te proteger en prenant de l espace.',
         advices: ['nommer le besoin de recul', 'garder un minimum de lien'],
       },
@@ -79,7 +79,7 @@ const DISPLAY_RESULTS_FIXTURE: AttachmentQuestionnaireDisplayResults = {
         indicator: 'Maitrise emotionnelle',
         trigger: 'Sentiment d envahissement',
         regulationLevel: 'medium',
-        associatedBehaviors: ['structure les echanges', 'garde la main sur le rythme'],
+        associatedBehaviors: 'structure les echanges\ngarde la main sur le rythme',
         outputText: 'Tu peux chercher a reprendre la main quand ca deborde.',
         advices: ['observer le declencheur', 'negocier un rythme clair'],
       },
@@ -126,11 +126,9 @@ describe('results premium-zone browser regression', () => {
       },
     })
 
-    expect(wrapper.findAll('canvas')).toHaveLength(2)
-
     const premiumButtons = wrapper.findAll('button').filter(node =>
-      node.text().includes('Debloque l\'acces a tes sous profils anxieux et evitants')
-      || node.text().includes('Debloque l\'acces a ce resultat')
+      node.text().includes('Comprends en détail ce qui se passe sur cet axe')
+      || node.text().includes('Voir quoi faire maintenant')
     )
 
     expect(premiumButtons.length).toBeGreaterThan(0)
@@ -174,7 +172,7 @@ describe('results premium-zone browser regression', () => {
     expect(triggerCard.classes()).not.toContain('max-h-full')
 
     const triggerToggle = wrapper.findAll('[title="Deplier"]').find(node =>
-      node.text().includes('Trigger : fearOfLoss')
+      node.text().includes('fearOfLoss')
     )
 
     expect(triggerToggle).toBeTruthy()
@@ -183,35 +181,23 @@ describe('results premium-zone browser regression', () => {
 
     expect(triggerCard.classes()).toContain('max-h-full')
 
-    const expandedTriggerToggle = wrapper.findAll('[title="Réduire"], [title="RÃ©duire"]').find(node =>
-      node.text().includes('Trigger : fearOfLoss')
+    const expandedTriggerToggle = wrapper.findAll('[title="Réduire"]').find(node =>
+      node.text().includes('fearOfLoss')
     )
     expect(expandedTriggerToggle).toBeTruthy()
 
     const triggerBehaviorsToggle = wrapper.find('[data-testid="trigger-behaviors-toggle-fearOfLoss"]')
-    expect(triggerBehaviorsToggle.exists()).toBe(true)
-    expect(triggerBehaviorsToggle.text()).toBe('Lire la suite...')
-
-    await triggerBehaviorsToggle.trigger('click')
-    await nextTick()
-    expect(wrapper.find('[data-testid="trigger-behaviors-toggle-fearOfLoss"]').text()).toBe('Réduire...')
-
-    const triggerAdvicesToggle = wrapper.find('[data-testid="trigger-advices-toggle-fearOfLoss"]')
-    expect(triggerAdvicesToggle.exists()).toBe(true)
-    expect(triggerAdvicesToggle.text()).toBe('Lire la suite...')
-    await triggerAdvicesToggle.trigger('click')
-    await nextTick()
-    expect(wrapper.find('[data-testid="trigger-advices-toggle-fearOfLoss"]').text()).toBe('Réduire...')
-
-    await wrapper.find('[data-testid="trigger-behaviors-toggle-fearOfLoss"]').trigger('click')
-    await nextTick()
-    expect(wrapper.find('[data-testid="trigger-behaviors-toggle-fearOfLoss"]').text()).toBe('Lire la suite...')
+    expect(triggerBehaviorsToggle.exists()).toBe(false)
+    expect(wrapper.text()).toContain('Les erreurs que tu as probablement déjà faites :')
+    expect(wrapper.text()).toContain('Quoi faire maintenant ?')
+    expect(wrapper.text()).toContain('cherche a rassurer')
+    expect(wrapper.text()).toContain('ralentir avant de reagir')
 
     await expandedTriggerToggle!.trigger('click')
     await nextTick()
 
     const collapsedTriggerToggle = wrapper.findAll('[title="Deplier"]').find(node =>
-      node.text().includes('Trigger : fearOfLoss')
+      node.text().includes('fearOfLoss')
     )
     expect(collapsedTriggerToggle).toBeTruthy()
     expect(triggerCard.classes()).not.toContain('max-h-full')

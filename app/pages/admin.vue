@@ -61,6 +61,8 @@ await siteConfigStore.loadConfig()
   <section>
     <DesignSystemPageSectionHeading :isHeading="true" title="Admin panel" titleSize="text-4xl md:text-3xl" sectionSpacing="mt-8 mb-12" />
 
+    <EuromillionsStatsModel :balls="[1, 2, 3, 4, 5]" :stars="[1, 2]" :drawDate="new Date()" />
+    
     <div v-if="authStore.isAdmin" class="border-none">
       <section class="mb-6 rounded-3xl border-l-4 border-theme-button bg-theme-surfaceStaticCard p-6">
         <h2 class="mb-3 text-xl font-semibold text-theme-text">

@@ -105,6 +105,130 @@ L'intérêt produit est fort ici :
 - les dimensions disent `sur quel axe` le user est activé
 - les déclencheurs disent `comment` cela s'active dans la relation
 
+### Structure métier d'un bloc déclencheur
+
+Dans l'interface, un déclencheur n'est pas affiché comme un simple tag ou un
+simple score.
+
+Chaque carte déclencheur est pensée comme un mini module de lecture
+relationnelle qui aide le user à comprendre :
+
+- ce qui s'active
+- ce que cela raconte de sa dynamique affective
+- en quoi cela le concerne concrètement
+- quoi en faire de manière utile
+
+Le bloc trigger peut contenir `4 sections principales` :
+
+- `Indicateur`
+- `Ce genre de profil`
+- `Te concernant`
+- `Mon conseil`
+
+#### 1. Indicateur
+
+La section `Indicateur` sert à nommer clairement le sens du trigger.
+
+Elle formule de manière simple ce que le déclencheur semble pointer dans la
+relation :
+
+- besoin de réassurance
+- peur de la perte
+- inconfort de la proximité
+- besoin de contrôle
+- etc.
+
+Cette section joue un rôle de synthèse immédiate.
+Elle aide le user à comprendre rapidement `de quoi parle` le trigger avant de
+descendre dans les explications plus fines.
+
+#### 2. Ce genre de profil
+
+La section `Ce genre de profil` contextualise le déclencheur à un niveau plus
+général.
+
+Elle explique comment un profil ayant ce type d'activation relationnelle a
+tendance à fonctionner :
+
+- ce qu'il recherche
+- ce qui l'active
+- ce qu'il perçoit plus fortement
+- les besoins implicites que cela peut révéler
+
+Cette section n'est pas centrée uniquement sur la situation actuelle du user.
+Elle donne une lecture plus structurelle du fonctionnement relationnel associé
+au trigger.
+
+#### 3. Te concernant
+
+La section `Te concernant` ramène l'analyse au user.
+
+Elle sert à personnaliser la lecture :
+
+- ce que ce trigger semble dire de sa façon de vivre le lien
+- ce que cela produit dans ses réactions
+- comment cela peut se manifester dans sa relation actuelle
+
+L'objectif est de faire le pont entre :
+
+- une logique générale de profil
+- et l'expérience concrète du user
+
+#### 4. Mon conseil
+
+La section `Mon conseil` traduit la lecture du trigger en utilité pratique.
+
+Elle ne sert pas à donner une injonction abstraite.
+Elle doit plutôt aider le user à :
+
+- prendre du recul sur l'activation
+- mieux nommer ce qui se joue
+- éviter certaines erreurs classiques
+- adopter une piste plus ajustée à son fonctionnement relationnel
+
+L'intention produit est que le trigger ne soit pas seulement descriptif, mais
+qu'il devienne actionnable.
+
+### Variation des sections selon le niveau du trigger
+
+Toutes les cartes trigger ne s'affichent pas de la même façon.
+
+Le contenu dépend du niveau d'intensité du trigger :
+
+- `low`
+- `medium`
+- `high`
+
+Le principe métier est le suivant :
+
+- un trigger `low` ne doit pas produire la même densité de lecture qu'un
+  trigger `high`
+- plus l'intensité est forte, plus la restitution peut être précise,
+  incarnée et utile
+- à l'inverse, un niveau faible doit rester plus léger et plus prudent
+
+Concrètement :
+
+- un `low` peut avoir un texte plus court, plus sobre, parfois avec moins de
+  matière ou une formulation plus prudente
+- un `medium` peut proposer une lecture plus installée, avec davantage de
+  contexte
+- un `high` peut déployer une lecture plus affirmée, plus fouillée et plus
+  riche en conseils
+
+Cela signifie que :
+
+- toutes les sections ne sont pas forcément remplies avec la même profondeur
+- certaines sections peuvent être plus courtes selon le niveau
+- le texte d'un même trigger n'est pas identique entre un niveau faible et un
+  niveau élevé
+
+Cette logique est importante pour l'expérience utilisateur :
+
+- elle évite de surinterpréter un signal faible
+- elle donne plus de valeur aux activations les plus significatives
+- elle rend la restitution plus nuancée et plus crédible
+
 ### 5. Les niveaux d'intensité
 
 Les dimensions et les déclencheurs sont classés selon des niveaux
@@ -171,6 +295,6 @@ Pour le détail du moteur de calcul et des règles métier associées, voir auss
 
 - `app/assets/data/attachment/tagsDocumentation.json`
 - `app/assets/data/attachment/questions.json`
-- `app/assets/data/attachment/tagsProfils.json`
+- `server/data/attachment/tagProfiles.json`
 - `docs/business-rules.md`
 - `docs/backend-questionnaires.md`

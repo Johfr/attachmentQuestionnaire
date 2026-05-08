@@ -6,59 +6,36 @@
       "dimension": "anxiety",
       "indicator": "hypervigilance relationnelle face aux variations de disponibilité du partenaire",
       "trigger": "Ce déclencheur s'active lorsque la relation devient moins lisible : réponse plus lente, ton plus froid, baisse soudaine d'attention, silence inhabituel, disponibilité qui change sans explication claire. Ce n'est pas seulement le silence en lui-même qui pose problème, c'est ce qu'il réveille intérieurement : le doute, l'impression que quelque chose t'échappe, la peur d'un éloignement non dit, et parfois un vieux réflexe de vigilance face à l'instabilité du lien. Plus le comportement du partenaire devient flou ou incohérent, plus ton système cherche à détecter rapidement s'il y a un danger relationnel réel derrière ce changement.",
-      "associatedBehaviors": [
-        "surveille les temps de réponse ou les changements de rythme dans la communication",
-        "relit les messages pour essayer de repérer un détail inhabituel",
-        "compare le comportement actuel du partenaire à son comportement habituel",
-        "rumine plus facilement lorsqu'un silence dure sans explication",
-        "cherche vite à comprendre ce qui se passe dans la relation",
-        "se sent déstabilisé quand l'autre devient soudainement moins disponible",
-        "peut poser plus de questions ou chercher plus de signes de clarté",
-        "a du mal à rester pleinement concentré sur autre chose tant que le doute n'est pas levé"
-      ],
-      "questionIds": [1, 3, 11, 17],
-      "thresholds": {
-        "low": {
-          "min": 0,
-          "max": 1.49,
-          "label": "faible"
-        },
-        "medium": {
-          "min": 1.5,
-          "max": 2.49,
-          "label": "modéré"
-        },
-        "high": {
-          "min": 2.5,
-          "max": 4,
-          "label": "élevé"
-        }
+      "associatedBehaviors": {
+        "low": "Le silence s'est installé et une légère distance s'est creusée dans votre relation.\n\nTu as ressenti un certain malaise et l'envie de reprendre contact pour vérifier que tout allait bien.\n\nCette réaction reste encore modérée, mais elle te montre que le manque de réponse te perturbe plus que tu ne le voudrais.",
+        "medium": "Le silence s'est installé… et la distance s'est creusée.\n\nAu lieu de laisser de l'espace, tu as rapidement ressenti de l'anxiété et tu as commencé à envoyer plusieurs messages pour obtenir une réponse.\n\nTu as demandé où il/elle en était, pourquoi il/elle répondait moins, ou s'il/elle t'aimait encore, dans l'espoir de te sentir mieux.",
+        "high": "Le silence s'est installé… et la distance s'est creusée.\n\nAu lieu de laisser de l'espace, tu as paniqué. Tu lui as envoyé message sur message. Tu as demandé où il/elle en était, pourquoi il/elle répondait moins, s'il/elle t'aimait encore, ce qui n'allait pas. Tu as expliqué, justifié, reproché, supplié pour un signe de vie.\n\nRésultat ? Il/elle s'est encore plus refermé(e). Le silence est devenu plus lourd. La distance s'est transformée en froideur glaciale.\n\nEt maintenant tu es là, avec cette boule dans le ventre, cette peur viscérale que cette fois c'est peut-être fini pour de bon. Tu penses que ton besoin de rapprochement l'a fait fuir encore plus loin.\n\nTu te demandes comment tu vas faire pour réparer ça… mais plus tu y penses, plus tu as peur de faire pire en essayant de faire mieux."
+      },
+      "advices": {
+        "low": [
+          "Réduis légèrement la fréquence de tes messages quand tu sens un peu de distance.",
+          "Essaie de patienter quelques heures avant de relancer.",
+          "Occupe-toi pour ne pas rester fixée sur son silence : balade, films, séries etc."
+        ],
+        "medium": [
+          "Ne relance pas immédiatement dès que tu sens un silence ou une baisse de réponse.",
+          "Donne-lui au moins 24h sans aucun message de ta part.",
+          "Travaille sur ta régulation émotionnelle avant de reprendre contact.",
+          "Quand tu lui écriras, reste léger et bref, sans poser 10 questions d'un coup."
+        ],
+        "high": [
+          "Arrête immédiatement toute relance. Plus un seul message tant qu'il n'a pas repris contact de lui-même.",
+          "Chaque message supplémentaire en période de silence ne fait qu'empirer la distance et risque de le faire disparaître pour de bon.",
+          "Apprends à tolérer le silence sans agir. C'est douloureux, mais c'est la seule façon de casser le cycle.",
+          "Ne vérifie plus ses stories ou son statut toutes les heures, ça alimente ta panique.",
+          "Quand (et si) tu reprends contact, fais-le une seule fois, calmement, sans reproche ni demande de réassurance urgente.",
+          "Si tu continues à bombarder pendant ses silences, tu vas très certainement accélérer la fin de la relation et ce n'est pas ce que tu veux."
+        ]
       },
       "outputTexts": {
         "low": "La distance ou les silences ponctuels du partenaire ne semblent pas suffire à te faire basculer rapidement dans l'alerte. Tu peux remarquer un changement de disponibilité sans forcément l'interpréter immédiatement comme un signe de problème dans le lien. Cela ne veut pas dire que tu es insensible, mais plutôt que ton équilibre relationnel ne dépend pas trop de micro-variations dans la présence de l'autre.",
         "medium": "Les changements de disponibilité, de ton ou de communication peuvent commencer à te travailler lorsqu'ils durent ou restent flous. Tu n'es pas forcément envahi immédiatement, mais le silence inhabituel, la distance soudaine ou les réponses moins engagées peuvent créer du doute et occuper une partie de ton esprit. Selon le contexte, tu peux osciller entre patience, questionnement et besoin de comprendre ce qui est en train de se jouer.",
         "high": "La distance ou le silence du partenaire semblent être un déclencheur fort chez toi. Quand le lien devient moins visible, moins lisible ou moins constant, ton système relationnel peut vite passer en état d'alerte. Tu peux ressentir un doute intense, une perte de sécurité intérieure et un besoin croissant de comprendre ce qui se passe. Ce n'est pas juste une préférence pour la communication : c'est souvent la difficulté à tolérer l'incertitude relationnelle quand le lien paraît vaciller sans explication claire."
-      },
-      "advices": {
-        "low": [
-          "Continue à t'appuyer sur cette capacité à ne pas surinterpréter trop vite les variations normales de disponibilité.",
-          "Garde malgré tout de la nuance : tolérer le silence ne veut pas dire ignorer des signaux répétés d'éloignement réel.",
-          "Si un malaise persiste malgré tout, privilégie une communication simple et directe plutôt que des suppositions."
-        ],
-        "medium": [
-          "Quand un doute apparaît, essaie de différer l'interprétation immédiate : un changement de rythme n'est pas toujours un rejet.",
-          "Observe d'abord si le comportement du partenaire est ponctuel ou réellement répétitif avant d'en tirer une conclusion.",
-          "Reviens aux faits concrets : qu'est-ce qui a changé exactement, depuis quand, et avec quelle intensité ?",
-          "Quand c'est possible, formule une demande claire plutôt que de rester seul avec l'ambiguïté."
-        ],
-        "high": [
-          "Apprends à distinguer un silence ponctuel d'un vrai schéma d'éloignement : ton ressenti est réel, mais ton interprétation ne représente qu'une partie de l'histoire.",
-          "Quand tu te sens en alerte, évite de multiplier immédiatement les scénarios mentaux ; reviens d'abord au présent et à ce qui est, pas à ce que tu t'imagines.",
-          "Note ce qui t'a activé précisément : absence de réponse, ton différent, flou, changement brutal. Mettre des mots réduit souvent la confusion.",
-          "Travaille à tolérer quelques heures sans réponses ou quelques zones floues sans chercher à réparer ou clarifier immédiatement avec ton/ta partenaire.",
-          "Si ce déclencheur revient souvent, pose-toi la question de fond : est-ce l'autre qui est réellement incohérent, ou est-ce l'incertitude elle-même qui t'est presque intolérable ?",
-          "Quand le besoin de comprendre devient urgent, privilégie une phrase simple et honnête plutôt qu'une relance chargée émotionnellement. La CNV peut aider à formuler une demande claire sans accusation ni supposition."
-        ]
       },
       "regulationRules": {
         "low": {
@@ -103,6 +80,24 @@
             }
           ]
         }
+      },
+      "questionIds": [1, 3, 11, 17],
+      "thresholds": {
+        "low": {
+          "min": 0,
+          "max": 1.49,
+          "label": "faible"
+        },
+        "medium": {
+          "min": 1.5,
+          "max": 2.49,
+          "label": "modéré"
+        },
+        "high": {
+          "min": 2.5,
+          "max": 4,
+          "label": "élevé"
+        }
       }
     },
     {
@@ -111,16 +106,36 @@
       "dimension": "anxiety",
       "indicator": "peur d'abandon, de remplacement ou de rupture affective",
       "trigger": "Ce déclencheur s'active quand un changement dans la relation est perçu comme plus qu'un simple éloignement momentané : il touche directement la peur que le lien soit en train de se fragiliser, de se casser ou de te glisser entre les doigts. Là où d'autres personnes peuvent surtout ressentir du doute ou de l'agacement, ici il y a souvent quelque chose de plus profond : la sensation que la relation pourrait se défaire, que l'autre pourrait se détacher pour de bon, se tourner ailleurs, ou ne plus te choisir de la même manière. Ce qui active ce tag, ce n'est donc pas seulement l'absence ou la distance, mais la charge émotionnelle que ton système met derrière cette distance : la possibilité de perdre la place que tu avais, de ne plus compter pareil, ou de voir le lien se rompre sans pouvoir l'empêcher.",
-      "associatedBehaviors": [
-        "interprète facilement la distance comme un risque réel pour la relation",
-        "se sent rapidement menacé quand l'autre devient moins présent ou moins engageant",
-        "imagine que le lien peut être en train de se défaire",
-        "redoute d'être remplacé, oublié ou moins choisi qu'avant",
-        "cherche à sécuriser la relation quand il sent un éloignement",
-        "devient plus attentif aux signes de désengagement du partenaire",
-        "peut avoir du mal à relativiser quand l'autre change soudainement d'attitude",
-        "ressent un besoin fort de vérifier que la relation tient toujours"
-      ],
+      "associatedBehaviors": {
+       "low": "Tu ressens parfois une peur que la relation s'affaiblisse ou que ton partenaire s'éloigne progressivement.\n\nCette inquiétude te traverse l'esprit de temps en temps et te pousse à être un peu plus attentif(ve) aux signes dans le couple.\n\nMême si cela reste gérable, tu commences à remarquer que cette peur influence légèrement ton comportement.",
+        "medium": "La peur que ton partenaire te quitte ou que la relation se termine s'est installée.\n\nTu commences à anticiper le pire, à surveiller ses comportements et à chercher des signes qu'il/elle est en train de partir.\n\nCette peur te rend plus anxieux(se) et te pousse à vouloir te rapprocher ou obtenir plus de preuves d'amour.",
+        "high": "Cette peur de perdre ton partenaire te ronge de l'intérieur.\n\nTu imagines déjà la rupture, le vide, la vie sans lui/elle. Tu paniques à l'idée qu'il/elle puisse te quitter du jour au lendemain.\n\nDu coup, tu t'accroches encore plus fort : tu multiplies les messages, tu cherches sans cesse des preuves d'amour, tu poses des questions sur l'avenir, tu deviens collant(e) ou tu fais des crises pour tester ses sentiments.\n\nPlus tu as peur de le/la perdre, plus tu agis de manière qui l'étouffe… et plus tu risques de provoquer exactement ce que tu redoutes le plus."
+      },
+      "advices": {
+        "low": [
+          "Prends conscience de tes pensées anxieuses sans forcément agir dessus.",
+          "Essaie de recentrer ton attention sur le moment présent plutôt que sur des scénarios catastrophes."
+        ],
+        "medium": [
+          "Lorsque la peur monte, fais une pause avant d'envoyer un message ou d'avoir une conversation sérieuse.",
+          "Évite de poser trop de questions sur l'avenir ou sur ses sentiments dans un court laps de temps.",
+          "Travaille à différencier la peur réelle d'une peur amplifiée par ton anxiété.",
+          "Donne-lui de l'espace sans exiger immédiatement une réponse rassurante."
+        ],
+        "high": [
+          "Arrête immédiatement d'essayer de contrôler l'avenir de la relation par la peur.",
+          "Chaque fois que tu ressens cette peur de perte, ne passe pas à l'action (message, appel, crise). Respire et laisse passer l'urgence.",
+          "Ne teste plus ses sentiments en provoquant des discussions ou en faisant du chantage affectif.",
+          "Accepte que tu ne peux pas empêcher une rupture en t'accrochant plus fort – cela produit souvent l'effet inverse.",
+          "Concentre-toi sur ta propre stabilité émotionnelle plutôt que sur le comportement de ton partenaire.",
+          "Si tu continues à agir sous l'emprise de cette peur, tu risques fortement d'accélérer la distance et de précipiter la fin de la relation."
+        ]
+      },
+      "outputTexts": {
+        "low": "Les signes d'éloignement ne semblent pas activer fortement chez toi la peur de perdre le lien. Tu peux ressentir de l'inconfort ou du questionnement, mais sans basculer facilement dans l'idée que la relation est en train de se casser ou que l'autre est sur le point de partir. Cela suggère que la distance n'est pas automatiquement vécue comme une menace directe sur ta place dans la relation.",
+        "medium": "L'éloignement ou le flou relationnel peuvent parfois réveiller chez toi une inquiétude réelle autour de la solidité du lien. Cette peur n'est pas forcément constante, mais elle peut apparaître dès que l'autre devient moins lisible, moins présent ou moins engagé qu'à son habitude. Selon le contexte, tu peux alors osciller entre patience, doute et besoin d'être rassuré sur la continuité de la relation.",
+        "high": "La peur de perdre le lien semble être un déclencheur fort chez toi. Quand l'autre s'éloigne, devient flou ou change brusquement d'attitude, ton système peut vite vivre cela comme une menace relationnelle sérieuse. Il ne s'agit pas seulement de ne pas aimer la distance : ce qui s'active ici, c'est souvent la peur que la relation soit en train de se fissurer, que ta place soit moins sûre qu'avant, ou que l'autre puisse se détacher de toi plus facilement que tu ne le voudrais."
+      },
       "questionIds": [1, 5, 17],
       "thresholds": {
         "low": {
@@ -138,32 +153,6 @@
           "max": 4,
           "label": "élevé"
         }
-      },
-      "outputTexts": {
-        "low": "Les signes d'éloignement ne semblent pas activer fortement chez toi la peur de perdre le lien. Tu peux ressentir de l'inconfort ou du questionnement, mais sans basculer facilement dans l'idée que la relation est en train de se casser ou que l'autre est sur le point de partir. Cela suggère que la distance n'est pas automatiquement vécue comme une menace directe sur ta place dans la relation.",
-        "medium": "L'éloignement ou le flou relationnel peuvent parfois réveiller chez toi une inquiétude réelle autour de la solidité du lien. Cette peur n'est pas forcément constante, mais elle peut apparaître dès que l'autre devient moins lisible, moins présent ou moins engagé qu'à son habitude. Selon le contexte, tu peux alors osciller entre patience, doute et besoin d'être rassuré sur la continuité de la relation.",
-        "high": "La peur de perdre le lien semble être un déclencheur fort chez toi. Quand l'autre s'éloigne, devient flou ou change brusquement d'attitude, ton système peut vite vivre cela comme une menace relationnelle sérieuse. Il ne s'agit pas seulement de ne pas aimer la distance : ce qui s'active ici, c'est souvent la peur que la relation soit en train de se fissurer, que ta place soit moins sûre qu'avant, ou que l'autre puisse se détacher de toi plus facilement que tu ne le voudrais."
-      },
-      "advices": {
-        "low": [
-          "Appuie-toi sur cette capacité à ne pas transformer trop vite la distance en scénario de rupture.",
-          "Reste néanmoins attentif à la différence entre une distance passagère et un désengagement répétitif réel.",
-          "Quand un doute apparaît, garde une lecture factuelle avant de conclure que tout va bien ou que tout va mal."
-        ],
-        "medium": [
-          "Quand la peur monte, essaie d'identifier ce qui est activé exactement : peur de rupture, peur de ne plus compter, peur d'être remplacé.",
-          "Ne mets pas immédiatement sur le compte d'une perte de lien chaque variation de disponibilité ou de comportement.",
-          "Demande-toi si tu réagis à un fait réel et répété, ou à une possibilité que ton esprit traite déjà comme certaine.",
-          "Quand c'est nécessaire, cherche de la clarté de façon directe plutôt que de rester dans l'anticipation silencieuse."
-        ],
-        "high": [
-          "Travaille à distinguer l'éloignement ponctuel de la perte réelle du lien : les deux ne se valent pas, même si ton système les vit parfois presque de la même façon.",
-          "Quand la peur s'active, reviens aux faits observables avant de conclure que la relation est menacée.",
-          "Essaie de nommer intérieurement la vraie peur : perdre l'autre, perdre ta place, être remplacé, ne plus être choisi. Plus c'est précis, moins c'est diffus et envahissant.",
-          "Évite de chercher à sécuriser le lien dans l'urgence à chaque montée de peur ; l'urgence soulage parfois sur le moment, mais entretient souvent le mécanisme.",
-          "Observe si cette peur apparaît surtout quand l'autre est objectivement incohérent, ou si elle se déclenche aussi dès que le lien devient moins visible.",
-          "Quand tu ressens une menace forte, privilégie une demande claire de réalité plutôt qu'une accumulation de tests, de relances ou d'interprétations."
-        ]
       },
       "regulationRules": {
         "low": {
@@ -226,16 +215,36 @@
       "dimension": "anxiety",
       "indicator": "rumination mentale et scénarios relationnels répétitifs",
       "trigger": "Ce déclencheur s'active quand une situation relationnelle reste floue, incomplète ou difficile à interpréter clairement. Là où d'autres peuvent attendre, observer ou laisser passer, ton esprit a tendance à continuer à tourner autour du problème pour tenter d'en extraire une certitude. Ce n'est pas seulement un besoin de comprendre : c'est souvent la difficulté à tolérer l'incertitude tant qu'une explication claire n'a pas été trouvée. Plus le comportement du partenaire paraît incohérent, ambigu ou changeant, plus ton mental peut s'emballer, revenir sur les mêmes détails, rejouer les échanges et fabriquer des hypothèses pour réduire le flou. En profondeur, ce déclencheur touche souvent la peur de passer à côté d'un signal important, de mal lire la relation, ou de rester exposé à un danger affectif sans l'avoir anticipé.",
-      "associatedBehaviors": [
-        "repasse plusieurs fois la même situation dans sa tête",
-        "relit des messages ou des échanges pour tenter d'y trouver un sens caché",
-        "analyse un changement de ton, de rythme ou d'attitude pendant des heures",
-        "construit plusieurs scénarios possibles pour expliquer le comportement du partenaire",
-        "a du mal à lâcher mentalement un doute relationnel tant qu'il n'est pas clarifié",
-        "cherche sans cesse l'élément qui permettrait de confirmer ou d'infirmer son intuition",
-        "revient sur les mêmes faits même après avoir déjà réfléchi au sujet",
-        "peut perdre en concentration sur le reste de sa journée quand une zone floue relationnelle reste ouverte"
-      ],
+      "associatedBehaviors": {
+        "low": "Tu as tendance à beaucoup réfléchir à ta relation et à analyser les comportements de ton partenaire.\n\nParfois, tu te poses des questions sur ce qu'il/elle pense vraiment ou sur le sens de ses paroles et de ses actes.\n\nCette réflexion peut te créer une certaine inquiétude, même si tu arrives encore à relativiser.",
+        "medium": "Tu passes beaucoup de temps à ruminer sur ta relation.\n\nTu analyses en détail ses messages, ses silences, ses humeurs et tu cherches constamment à comprendre ce qu'il/elle ressent vraiment.\n\nCette sur-réflexion te fatigue et commence à générer de l'anxiété, car tu imagines souvent le pire scénario.",
+        "high": "Ton cerveau ne s'arrête plus. Tu passes des heures à décortiquer chaque mot, chaque silence, chaque changement de comportement.\n\nTu imagines tous les scénarios possibles, surtout les plus catastrophiques : il/elle va te quitter, il/elle ne t'aime plus, tu as dit ou fait quelque chose de mal.\n\nPlus tu analyses, plus tu t'angoisses, et cette spirale te pousse à agir : envoyer des messages pour vérifier, poser mille questions, ou chercher des preuves qu'il/elle va partir. Tu sais que tu suranalyses, mais tu n'arrives pas à t'arrêter… et tu sens que ça est en train de tout gâcher."
+      },
+      "advices": {
+        "low": [
+          "Essaie de limiter le temps que tu passes à analyser ses messages ou ses comportements.",
+          "Lorsque tu commences à ruminer, recentre-toi sur tes activités du moment.",
+          "Note tes pensées sur un papier pour les sortir de ta tête sans forcément agir dessus."
+        ],
+        "medium": [
+          "Fixe-toi une limite de temps pour réfléchir à la relation chaque jour.",
+          "Lorsque tu sens que tu rentres dans une boucle de pensées, fais une pause et change d'activité.",
+          "Évite de relancer ton partenaire pour obtenir des réponses à tes ruminations.",
+          "Apprends à distinguer les faits des interprétations que tu fais."
+        ],
+        "high": [
+          "Arrête de décortiquer chaque détail. Plus tu analyses, plus tu alimentes ton anxiété et tu risques de créer des problèmes là où il n'y en a pas.",
+          "Chaque fois que tu sens que tu rentres dans une spirale d'overthinking, pose ton téléphone et fais quelque chose de concret pour sortir de ta tête.",
+          "Ne transforme pas tes pensées en messages ou en questions à ton partenaire. Cela le/la fatigue et l'éloigne.",
+          "Travaille activement à calmer ton mental avant de reprendre contact.",
+          "Si tu continues à suranalyser et à agir sur tes ruminations, tu vas épuiser ton partenaire et accélérer la distance entre vous."
+        ]
+      },
+      "outputTexts": {
+        "low": "Tu sembles pouvoir garder une lecture relativement simple des situations relationnelles, même lorsqu'elles ne sont pas totalement claires. Le doute peut exister, mais il ne paraît pas suffire à monopoliser durablement ton esprit. Cela suggère une capacité assez correcte à ne pas te laisser embarquer trop loin dans l'analyse quand la relation traverse une zone floue.",
+        "medium": "Quand quelque chose devient ambigu dans la relation, ton esprit peut commencer à chercher du sens, à revenir sur certains détails ou à essayer de comprendre ce qui se passe vraiment. Cette suranalyse n'est pas forcément constante, mais elle peut prendre de la place lorsque le comportement du partenaire change, devient difficile à lire ou manque de cohérence. Selon les moments, tu peux encore te recentrer, mais pas toujours rapidement.",
+        "high": "La suranalyse relationnelle semble être un mécanisme important chez toi. Quand un doute apparaît, ton esprit peut avoir du mal à s'arrêter : il revient sur les faits, cherche des indices, compare, rejoue les échanges et construit des scénarios pour tenter de réduire l'incertitude. Le problème n'est pas simplement d'aimer comprendre, mais de ne plus réussir à lâcher mentalement la situation tant qu'elle reste incomplète, floue ou menaçante à tes yeux."
+      },
       "questionIds": [11, 17],
       "thresholds": {
         "low": {
@@ -253,32 +262,6 @@
           "max": 4,
           "label": "élevé"
         }
-      },
-      "outputTexts": {
-        "low": "Tu sembles pouvoir garder une lecture relativement simple des situations relationnelles, même lorsqu'elles ne sont pas totalement claires. Le doute peut exister, mais il ne paraît pas suffire à monopoliser durablement ton esprit. Cela suggère une capacité assez correcte à ne pas te laisser embarquer trop loin dans l'analyse quand la relation traverse une zone floue.",
-        "medium": "Quand quelque chose devient ambigu dans la relation, ton esprit peut commencer à chercher du sens, à revenir sur certains détails ou à essayer de comprendre ce qui se passe vraiment. Cette suranalyse n'est pas forcément constante, mais elle peut prendre de la place lorsque le comportement du partenaire change, devient difficile à lire ou manque de cohérence. Selon les moments, tu peux encore te recentrer, mais pas toujours rapidement.",
-        "high": "La suranalyse relationnelle semble être un mécanisme important chez toi. Quand un doute apparaît, ton esprit peut avoir du mal à s'arrêter : il revient sur les faits, cherche des indices, compare, rejoue les échanges et construit des scénarios pour tenter de réduire l'incertitude. Le problème n'est pas simplement d'aimer comprendre, mais de ne plus réussir à lâcher mentalement la situation tant qu'elle reste incomplète, floue ou menaçante à tes yeux."
-      },
-      "advices": {
-        "low": [
-          "Appuie-toi sur cette capacité à ne pas nourrir excessivement les zones floues relationnelles.",
-          "Garde toutefois un équilibre : ne pas suranalyser est utile, mais ignorer systématiquement les incohérences réelles ne l'est pas.",
-          "Quand un doute mérite d'être clarifié, privilégie une question simple plutôt qu'un long travail mental solitaire."
-        ],
-        "medium": [
-          "Quand ton esprit commence à tourner en boucle, essaie de distinguer les faits observables de ce que tu supposes.",
-          "Demande-toi si tu es en train de chercher une compréhension utile ou de poursuivre une certitude impossible à obtenir tout de suite.",
-          "Fixe-toi une limite mentale ou temporelle avant de replonger dans l'analyse de la même situation.",
-          "Si le doute persiste, transforme-le en demande concrète plutôt qu'en rumination prolongée."
-        ],
-        "high": [
-          "Travaille à reconnaître le moment précis où la réflexion utile bascule en boucle mentale inutile.",
-          "Quand ton esprit recommence à rejouer la scène, reviens à trois éléments simples : ce que tu sais, ce que tu ne sais pas, et ce que tu peux réellement vérifier.",
-          "Évite de traiter chaque détail flou comme s'il contenait forcément une vérité cachée sur la relation.",
-          "Plus tu cherches une certitude immédiate dans l'analyse pure, plus ton système peut rester activé ; l'analyse soulage parfois un instant, mais entretient souvent le mécanisme.",
-          "Quand la rumination monte, note noir sur blanc tes hypothèses plutôt que de les laisser tourner en boucle dans ta tête.",
-          "Pose-toi cette question : est-ce que je cherche à comprendre, ou est-ce que j'essaie surtout d'éteindre une angoisse liée à l'incertitude ?"
-        ]
       },
       "regulationRules": {
         "low": {
@@ -341,16 +324,36 @@
       "dimension": "anxiety",
       "indicator": "besoin de clarté affective et de signes explicites de sécurité relationnelle",
       "trigger": "Ce déclencheur s'active quand le lien ne te paraît pas suffisamment confirmé, nommé ou visible. Il ne s'agit pas seulement d'aimer les mots rassurants : ce qui pèse ici, c'est le flou affectif. Quand l'autre ne verbalise pas clairement ses sentiments, n'exprime pas assez son attachement, ou laisse trop de zones d'ombre sur l'état de la relation, ton système peut commencer à douter de la solidité du lien. Ce tag touche donc moins la peur brute de perte que le besoin d'avoir des preuves lisibles que la relation tient, que tu comptes toujours, et que l'engagement émotionnel de l'autre est bien réel. En profondeur, cela révèle souvent une difficulté à te sentir pleinement en sécurité quand l'amour, l'intérêt ou l'intention de l'autre restent trop implicites.",
-      "associatedBehaviors": [
-        "cherche des paroles claires qui confirment les sentiments du partenaire",
-        "a besoin de savoir où il en est dans la relation pour retrouver son calme",
-        "interprète l'absence de verbalisation comme un possible manque d'investissement",
-        "se sent apaisé quand l'autre exprime clairement son attachement",
-        "peut relancer la conversation pour obtenir plus de clarté sur le lien",
-        "supporte mal les non-dits affectifs prolongés",
-        "devient plus attentif aux signes explicites d'intérêt, d'engagement ou de priorité",
-        "peut ressentir un malaise croissant quand la relation reste émotionnellement floue"
-      ],
+      "associatedBehaviors": {
+        "low": "Tu ressens parfois le besoin d'être rassuré(e) sur les sentiments de ton partenaire.\n\nIl t'arrive de chercher des signes d'affection ou de confirmation que tout va bien dans la relation.\n\nCette recherche de validation reste encore modérée et ne te perturbe pas trop au quotidien.",
+        "medium": "Tu as souvent besoin d'être rassuré(e) sur l'amour et l'engagement de ton partenaire.\n\nTu lui demandes régulièrement s'il/elle t'aime encore, ce qu'il/elle ressent pour toi, ou si tout va bien entre vous.\n\nCes demandes de validation te rassurent temporairement, mais elles reviennent assez vite et commencent à peser sur la relation.",
+        "high": "Tu as un besoin presque constant de validation de la part de ton partenaire.\n\nTu lui demandes sans cesse s'il/elle t'aime, s'il/elle est heureux(se) avec toi, ou s'il/elle voit un avenir commun. Tu as besoin qu'il/elle te rassure plusieurs fois par jour ou après chaque petite dispute.\n\nDès qu'il/elle tarde à te répondre ou montre un peu moins d'enthousiasme, tu ressens une forte angoisse et tu multiplies les questions, les messages ou les demandes d'attention. Tu sais que ça peut l'étouffer, mais la peur de ne pas être assez aimé(e) est plus forte… et tu sens que ce comportement est en train de créer de la distance."
+      },
+      "advices": {
+        "low": [
+          "Essaie de réduire légèrement la fréquence de tes demandes de réassurance.",
+          "Prends un moment pour voir si tu peux te rassurer toi-même avant de solliciter ton partenaire.",
+          "Observe comment tes demandes affectent l'énergie de la relation."
+        ],
+        "medium": [
+          "Limite tes demandes de validation à une ou deux fois par semaine maximum.",
+          "Apprends à tolérer l'incertitude sans demander immédiatement une confirmation à ton partenaire.",
+          "Lorsque l'envie de validation monte, utilise des techniques de régulation émotionnelle avant d'agir.",
+          "Remplace certaines demandes par des affirmations positives envers toi-même."
+        ],
+        "high": [
+          "Arrête immédiatement de multiplier les demandes de validation et de réassurance auprès de ton partenaire.",
+          "Chaque nouvelle demande risque de l'étouffer et de le/la faire se retirer encore plus.",
+          "Apprends à gérer ton besoin de validation par toi-même plutôt que de le déposer sur lui/elle.",
+          "Ne pose plus plusieurs questions du type \"tu m'aimes ?\" ou \"est-ce que tout va bien ?\" en peu de temps.",
+          "Si tu continues à chercher constamment de la validation, tu vas épuiser ton partenaire et augmenter fortement le risque qu'il/elle s'éloigne durablement."
+        ]
+      },
+      "outputTexts": {
+        "low": "Tu sembles pouvoir te sentir relativement en sécurité sans avoir besoin que le lien soit constamment confirmé de manière explicite. L'absence de réassurance verbale ne paraît pas suffire à elle seule à faire vaciller ton sentiment de stabilité relationnelle. Cela suggère que tu peux tolérer une part d'implicite dans l'attachement de l'autre sans vivre immédiatement ce flou comme un manque ou une menace.",
+        "medium": "Tu sembles apprécier la clarté émotionnelle et les signes explicites d'attachement, surtout lorsque la relation traverse une zone de doute ou d'ambiguïté. L'absence de réassurance ne te déstabilise pas systématiquement, mais elle peut commencer à peser quand elle dure, se répète, ou s'ajoute à d'autres signaux flous. Selon le contexte, tu peux alors ressentir le besoin de vérifier ce que l'autre ressent vraiment ou ce qu'il veut réellement.",
+        "high": "Le besoin de réassurance émotionnelle semble être un déclencheur fort chez toi. Quand le lien n'est pas clairement exprimé, nommé ou confirmé, ton système peut rapidement perdre en sécurité intérieure. Ce n'est pas seulement un besoin d'entendre de belles paroles : c'est souvent la difficulté à te sentir tranquille tant que l'amour, l'engagement ou la place que tu occupes dans la relation restent trop implicites. Le flou affectif peut alors devenir très activant, même sans conflit ouvert."
+      },
       "questionIds": [3, 9, 13],
       "thresholds": {
         "low": {
@@ -368,32 +371,6 @@
           "max": 4,
           "label": "élevé"
         }
-      },
-      "outputTexts": {
-        "low": "Tu sembles pouvoir te sentir relativement en sécurité sans avoir besoin que le lien soit constamment confirmé de manière explicite. L'absence de réassurance verbale ne paraît pas suffire à elle seule à faire vaciller ton sentiment de stabilité relationnelle. Cela suggère que tu peux tolérer une part d'implicite dans l'attachement de l'autre sans vivre immédiatement ce flou comme un manque ou une menace.",
-        "medium": "Tu sembles apprécier la clarté émotionnelle et les signes explicites d'attachement, surtout lorsque la relation traverse une zone de doute ou d'ambiguïté. L'absence de réassurance ne te déstabilise pas systématiquement, mais elle peut commencer à peser quand elle dure, se répète, ou s'ajoute à d'autres signaux flous. Selon le contexte, tu peux alors ressentir le besoin de vérifier ce que l'autre ressent vraiment ou ce qu'il veut réellement.",
-        "high": "Le besoin de réassurance émotionnelle semble être un déclencheur fort chez toi. Quand le lien n'est pas clairement exprimé, nommé ou confirmé, ton système peut rapidement perdre en sécurité intérieure. Ce n'est pas seulement un besoin d'entendre de belles paroles : c'est souvent la difficulté à te sentir tranquille tant que l'amour, l'engagement ou la place que tu occupes dans la relation restent trop implicites. Le flou affectif peut alors devenir très activant, même sans conflit ouvert."
-      },
-      "advices": {
-        "low": [
-          "Appuie-toi sur cette capacité à ne pas exiger une confirmation constante du lien pour te sentir stable.",
-          "Reste néanmoins attentif à ne pas banaliser un manque chronique de clarté ou d'engagement chez l'autre.",
-          "Quand un doute mérite d'être éclairci, une demande simple vaut mieux qu'une supposition silencieuse."
-        ],
-        "medium": [
-          "Quand tu ressens un besoin de réassurance, demande-toi si tu as besoin d'une vraie clarification ou d'un apaisement immédiat.",
-          "Fais la différence entre un partenaire peu démonstratif mais cohérent, et un partenaire réellement flou ou ambigu.",
-          "Essaie de ne pas traiter chaque manque de verbalisation comme une preuve de désengagement.",
-          "Quand le flou dure, transforme ton besoin en demande claire plutôt qu'en attente frustrée ou en lecture mentale."
-        ],
-        "high": [
-          "Travaille à distinguer le manque réel de clarté chez l'autre du besoin intérieur d'être rassuré souvent pour te sentir stable.",
-          "Quand l'alerte monte, demande-toi ce qui manque exactement : une parole, un engagement, une cohérence, une preuve que tu comptes toujours.",
-          "Évite de chercher à obtenir une confirmation émotionnelle immédiate à chaque montée d'insécurité ; cela soulage parfois sur le moment, mais peut renforcer la dépendance à la réassurance.",
-          "Observe si ton besoin porte sur une vraie incohérence relationnelle, ou sur l'intolérance au fait que l'autre n'exprime pas le lien comme toi tu aurais besoin qu'il le fasse.",
-          "Quand tu as besoin de clarté, formule une demande précise plutôt qu'une attente diffuse : tu obtiendras souvent une réponse plus lisible.",
-          "Rappelle-toi qu'un lien solide se mesure aussi dans la cohérence des actes, pas uniquement dans l'intensité des mots."
-        ]
       },
       "regulationRules": {
         "low": {
@@ -450,17 +427,37 @@
       "label": "Besoin de réparation rapide du lien",
       "dimension": "anxiety",
       "indicator": "intolérance à la rupture émotionnelle et urgence à rétablir la connexion",
-      "trigger": "Ce déclencheur s'active quand le lien est momentanément abîmé, coupé ou fragilisé par une tension, un conflit, un froid, une distance soudaine ou un malaise non résolu. Ce qui est difficile ici, ce n'est pas seulement le conflit lui-même, mais le fait de rester trop longtemps dans un lien dégradé, instable ou émotionnellement interrompu. Tant que la relation n'est pas reconnectée, clarifiée ou réparée, ton système peut avoir du mal à redescendre. En profondeur, ce tag révèle souvent une faible tolérance à la rupture temporaire du lien : quand quelque chose s'est cassé entre vous, même partiellement, l'inconfort peut devenir très vite envahissant et créer une urgence à remettre de la proximité, du contact, de la compréhension ou de l'apaisement.",
-      "associatedBehaviors": [
-        "cherche à clarifier rapidement après une tension ou un conflit",
-        "supporte mal de rester longtemps dans un malaise relationnel non résolu",
-        "ressent une urgence à reparler, reconnecter ou apaiser la situation",
-        "relance la communication pour rétablir le lien plus vite",
-        "a du mal à se calmer tant qu'un conflit reste ouvert",
-        "préfère résoudre immédiatement plutôt que laisser du temps ou de l'espace",
-        "peut ressentir une forte agitation intérieure après une rupture momentanée du lien",
-        "cherche un signe de reconnexion pour retrouver sa stabilité émotionnelle"
-      ],
+      "trigger": "Ce déclencheur s'active quand le lien est momentanément abîmé, coupé ou fragilisé par une tension, un conflit, un froid, une distance soudaine ou un malaise non résolu. Ce qui est difficile ici, ce n'est pas seulement le conflit lui-même, mais le fait de rester trop longtemps dans un lien dégradé, instable ou émotionnellement interrompu. Tant que la relation n'est pas reconnectée, clarifiée ou réparée, ton système peut avoir du mal à redescendre. En profondeur, ce tag révèle souvent une faible tolérance à la rupture temporaire du lien : quand quelque chose s'est cassé entre vous, même partiellement, l'inconfort peut devenir très vite envahissant et créer une urgence à remettre de la proximité, du contact, de la compréhension ou de l'apaisement.","associatedBehaviors": {
+        "low": "Lorsque tu ressens une tension ou une petite dispute dans ton couple, tu as tendance à vouloir régler le problème rapidement.\n\nTu cherches souvent à reparler tout de suite pour que la situation revienne à la normale.\n\nCette envie de réparer vite te permet généralement de te sentir mieux assez rapidement.",
+        "medium": "Dès qu'une dispute ou une froideur apparaît, tu ressens un fort besoin de réparer la situation immédiatement.\n\nTu envoies des messages pour t'excuser, tu proposes d'en parler tout de suite, ou tu multiplies les gestes pour que tout redevienne comme avant.\n\nCette urgence à réparer te soulage temporairement, mais elle commence à créer de la pression dans la relation.",
+        "high": "Dès qu'il y a le moindre conflit, silence ou tension, tu paniques et tu ressens une urgence absolue de réparer tout de suite.\n\nTu bombardes ton partenaire de messages pour t'excuser, tu insistes pour parler immédiatement, tu multiplies les \"je suis désolé(e)\", \"on peut en parler ?\" ou tu fais tout pour que la relation redevienne harmonieuse dans l'heure.\n\nCette course contre la montre pour réparer vite vient de ta peur profonde que le moindre problème signe la fin de la relation. Mais plus tu pousses pour réparer rapidement, plus ton partenaire évitant se sent étouffé… et plus la distance grandit. Tu sens que tes tentatives de réparation accélèrent souvent ce que tu redoutes le plus."
+      },
+      "advices": {
+        "low": [
+          "Laisse un peu plus de temps avant d'essayer de régler une petite tension.",
+          "Observe comment ton partenaire réagit quand tu ne répares pas immédiatement.",
+          "Apprends à tolérer un léger inconfort sans passer à l'action tout de suite."
+        ],
+        "medium": [
+          "Attends au moins quelques heures avant de chercher à réparer après une dispute.",
+          "Évite d'insister pour parler immédiatement ou d'envoyer plusieurs messages d'excuses.",
+          "Donne de l'espace à ton partenaire avant de revenir sur le sujet.",
+          "Travaille sur ta capacité à rester avec l'inconfort temporaire d'un conflit non résolu."
+        ],
+        "high": [
+          "Arrête complètement de chercher à réparer la relation dans l'urgence après un conflit.",
+          "Chaque tentative immédiate de réparation risque d'étouffer encore plus ton partenaire et d'aggraver la situation.",
+          "Laisse minimum 24 à 48 heures de silence avant de revenir sur le sujet.",
+          "Ne multiplie plus les excuses, les messages ou les demandes de discussion immédiate.",
+          "Apprends à tolérer le malaise sans agir. C'est douloureux, mais c'est souvent la seule façon de ne pas empirer les choses.",
+          "Si tu continues à pousser pour un quick repair, tu vas probablement épuiser ton partenaire et augmenter fortement le risque de rupture."
+        ]
+      },
+      "outputTexts": {
+        "low": "Tu sembles relativement capable de tolérer une tension relationnelle sans ressentir immédiatement le besoin de réparer ou reconnecter dans l'urgence. Quand le lien se fragilise momentanément, cela peut te toucher, mais sans forcément créer une pression interne immédiate pour résoudre la situation sur-le-champ. Cela suggère une meilleure tolérance au fait qu'une relation puisse traverser un malaise temporaire sans que tout doive être restauré immédiatement.",
+        "medium": "Quand la relation traverse une tension, un froid ou un conflit, tu sembles préférer que les choses soient réparées assez vite. Le malaise relationnel peut commencer à peser sur toi si rien ne bouge, si le lien reste coupé ou si la situation demeure floue trop longtemps. Tu n'es pas forcément dans l'urgence maximale, mais tu peux ressentir un vrai besoin de rétablir une forme de connexion pour retrouver ton calme.",
+        "high": "La rupture émotionnelle du lien semble être très difficile à tolérer pour toi. Quand quelque chose se casse entre vous, même temporairement, ton système peut vite vivre cela comme un état insupportable à laisser en place. Le besoin de reconnecter, clarifier, apaiser ou réparer peut alors devenir très urgent. Ce n'est pas seulement aimer résoudre les problèmes : c'est souvent la difficulté à supporter qu'un lien important reste abîmé, suspendu ou émotionnellement coupé sans rétablissement rapide."
+      },
       "questionIds": [5, 7, 15, 19],
       "thresholds": {
         "low": {
@@ -478,32 +475,6 @@
           "max": 4,
           "label": "élevé"
         }
-      },
-      "outputTexts": {
-        "low": "Tu sembles relativement capable de tolérer une tension relationnelle sans ressentir immédiatement le besoin de réparer ou reconnecter dans l'urgence. Quand le lien se fragilise momentanément, cela peut te toucher, mais sans forcément créer une pression interne immédiate pour résoudre la situation sur-le-champ. Cela suggère une meilleure tolérance au fait qu'une relation puisse traverser un malaise temporaire sans que tout doive être restauré immédiatement.",
-        "medium": "Quand la relation traverse une tension, un froid ou un conflit, tu sembles préférer que les choses soient réparées assez vite. Le malaise relationnel peut commencer à peser sur toi si rien ne bouge, si le lien reste coupé ou si la situation demeure floue trop longtemps. Tu n'es pas forcément dans l'urgence maximale, mais tu peux ressentir un vrai besoin de rétablir une forme de connexion pour retrouver ton calme.",
-        "high": "La rupture émotionnelle du lien semble être très difficile à tolérer pour toi. Quand quelque chose se casse entre vous, même temporairement, ton système peut vite vivre cela comme un état insupportable à laisser en place. Le besoin de reconnecter, clarifier, apaiser ou réparer peut alors devenir très urgent. Ce n'est pas seulement aimer résoudre les problèmes : c'est souvent la difficulté à supporter qu'un lien important reste abîmé, suspendu ou émotionnellement coupé sans rétablissement rapide."
-      },
-      "advices": {
-        "low": [
-          "Appuie-toi sur cette capacité à laisser de l'espace à la relation sans exiger une réparation immédiate.",
-          "Garde néanmoins en tête que tolérer le temps ne doit pas devenir une manière d'éviter les vrais sujets à traiter.",
-          "Quand une clarification est nécessaire, cherche-la avec justesse plutôt qu'en la repoussant indéfiniment."
-        ],
-        "medium": [
-          "Quand un malaise apparaît, demande-toi si la situation exige vraiment une réparation immédiate ou si ton inconfort te pousse à vouloir aller plus vite que la relation ne le permet.",
-          "Fais la différence entre laisser pourrir un problème et laisser un peu de temps aux émotions pour redescendre.",
-          "Quand tu ressens le besoin de reconnecter, formule-le clairement sans transformer cette urgence en pression sur l'autre.",
-          "Rappelle-toi qu'un lien solide ne se mesure pas seulement à la vitesse de réparation, mais aussi à la qualité de la réparation."
-        ],
-        "high": [
-          "Travaille à reconnaître qu'un lien peut être momentanément tendu sans être forcément en train de se détruire.",
-          "Quand l'urgence monte, demande-toi si tu cherches à résoudre un vrai problème ou surtout à faire baisser ton inconfort intérieur le plus vite possible.",
-          "Évite de confondre réparation saine et apaisement immédiat : vouloir calmer la tension tout de suite ne règle pas toujours le fond.",
-          "Apprends à tolérer un court délai entre la blessure relationnelle et la réparation, même si ce délai t'est émotionnellement difficile.",
-          "Quand tu veux reconnecter rapidement, privilégie une parole simple, posée et claire plutôt qu'une relance chargée d'urgence.",
-          "Observe si ton besoin de réparation vient d'une vraie rupture du dialogue, ou de la difficulté à supporter que le lien reste imparfait, flou ou momentanément suspendu."
-        ]
       },
       "regulationRules": {
         "low": {
@@ -566,16 +537,36 @@
       "dimension": "avoidance",
       "indicator": "malaise quand le lien devient trop proche, trop intense ou trop engageant émotionnellement",
       "trigger": "Ce déclencheur s'active quand la relation prend une intensité émotionnelle que ton système vit comme envahissante, trop rapide ou trop lourde à porter. Ce qui dérange ici, ce n'est pas forcément l'autre en tant que personne, mais la sensation que le lien devient trop proche, trop fusionnel, trop pénétrant ou trop exigeant émotionnellement. Plus l'autre se rapproche, veut partager en profondeur, dépend émotionnellement, ou augmente le niveau d'intimité affective, plus cela peut réveiller une tension interne : impression d'étouffer, de perdre de l'espace mental, d'être aspiré dans quelque chose que tu ne contrôles plus assez. En profondeur, ce tag touche souvent la difficulté à rester ouvert quand l'intimité devient très forte, parce qu'elle expose davantage, réduit la distance de sécurité et peut réveiller un malaise face à la dépendance, à la vulnérabilité ou à la perte de maîtrise intérieure.",
-      "associatedBehaviors": [
-        "prend de la distance quand le lien devient trop intense émotionnellement",
-        "se sent vite envahi quand l'autre veut aller plus loin dans l'intimité affective",
-        "ralentit la relation après un rapprochement fort ou très rapide",
-        "a besoin de retrouver de l'espace après des moments de grande proximité",
-        "supporte mal les échanges trop fusionnels ou émotionnellement trop lourds",
-        "peut devenir moins disponible quand l'autre se rapproche fortement",
-        "ressent un malaise quand il perçoit trop d'attente émotionnelle en face",
-        "cherche à recréer une distance dès que le lien devient trop prenant intérieurement"
-      ],
+      "associatedBehaviors": {
+        "low": "Tu ressens parfois un certain malaise quand ton partenaire devient trop proche ou trop affectueux.\n\nDans ces moments-là, tu as tendance à te montrer un peu plus distant(e) ou à changer de sujet pour retrouver un peu d'air.\n\nCe besoin d'espace reste encore gérable, mais il commence à se faire sentir dans la relation.",
+        "medium": "Quand ton partenaire cherche trop de proximité ou d'intimité émotionnelle, tu te sens rapidement mal à l'aise.\n\nTu commences à te retirer, à répondre plus brièvement, ou à mettre de la distance pour reprendre ton souffle.\n\nMême si tu ne le dis pas ouvertement, cette proximité te pèse et tu as besoin de reculer pour te sentir bien à nouveau.",
+        "high": "Dès que ton partenaire devient trop proche, trop affectueux ou demande trop d'intimité émotionnelle, tu ressens un fort inconfort.\n\nTu te refermes, tu deviens distant(e), tu réponds de façon froide, tu changes de sujet ou tu t'occupes soudainement à autre chose pour créer de l'espace.\n\nLe problème, c'est que plus tu te retires, plus ton partenaire devient anxieux(se), collant(e) et demandeur(se). Tu crois te protéger en mettant de la distance, mais en réalité tu crées exactement le cercle vicieux que tu détestes : plus tu t'éloignes, plus il/elle s'accroche, et plus tu te sens étouffé(e)."
+      },
+      "advices": {
+        "low": [
+          "Prends conscience des moments où tu ressens le besoin de t'éloigner.",
+          "Essaie de communiquer ton besoin d'espace de façon calme plutôt que de te refermer brutalement.",
+          "Trouve un juste milieu entre ta zone de confort et les besoins de ton partenaire."
+        ],
+        "medium": [
+          "Lorsque tu sens le malaise monter, informe ton partenaire que tu as besoin d'un peu d'espace au lieu de disparaître.",
+          "Évite de devenir soudainement froid(e) ou distant(e) sans explication.",
+          "Travaille à tolérer un peu plus de proximité sans te sentir envahi(e).",
+          "Communique clairement tes limites sans blesser l'autre."
+        ],
+        "high": [
+          "Arrête de te refermer ou de devenir froid(e) dès que ton partenaire cherche de la proximité.",
+          "Chaque fois que tu te retires brutalement, tu augmentes l'anxiété de ton/ta partenaire et tu renforces le cycle infernal.",
+          "Apprends à exprimer ton besoin d'espace de manière directe et calme au lieu de fuir ou de te couper.",
+          "Tolère progressivement un peu plus d'intimité sans paniquer intérieurement.",
+          "Si tu continues à créer de la distance à chaque fois que ton partenaire s'approche, tu risques de le/la rendre de plus en plus anxieux(se) et de finir par détruire la relation que tu essayes de préserver."
+        ]
+      },
+      "outputTexts": {
+        "low": "La proximité émotionnelle ne semble pas être une source majeure d'inconfort pour toi. Quand le lien devient plus profond, plus engagé ou plus intime, cela ne paraît pas suffire à déclencher chez toi un besoin fort de recul. Tu peux donc probablement rester présent dans l'intimité sans vivre automatiquement cette intensification comme une menace pour ton équilibre intérieur.",
+        "medium": "La proximité émotionnelle peut parfois devenir inconfortable pour toi lorsqu'elle devient très intense, très rapide ou très prenante. Tu n'es pas forcément fermé au lien, mais il peut y avoir un seuil à partir duquel l'intimité commence à peser intérieurement. Selon le contexte, tu peux alors ressentir le besoin de ralentir, de respirer ou de reprendre un peu d'espace pour ne pas te sentir absorbé par la relation.",
+        "high": "La proximité émotionnelle semble être un déclencheur fort chez toi. Quand le lien devient très proche, très chargé ou très engageant, ton système peut rapidement ressentir un malaise important. Il ne s'agit pas seulement d'aimer ton indépendance : ce qui s'active ici, c'est souvent la difficulté à rester à l'aise quand l'intimité devient trop forte, trop envahissante ou trop exigeante émotionnellement. Le rapprochement peut alors créer une tension interne qui pousse à ralentir, reprendre de la distance ou retrouver une forme de sécurité par l'espace."
+      },
       "questionIds": [2, 4, 10, 14],
       "thresholds": {
         "low": {
@@ -593,32 +584,6 @@
           "max": 4,
           "label": "élevé"
         }
-      },
-      "outputTexts": {
-        "low": "La proximité émotionnelle ne semble pas être une source majeure d'inconfort pour toi. Quand le lien devient plus profond, plus engagé ou plus intime, cela ne paraît pas suffire à déclencher chez toi un besoin fort de recul. Tu peux donc probablement rester présent dans l'intimité sans vivre automatiquement cette intensification comme une menace pour ton équilibre intérieur.",
-        "medium": "La proximité émotionnelle peut parfois devenir inconfortable pour toi lorsqu'elle devient très intense, très rapide ou très prenante. Tu n'es pas forcément fermé au lien, mais il peut y avoir un seuil à partir duquel l'intimité commence à peser intérieurement. Selon le contexte, tu peux alors ressentir le besoin de ralentir, de respirer ou de reprendre un peu d'espace pour ne pas te sentir absorbé par la relation.",
-        "high": "La proximité émotionnelle semble être un déclencheur fort chez toi. Quand le lien devient très proche, très chargé ou très engageant, ton système peut rapidement ressentir un malaise important. Il ne s'agit pas seulement d'aimer ton indépendance : ce qui s'active ici, c'est souvent la difficulté à rester à l'aise quand l'intimité devient trop forte, trop envahissante ou trop exigeante émotionnellement. Le rapprochement peut alors créer une tension interne qui pousse à ralentir, reprendre de la distance ou retrouver une forme de sécurité par l'espace."
-      },
-      "advices": {
-        "low": [
-          "Appuie-toi sur cette capacité à rester présent quand le lien devient plus proche ou plus intime.",
-          "Reste malgré tout attentif à ne pas te suradapter à une proximité qui dépasserait vraiment tes limites.",
-          "Pouvoir accueillir la proximité est une force, à condition qu'elle reste choisie et non subie."
-        ],
-        "medium": [
-          "Apprends à repérer ton seuil exact d'inconfort : qu'est-ce qui te pèse vraiment, l'intensité, la rapidité, la dépendance en face, ou la perte d'espace ?",
-          "Essaie de distinguer une proximité saine d'une dynamique réellement envahissante.",
-          "Quand tu as besoin de ralentir, formule-le clairement plutôt que de créer de la distance sans explication.",
-          "Avoir besoin d'espace n'est pas le problème ; le problème commence quand cet espace devient ta seule manière de supporter l'intimité."
-        ],
-        "high": [
-          "Travaille à identifier ce qui t'active vraiment dans la proximité : la fusion, la dépendance, la vulnérabilité, la honte d'être touché émotionnellement, ou la perte de contrôle intérieur.",
-          "Ne réduis pas automatiquement ton malaise à un simple besoin d'espace ; parfois, ce qui te dérange est surtout le fait d'être trop exposé émotionnellement.",
-          "Quand l'inconfort monte, essaie de le nommer avant de prendre brutalement de la distance.",
-          "Observe si tu t'éloignes parce que l'autre dépasse réellement tes limites, ou parce que l'intimité en elle-même te met mal à l'aise.",
-          "Apprends à ralentir sans couper : poser un rythme plus respirable vaut souvent mieux qu'un retrait défensif brutal.",
-          "Si tu veux construire un lien stable, il faudra distinguer ce qui relève d'un besoin d'équilibre légitime et ce qui relève d'une difficulté plus profonde à tolérer la proximité émotionnelle."
-        ]
       },
       "regulationRules": {
         "low": {
@@ -686,16 +651,36 @@
       "dimension": "avoidance",
       "indicator": "besoin marqué d'espace personnel, de liberté de rythme et d'indépendance émotionnelle dans la relation",
       "trigger": "Ce déclencheur s'active quand la relation commence à empiéter sur ton espace intérieur, ton rythme personnel ou ton sentiment de liberté. Ce qui devient difficile ici, ce n'est pas forcément l'intimité en elle-même, mais l'impression que le lien prend trop de place, demande trop de disponibilité émotionnelle, ou réduit ta marge de manœuvre. Plus l'autre attend de présence, de fusion, de coordination, de priorisation ou d'engagement dans un rythme commun, plus cela peut réveiller une tension interne : sensation d'être trop sollicité, de ne plus respirer à ton rythme, ou de devoir te conformer à une proximité que tu n'as pas choisie au même niveau. En profondeur, ce tag touche souvent le besoin de rester libre psychiquement dans le lien, de ne pas te sentir absorbé, et de préserver un espace à toi pour continuer à exister sans avoir la sensation que la relation dicte tout.",
-      "associatedBehaviors": [
-        "a besoin de temps seul pour retrouver son équilibre",
-        "protège fortement son espace personnel dans la relation",
-        "supporte mal les attentes de disponibilité trop fréquentes",
-        "peut se crisper quand la relation devient trop coordonnée ou trop prenante",
-        "préfère garder une partie de sa vie émotionnelle ou mentale indépendante",
-        "ralentit quand il a l'impression que le lien avance plus vite que son propre rythme",
-        "peut ressentir une irritation intérieure quand il se sent trop sollicité",
-        "cherche à préserver sa liberté de mouvement, de pensée ou d'organisation dans la relation"
-      ],
+      "associatedBehaviors": {
+        "low": "Tu as besoin d'une certaine indépendance dans ta vie et dans ton couple.\n\nIl t'arrive de vouloir faire des choses seul(e) ou de garder une part de liberté sans tout partager.\n\nCe besoin d'autonomie est important pour toi et te permet de te sentir bien.",
+        "medium": "Tu ressens un fort besoin d'autonomie et d'indépendance dans la relation.\n\nQuand ton partenaire veut trop partager d'activités, de temps ou de décisions, tu commences à te sentir limité(e) et tu as envie de reprendre ton espace.\n\nTu préfères souvent gérer certaines choses seul(e) et tu montres des signes de retrait quand tu sens que ta liberté est menacée.",
+        "high": "Tu as un besoin très important d'autonomie et tu détestes te sentir enfermé(e) ou trop dépendant(e) dans le couple.\n\nDès que ton partenaire veut passer trop de temps avec toi, faire des projets communs ou s'immiscer dans tes décisions, tu ressens une forte envie de t'éloigner.\n\nTu te mets à mettre de la distance, à annuler des plans, à répondre moins ou à affirmer fortement ton indépendance. Tu crois protéger ta liberté en agissant ainsi… mais plus tu imposes cette distance au nom de ton autonomie, plus ton partenaire devient anxieux(se), insécure et demandeur(se). Tu crées exactement l'étouffement que tu essayes d'éviter."
+      },
+      "advices": {
+        "low": [
+          "Identifie clairement tes besoins d'autonomie sans les imposer de façon trop brutale.",
+          "Essaie de trouver des compromis entre ton besoin de liberté et les attentes de ton partenaire.",
+          "Communique ton besoin d'indépendance de manière posée."
+        ],
+        "medium": [
+          "Exprime ton besoin d'autonomie avant que ça devienne trop pesant pour toi.",
+          "Évite de te retirer soudainement ou d'annuler des moments à deux sans explication.",
+          "Trouve un équilibre entre tes moments seuls et les moments partagés.",
+          "Sois transparent(e) sur tes limites sans blesser l'autre."
+        ],
+        "high": [
+          "Arrête de te retirer ou de saboter les moments à deux dès que tu sens une atteinte à ton autonomie.",
+          "Chaque fois que tu imposes une forte distance au nom de ta liberté, tu augmentes l'insécurité de ton/ta partenaire et tu renforces le cycle anxieux-évitant.",
+          "Apprends à exprimer ton besoin d'autonomie de façon claire et calme plutôt que par le retrait.",
+          "Accepte de céder un peu de terrain sur ton indépendance pour préserver la relation.",
+          "Si tu continues à prioriser ton autonomie à outrance sans aucun compromis, tu risques de faire fuir ton partenaire ou de le/la rendre extrêmement anxieux(se), jusqu'à ce que la relation devienne invivable."
+        ]
+      },
+      "outputTexts": {
+        "low": "Le besoin de préserver ton autonomie émotionnelle ne semble pas occuper une place centrale dans ton fonctionnement relationnel. Le fait d'être proche, coordonné ou engagé avec l'autre ne paraît pas suffire à déclencher chez toi une forte tension autour de la liberté ou de l'espace personnel. Cela suggère que la relation peut prendre de la place sans être immédiatement vécue comme une contrainte pour ton équilibre intérieur.",
+        "medium": "Tu sembles avoir besoin d'un certain espace personnel et d'une forme d'indépendance pour te sentir bien dans la relation. Le lien peut être important pour toi, mais à condition qu'il ne devienne pas trop envahissant, trop rythmé par l'autre ou trop exigeant en présence émotionnelle constante. Selon le contexte, tu peux donc apprécier la relation tout en ressentant régulièrement le besoin de garder une marge de liberté suffisante pour rester à l'aise.",
+        "high": "Le besoin d'autonomie semble très important chez toi. Quand la relation devient trop prenante, trop coordonnée ou trop sollicitante émotionnellement, ton système peut rapidement réagir comme s'il devait protéger son espace vital. Il ne s'agit pas seulement d'aimer avoir du temps pour toi : ce qui s'active ici, c'est souvent la difficulté à rester serein lorsque le lien réduit trop ton sentiment de liberté, d'indépendance psychique ou de contrôle sur ton propre rythme de vie."
+      },
       "questionIds": [4, 6, 16, 18],
       "thresholds": {
         "low": {
@@ -713,32 +698,6 @@
           "max": 4,
           "label": "élevé"
         }
-      },
-      "outputTexts": {
-        "low": "Le besoin de préserver ton autonomie émotionnelle ne semble pas occuper une place centrale dans ton fonctionnement relationnel. Le fait d'être proche, coordonné ou engagé avec l'autre ne paraît pas suffire à déclencher chez toi une forte tension autour de la liberté ou de l'espace personnel. Cela suggère que la relation peut prendre de la place sans être immédiatement vécue comme une contrainte pour ton équilibre intérieur.",
-        "medium": "Tu sembles avoir besoin d'un certain espace personnel et d'une forme d'indépendance pour te sentir bien dans la relation. Le lien peut être important pour toi, mais à condition qu'il ne devienne pas trop envahissant, trop rythmé par l'autre ou trop exigeant en présence émotionnelle constante. Selon le contexte, tu peux donc apprécier la relation tout en ressentant régulièrement le besoin de garder une marge de liberté suffisante pour rester à l'aise.",
-        "high": "Le besoin d'autonomie semble très important chez toi. Quand la relation devient trop prenante, trop coordonnée ou trop sollicitante émotionnellement, ton système peut rapidement réagir comme s'il devait protéger son espace vital. Il ne s'agit pas seulement d'aimer avoir du temps pour toi : ce qui s'active ici, c'est souvent la difficulté à rester serein lorsque le lien réduit trop ton sentiment de liberté, d'indépendance psychique ou de contrôle sur ton propre rythme de vie."
-      },
-      "advices": {
-        "low": [
-          "Appuie-toi sur cette capacité à laisser de la place au lien sans vivre immédiatement la proximité comme une perte de liberté.",
-          "Reste néanmoins attentif à ne pas confondre souplesse relationnelle et oubli de tes propres besoins d'espace.",
-          "Pouvoir t'engager facilement est une force, à condition que cela reste compatible avec ton équilibre personnel."
-        ],
-        "medium": [
-          "Clarifie pour toi-même ce dont tu as réellement besoin : solitude, rythme plus lent, moins de sollicitations, ou plus d'indépendance dans l'organisation du lien.",
-          "Exprime ton besoin d'espace avant qu'il ne se transforme en crispation, en fuite ou en distance froide.",
-          "Fais la différence entre une relation réellement envahissante et une relation simplement plus proche que ce à quoi tu es spontanément habitué.",
-          "Avoir besoin d'autonomie n'est pas un problème ; le problème commence quand tu n'arrives à te sentir bien qu'en gardant toujours l'autre à une certaine distance."
-        ],
-        "high": [
-          "Travaille à identifier ce qui t'oppresse vraiment : la dépendance émotionnelle, la perte de rythme personnel, la pression implicite, ou la peur qu'une relation prenne trop de place dans ta vie.",
-          "Ne réduis pas systématiquement ton inconfort à un simple besoin d'espace ; parfois, ce qui se joue derrière, c'est la difficulté à tolérer l'interdépendance normale d'un lien proche.",
-          "Quand tu sens la saturation monter, essaie de nommer ton besoin clairement plutôt que de reprendre de la distance sans explication.",
-          "Observe si tu protèges ton autonomie de manière ajustée, ou si tu l'utilises aussi pour éviter ce que la proximité vient toucher émotionnellement chez toi.",
-          "Un lien sain n'annule pas ta liberté ; il demande surtout de trouver une forme d'équilibre où la relation existe sans devenir une emprise intérieure.",
-          "Si tu veux construire une relation stable, il faudra apprendre à différencier l'espace dont tu as réellement besoin de la distance que ton système réclame dès qu'il se sent trop impliqué."
-        ]
       },
       "regulationRules": {
         "low": {
@@ -806,16 +765,36 @@
       "dimension": "avoidance",
       "indicator": "tendance à contenir, filtrer ou retenir ses émotions plutôt qu'à les exprimer spontanément",
       "trigger": "Ce déclencheur s'active quand une émotion devient trop exposante, trop intense, trop difficile à formuler ou trop risquée à montrer dans la relation. Ce qui est inconfortable ici, ce n'est pas seulement de ressentir quelque chose, mais de le laisser apparaître, de le verbaliser ou d'accepter que l'autre y ait accès. Plus l'émotion touche une zone sensible — vulnérabilité, attachement, blessure, manque, honte, colère, besoin — plus ton système peut préférer la contenir plutôt que la livrer. En profondeur, ce tag touche souvent la difficulté à te sentir en sécurité dans l'expression émotionnelle elle-même : montrer ce que tu ressens peut donner l'impression de perdre en contrôle, de trop te dévoiler, de devenir lisible, ou d'ouvrir un espace où tu pourrais être jugé, mal compris, envahi ou ramené à quelque chose que tu préfères garder sous contrôle.",
-      "associatedBehaviors": [
-        "garde pour lui/elle ce qu'il/elle ressent au lieu de le verbaliser clairement",
-        "filtre fortement ce qu'il/elle partage émotionnellement",
-        "minimise ou rationalise ses émotions plutôt que de les exprimer",
-        "devient plus fermé quand quelque chose le/la touche en profondeur",
-        "a du mal à dire qu'il/elle est blessé, triste, inquiet ou attaché",
-        "préfère prendre du recul pour gérer seul ses émotions",
-        "peut paraître froid, opaque ou difficile à lire émotionnellement",
-        "retarde les conversations émotionnelles parce qu'elles le/la mettent mal à l'aise"
-      ],
+      "associatedBehaviors": {
+        "low": "Tu as tendance à garder tes émotions pour toi et à ne pas trop les exprimer.\n\nTu préfères gérer ce que tu ressens en interne plutôt que d'en parler ouvertement avec ton partenaire.\n\nCette retenue te permet de te sentir en contrôle, même si elle crée parfois un léger décalage dans le couple.",
+        "medium": "Tu contiens beaucoup tes émotions et tu évites de les partager avec ton partenaire.\n\nQuand tu ressens de la tristesse, de la colère ou même de l'amour intense, tu as tendance à tout garder à l'intérieur et à te montrer neutre ou distant(e).\n\nCette habitude commence à créer une certaine froideur dans la relation, même si tu penses que c'est plus simple comme ça.",
+        "high": "Tu as l'habitude de tout contenir émotionnellement. Tu ne montres presque rien de ce que tu ressens vraiment : ni colère, ni peur, ni vulnérabilité, ni même beaucoup d'amour.\n\nQuand ton partenaire te demande comment tu te sens ou cherche à créer une connexion émotionnelle, tu te fermes, tu changes de sujet, tu deviens froid(e) ou tu réponds de manière minimaliste.\n\nLe problème, c'est que plus tu contiens tes émotions, plus ton partenaire devient anxieux(se), frustré(e) et en demande constante de connexion. Tu crois te protéger en restant fermé(e), mais en réalité tu crées une distance émotionnelle qui rend ton/ta partenaire de plus en plus insécure et collant(e). Tu génères exactement ce que tu supportes le moins."
+      },
+      "advices": {
+        "low": [
+          "Essaie de partager un peu plus ce que tu ressens, même si c'est léger.",
+          "Observe l'impact de ton silence émotionnel sur ton partenaire.",
+          "Commence par exprimer des choses simples et positives."
+        ],
+        "medium": [
+          "Lorsque ton partenaire te demande comment tu te sens, évite de répondre par des phrases courtes ou évasives.",
+          "Partage au moins une partie de tes émotions au lieu de tout garder pour toi.",
+          "Apprends à réguler le malaise que tu ressens avant de t'exprimer",
+          "Communique tes limites émotionnelles sans te couper complètement."
+        ],
+        "high": [
+          "Arrête de tout contenir et de te fermer émotionnellement dès que ton partenaire cherche de la profondeur.",
+          "Chaque fois que tu deviens froid(e) ou que tu refuses de partager tes émotions, tu augmentes l'anxiété et la poursuite de ton/ta partenaire.",
+          "Apprends à exprimer au moins une partie de ce que tu ressens, même si ça te met mal à l'aise.",
+          "Ne change plus de sujet ou ne minimise plus quand ton partenaire veut une vraie connexion émotionnelle.",
+          "Si tu continues à tout contenir et à rester émotionnellement inaccessible, tu vas progressivement étouffer la relation et pousser ton partenaire à bout."
+        ]
+      },
+      "outputTexts": {
+        "low": "Tu sembles relativement capable de partager ce que tu ressens dans la relation sans avoir besoin de tout contenir intérieurement. Les émotions, même sensibles, ne paraissent pas automatiquement vécues comme quelque chose qu'il faudrait cacher, filtrer fortement ou garder sous contrôle. Cela suggère une certaine aisance à rester lisible émotionnellement sans te sentir immédiatement menacé par ce que le fait d'exprimer révèle de toi.",
+        "medium": "Tu peux parfois garder certaines émotions pour toi, surtout lorsqu'elles te rendent plus exposé, plus vulnérable ou plus difficile à contenir intérieurement. L'expression émotionnelle n'est pas forcément impossible pour toi, mais elle peut devenir coûteuse quand ce que tu ressens est trop sensible, trop intime ou trop difficile à mettre en mots. Selon le contexte, tu peux alors osciller entre ouverture partielle, retenue et besoin de traiter cela seul avant d'en parler.",
+        "high": "La rétention émotionnelle semble être un mécanisme important chez toi. Quand quelque chose te touche en profondeur, ton système peut préférer contenir, filtrer ou verrouiller l'émotion plutôt que la rendre accessible à l'autre. Il ne s'agit pas seulement d'être discret : ce qui s'active ici, c'est souvent le malaise d'être émotionnellement lisible, la difficulté à tolérer la vulnérabilité ouverte, ou la peur de perdre en maîtrise intérieure si ce que tu ressens sort trop clairement dans la relation."
+      },
       "questionIds": [10, 12, 18],
       "thresholds": {
         "low": {
@@ -833,32 +812,6 @@
           "max": 4,
           "label": "élevé"
         }
-      },
-      "outputTexts": {
-        "low": "Tu sembles relativement capable de partager ce que tu ressens dans la relation sans avoir besoin de tout contenir intérieurement. Les émotions, même sensibles, ne paraissent pas automatiquement vécues comme quelque chose qu'il faudrait cacher, filtrer fortement ou garder sous contrôle. Cela suggère une certaine aisance à rester lisible émotionnellement sans te sentir immédiatement menacé par ce que le fait d'exprimer révèle de toi.",
-        "medium": "Tu peux parfois garder certaines émotions pour toi, surtout lorsqu'elles te rendent plus exposé, plus vulnérable ou plus difficile à contenir intérieurement. L'expression émotionnelle n'est pas forcément impossible pour toi, mais elle peut devenir coûteuse quand ce que tu ressens est trop sensible, trop intime ou trop difficile à mettre en mots. Selon le contexte, tu peux alors osciller entre ouverture partielle, retenue et besoin de traiter cela seul avant d'en parler.",
-        "high": "La rétention émotionnelle semble être un mécanisme important chez toi. Quand quelque chose te touche en profondeur, ton système peut préférer contenir, filtrer ou verrouiller l'émotion plutôt que la rendre accessible à l'autre. Il ne s'agit pas seulement d'être discret : ce qui s'active ici, c'est souvent le malaise d'être émotionnellement lisible, la difficulté à tolérer la vulnérabilité ouverte, ou la peur de perdre en maîtrise intérieure si ce que tu ressens sort trop clairement dans la relation."
-      },
-      "advices": {
-        "low": [
-          "Appuie-toi sur cette capacité à rester relativement lisible émotionnellement dans la relation.",
-          "Garde malgré tout de la nuance : exprimer tes émotions ne veut pas dire tout dire immédiatement ni sans filtre.",
-          "L'objectif n'est pas de te sur-exposer, mais de garder une expression suffisamment claire pour que le lien reste vivant et compréhensible."
-        ],
-        "medium": [
-          "Repère quelles émotions tu retiens le plus facilement : tristesse, attachement, peur, colère, honte, besoin.",
-          "Essaie de distinguer le besoin légitime de prendre du temps du réflexe de tout garder pour toi dès que ça devient sensible.",
-          "Quand tu n'arrives pas à tout exprimer, commence par nommer simplement l'état général plutôt que d'attendre de trouver la formulation parfaite.",
-          "La retenue peut donner une illusion de contrôle, mais elle laisse souvent l'autre face à du flou relationnel qu'il interprète à sa manière."
-        ],
-        "high": [
-          "Travaille à identifier ce que l'expression émotionnelle menace pour toi : l'image que tu renvoies, le contrôle, la dignité, la sécurité, ou la peur d'être trop lisible.",
-          "Ne confonds pas systématiquement vulnérabilité et faiblesse ; ce n'est pas l'émotion qui te met en difficulté, c'est souvent le rapport que tu as au fait de la montrer.",
-          "Quand quelque chose te touche, essaie d'en dire une version simple avant que tout se referme intérieurement.",
-          "Observe si tu traites seul des émotions qui auraient besoin d'être au moins partiellement partagées pour que la relation reste compréhensible.",
-          "Plus tu retiens, plus l'autre risque de te lire comme froid, détaché ou absent, même quand ce n'est pas ce qui se passe en toi.",
-          "Si tu veux construire un lien stable, il faudra apprendre à exprimer sans te sentir dissous dans ce que tu ressens."
-        ]
       },
       "regulationRules": {
         "low": {
@@ -935,17 +888,36 @@
       "label": "Besoin de contrôle relationnel",
       "dimension": "avoidance",
       "indicator": "besoin de garder la main sur le rythme, l'intensité ou l'évolution du lien pour ne pas se sentir débordé",
-      "trigger": "Ce déclencheur s'active quand la relation donne l'impression d'aller plus vite, plus loin ou plus fort que ce que ton système peut tolérer sereinement. Ce qui devient difficile ici, ce n'est pas seulement la proximité, mais le sentiment de ne plus maîtriser le tempo du lien, de te faire entraîner dans une intensité que tu n'as pas pleinement choisie, ou d'être poussé émotionnellement dans une direction où tu ne te sens pas encore stable. Plus l'autre accélère, insiste, rapproche, projette ou attend un engagement plus clair, plus cela peut réveiller une tension interne : besoin de freiner, de recadrer, de reprendre la main ou de remettre de la distance pour retrouver un sentiment de sécurité. En profondeur, ce tag touche souvent la difficulté à rester ouvert quand le lien devient trop imprévisible, trop intense ou trop engageant sans que tu aies l'impression d'en garder la maîtrise. Il ne s'agit pas seulement d'aimer décider : il s'agit souvent d'éviter le malaise d'être émotionnellement emporté, débordé ou mis face à une implication que tu n'as pas encore digérée intérieurement.",
-      "associatedBehaviors": [
-        "ralentit la relation quand elle devient trop intense ou trop rapide",
-        "a besoin de reprendre la main sur le rythme des échanges ou de l'engagement",
-        "se crispe quand il a l'impression que le lien évolue sans lui laisser assez d'espace de décision",
-        "met de la distance pour retrouver un sentiment de maîtrise intérieure",
-        "évite les accélérations relationnelles qu'il n'a pas validées intérieurement",
-        "peut devenir plus froid ou plus cadrant quand il se sent entraîné émotionnellement",
-        "préfère décider quand, comment et à quel rythme la relation avance",
-        "réagit mal aux attentes implicites ou explicites qui lui donnent l'impression d'être poussé"
-      ],
+      "trigger": "Ce déclencheur s'active quand la relation donne l'impression d'aller plus vite, plus loin ou plus fort que ce que ton système peut tolérer sereinement. Ce qui devient difficile ici, ce n'est pas seulement la proximité, mais le sentiment de ne plus maîtriser le tempo du lien, de te faire entraîner dans une intensité que tu n'as pas pleinement choisie, ou d'être poussé émotionnellement dans une direction où tu ne te sens pas encore stable. Plus l'autre accélère, insiste, rapproche, projette ou attend un engagement plus clair, plus cela peut réveiller une tension interne : besoin de freiner, de recadrer, de reprendre la main ou de remettre de la distance pour retrouver un sentiment de sécurité. En profondeur, ce tag touche souvent la difficulté à rester ouvert quand le lien devient trop imprévisible, trop intense ou trop engageant sans que tu aies l'impression d'en garder la maîtrise. Il ne s'agit pas seulement d'aimer décider : il s'agit souvent d'éviter le malaise d'être émotionnellement emporté, débordé ou mis face à une implication que tu n'as pas encore digérée intérieurement.","associatedBehaviors": {
+        "low": "Tu aimes garder un certain contrôle sur ta vie et sur le rythme de la relation.\n\nIl t'arrive de vouloir décider du quand et du comment des choses sans trop de pression extérieure.\n\nCe besoin de contrôle reste encore modéré et te permet de te sentir en sécurité.",
+        "medium": "Tu ressens un besoin important de contrôler le rythme et l'intensité de la relation.\n\nQuand ton partenaire veut aller trop vite, parler d'engagement, ou intensifier les choses, tu commences à te sentir mal à l'aise et tu cherches à reprendre le contrôle de la situation.\n\nTu poses des limites ou tu te retires légèrement pour garder les choses à un niveau qui te convient.",
+        "high": "Tu as un fort besoin de tout contrôler dans la relation : le rythme, la proximité, les discussions importantes et l'évolution du couple.\n\nDès que ton partenaire veut avancer trop vite, parler d'avenir, ou augmenter l'intimité, tu ressens une forte résistance et tu reprends le contrôle en te refermant, en devenant distant(e), en retardant les décisions ou en imposant tes conditions.\n\nLe problème, c'est que plus tu cherches à tout contrôler pour te protéger, plus ton partenaire se sent rejeté(e), insécure et anxieux(se). Tu crois préserver ton espace en gardant le contrôle, mais en réalité tu génères de la frustration, de la poursuite et de l'étouffement chez l'autre… ce qui finit souvent par te faire perdre encore plus de contrôle sur la relation."
+      },
+      "advices": {
+        "low": [
+          "Identifie les situations où ton besoin de contrôle se manifeste.",
+          "Essaie de lâcher un peu de contrôle sur des sujets mineurs.",
+          "Observe comment ton partenaire réagit quand tu relâches légèrement la pression."
+        ],
+        "medium": [
+          "Lorsque tu sens le besoin de reprendre le contrôle, exprime-le calmement au lieu de te retirer.",
+          "Accepte de lâcher du lest sur certains aspects du rythme de la relation.",
+          "Évite d'imposer unilatéralement tes conditions sans discussion.",
+          "Travaille sur la tolérance à l'incertitude dans l'évolution du couple."
+        ],
+        "high": [
+          "Arrête de tout contrôler par peur de perdre ton espace ou ta liberté.",
+          "Chaque fois que tu te refermes ou que tu imposes tes règles pour garder le contrôle, tu augmentes l'anxiété de ton/ta partenaire et tu renforces le cycle toxique.",
+          "Apprends à discuter ouvertement du rythme de la relation au lieu d'imposer des freins par le retrait.",
+          "Lâche progressivement du contrôle sur des sujets importants au lieu de tout bloquer.",
+          "Si tu continues à tout contrôler pour te protéger, tu vas finir par étouffer la relation et pousser ton partenaire à bout, jusqu'à risquer de tout perdre."
+        ]
+      },
+      "outputTexts": {
+        "low": "Le besoin de garder la main sur le rythme relationnel ne semble pas être un enjeu majeur pour toi. Quand le lien évolue, se rapproche ou devient plus engageant, cela ne paraît pas suffire à déclencher chez toi une tension importante autour du contrôle. Tu peux donc probablement laisser une partie de l'évolution de la relation se faire sans ressentir immédiatement le besoin de freiner, recadrer ou reprendre la main pour te sentir à nouveau en sécurité.",
+        "medium": "Tu peux parfois ressentir le besoin de ralentir, de recadrer ou de reprendre la main quand la relation devient plus intense ou plus engageante que ce que tu peux intégrer facilement. Tu n'es pas forcément dans le contrôle permanent, mais certaines accélérations émotionnelles, attentes implicites ou mouvements de rapprochement peuvent te mettre sous tension. Selon le contexte, tu peux alors chercher à remettre du cadre, du rythme ou de la distance pour retrouver un meilleur équilibre intérieur.",
+        "high": "Le besoin de contrôle relationnel semble important chez toi. Quand le lien s'intensifie, accélère ou devient trop engageant sans que tu te sentes prêt, ton système peut rapidement réagir comme s'il devait reprendre la main pour ne pas se laisser emporter. Ce n'est pas seulement une question de préférence pour l'autonomie : ce qui s'active ici, c'est souvent la difficulté à tolérer une implication émotionnelle qui avance plus vite que ta capacité à la contenir intérieurement. Reprendre le contrôle devient alors une manière de réduire la tension, de remettre de la distance ou de retrouver une impression de sécurité."
+      },
       "questionIds": [14, 16, 20],
       "thresholds": {
         "low": {
@@ -963,32 +935,6 @@
           "max": 4,
           "label": "élevé"
         }
-      },
-      "outputTexts": {
-        "low": "Le besoin de garder la main sur le rythme relationnel ne semble pas être un enjeu majeur pour toi. Quand le lien évolue, se rapproche ou devient plus engageant, cela ne paraît pas suffire à déclencher chez toi une tension importante autour du contrôle. Tu peux donc probablement laisser une partie de l'évolution de la relation se faire sans ressentir immédiatement le besoin de freiner, recadrer ou reprendre la main pour te sentir à nouveau en sécurité.",
-        "medium": "Tu peux parfois ressentir le besoin de ralentir, de recadrer ou de reprendre la main quand la relation devient plus intense ou plus engageante que ce que tu peux intégrer facilement. Tu n'es pas forcément dans le contrôle permanent, mais certaines accélérations émotionnelles, attentes implicites ou mouvements de rapprochement peuvent te mettre sous tension. Selon le contexte, tu peux alors chercher à remettre du cadre, du rythme ou de la distance pour retrouver un meilleur équilibre intérieur.",
-        "high": "Le besoin de contrôle relationnel semble important chez toi. Quand le lien s'intensifie, accélère ou devient trop engageant sans que tu te sentes prêt, ton système peut rapidement réagir comme s'il devait reprendre la main pour ne pas se laisser emporter. Ce n'est pas seulement une question de préférence pour l'autonomie : ce qui s'active ici, c'est souvent la difficulté à tolérer une implication émotionnelle qui avance plus vite que ta capacité à la contenir intérieurement. Reprendre le contrôle devient alors une manière de réduire la tension, de remettre de la distance ou de retrouver une impression de sécurité."
-      },
-      "advices": {
-        "low": [
-          "Appuie-toi sur cette capacité à laisser la relation évoluer sans avoir besoin d'en maîtriser fortement chaque étape.",
-          "Reste néanmoins attentif à ne pas confondre souplesse relationnelle et passivité face à une dynamique qui ne te conviendrait pas réellement.",
-          "Laisser de la place au lien est une force, à condition que cela reste compatible avec tes limites et ton rythme réel."
-        ],
-        "medium": [
-          "Essaie d'identifier ce qui t'active exactement : la rapidité, l'intensité, l'attente d'engagement, la pression implicite ou la perte de repères.",
-          "Quand tu as besoin de ralentir, formule-le clairement au lieu de reprendre le contrôle de manière froide ou indirecte.",
-          "Fais la différence entre poser un cadre sain et vouloir reprendre la main dès que tu sens une montée d'implication émotionnelle.",
-          "Tu n'as pas besoin de tout contrôler pour rester en sécurité ; parfois, ce qu'il faut surtout, c'est un rythme plus lisible et plus respirable."
-        ],
-        "high": [
-          "Travaille à reconnaître le moment où le besoin de cadre devient un réflexe de défense face à une implication émotionnelle qui te met mal à l'aise.",
-          "Demande-toi ce que tu cherches vraiment à éviter quand tu veux reprendre la main : la fusion, la vulnérabilité, la perte de liberté, la honte d'être touché, ou la peur d'être dépassé.",
-          "Ne confonds pas systématiquement sécurité et contrôle ; garder la main sur tout peut te protéger de l'inconfort, mais aussi empêcher la relation de respirer naturellement.",
-          "Quand tu sens le besoin de freiner, essaie d'exprimer ton rythme avant de créer un déséquilibre par la distance ou la froideur.",
-          "Observe si tu reprends le contrôle parce que l'autre va réellement trop vite, ou parce que ton système supporte mal de ne pas maîtriser l'évolution du lien.",
-          "Si tu veux construire un lien stable, il faudra apprendre à tolérer une part d'incertitude et de mouvement sans vivre cela comme une perte immédiate de sécurité."
-        ]
       },
       "regulationRules": {
         "low": {
@@ -1050,17 +996,36 @@
       "label": "Retrait sous stress relationnel",
       "dimension": "avoidance",
       "indicator": "tendance à couper, se fermer ou prendre de la distance quand la charge émotionnelle devient trop forte",
-      "trigger": "Ce déclencheur s'active lorsque la relation devient trop tendue, trop lourde, trop conflictuelle ou trop activante émotionnellement pour être supportée en restant pleinement en lien. Ce qui devient difficile ici, ce n'est pas seulement le conflit ou l'intensité, mais le fait de rester exposé à un niveau de charge émotionnelle que ton système vit comme débordant. Plus la tension monte, plus la discussion devient prenante, plus l'autre insiste, ou plus tu te sens envahi par ce qui circule émotionnellement, plus peut apparaître le besoin de couper le contact, de te refermer, de refroidir ou de sortir du lien pour faire redescendre la pression. En profondeur, ce tag touche souvent une faible tolérance au débordement émotionnel en temps réel : quand l'intensité est trop forte, ton système ne cherche pas d'abord à rester ouvert, il cherche surtout à faire baisser la surcharge, parfois au prix de la relation, de la continuité du dialogue ou de la lisibilité émotionnelle.",
-      "associatedBehaviors": [
-        "se retire quand la tension émotionnelle devient trop forte",
-        "coupe partiellement la communication pour retrouver du calme",
-        "devient plus froid, plus distant ou plus difficile à atteindre après une montée de stress relationnel",
-        "met fin à l'échange plus vite qu'il ne le faudrait pour ne plus subir l'intensité",
-        "a besoin de s'éloigner après un conflit ou une discussion trop chargée",
-        "se ferme émotionnellement quand il se sent dépassé",
-        "évite de rester dans la confrontation quand la pression intérieure monte trop haut",
-        "revient parfois plus tard, une fois la charge retombée, mais laisse entre-temps un vide ou un flou relationnel important"
-      ],
+      "trigger": "Ce déclencheur s'active lorsque la relation devient trop tendue, trop lourde, trop conflictuelle ou trop activante émotionnellement pour être supportée en restant pleinement en lien. Ce qui devient difficile ici, ce n'est pas seulement le conflit ou l'intensité, mais le fait de rester exposé à un niveau de charge émotionnelle que ton système vit comme débordant. Plus la tension monte, plus la discussion devient prenante, plus l'autre insiste, ou plus tu te sens envahi par ce qui circule émotionnellement, plus peut apparaître le besoin de couper le contact, de te refermer, de refroidir ou de sortir du lien pour faire redescendre la pression. En profondeur, ce tag touche souvent une faible tolérance au débordement émotionnel en temps réel : quand l'intensité est trop forte, ton système ne cherche pas d'abord à rester ouvert, il cherche surtout à faire baisser la surcharge, parfois au prix de la relation, de la continuité du dialogue ou de la lisibilité émotionnelle.","associatedBehaviors": {
+        "low": "Lorsque tu es stressé(e) ou sous pression, tu as tendance à te replier un peu sur toi-même.\n\nTu préfères gérer tes difficultés seul(e) plutôt que d'en parler immédiatement avec ton partenaire.\n\nCe retrait reste généralement temporaire et modéré.",
+        "medium": "Quand le stress ou les problèmes s'accumulent, tu te refermes et tu t'isoles émotionnellement.\n\nTu deviens plus distant(e), tu parles moins, et tu évites les discussions profondes avec ton partenaire.\n\nTu penses que c'est la meilleure façon de gérer ton stress, même si cela crée une certaine distance dans le couple.",
+        "high": "Dès que tu es stressé(e), submergé(e) ou confronté(e) à des difficultés, tu te retires complètement.\n\nTu deviens froid(e), inaccessible, tu réponds à peine, tu disparais des conversations et tu refuses toute discussion émotionnelle.\n\nTu crois te protéger en te retirant, mais plus tu t'isoles sous stress, plus ton partenaire panique, te poursuit, te bombarde de messages et te met encore plus de pression. Tu génères exactement l'étouffement et le chaos que tu essayes d'éviter. Ton retrait, censé t'apaiser, finit par empirer considérablement la situation et créer une énorme frustration chez ton/ta partenaire."
+      },
+      "advices": {
+        "low": [
+          "Essaie de signaler à ton partenaire que tu es stressé(e) au lieu de disparaître silencieusement.",
+          "Reviens vers lui/elle une fois que tu as repris un peu de souffle.",
+          "Observe l'impact de ton retrait sur l'ambiance du couple."
+        ],
+        "medium": [
+          "Informe ton partenaire que tu as besoin de temps pour gérer ton stress au lieu de te couper brutalement.",
+          "Pose des limites claires tout en gardant un minimum de contact.",
+          "Reviens vers ton partenaire plus rapidement après un épisode de retrait.",
+          "Évite de laisser ton silence durer plusieurs jours sans explication."
+        ],
+        "high": [
+          "Arrête de te retirer complètement dès que le stress monte.",
+          "Chaque fois que tu disparais ou que tu deviens inaccessible, tu fais exploser l'anxiété de ton/ta partenaire et tu aggraves le conflit.",
+          "Apprends à communiquer minimalement : un simple message du type \"J'ai besoin d'un peu de temps, je reviens vers toi\" peut changer beaucoup de choses.",
+          "Ne coupe plus tout contact sous prétexte que tu es stressé(e).",
+          "Si tu continues à te retirer sous stress sans aucune communication, tu vas progressivement détruire la confiance et la sécurité dans la relation."
+        ]
+      },
+      "outputTexts": {
+        "low": "Quand la relation devient tendue ou émotionnellement lourde, tu ne sembles pas avoir automatiquement besoin de couper le lien pour retrouver ton équilibre. La montée de stress peut te toucher, mais elle ne paraît pas suffire à déclencher chez toi un réflexe fort de retrait, de fermeture ou de mise à distance. Cela suggère une meilleure capacité à rester en lien quand l'intensité monte, même si cela ne veut pas dire que ces moments sont faciles ou agréables.",
+        "medium": "Sous stress relationnel, tu peux parfois ressentir le besoin de prendre du recul, de sortir temporairement de l'échange ou de te protéger de la surcharge émotionnelle. Le retrait n'est pas forcément systématique, mais il peut apparaître lorsque le conflit dure, que la pression monte ou que la charge émotionnelle devient trop dense à gérer en restant pleinement ouvert. Selon le contexte, tu peux donc osciller entre tentative de rester présent et besoin de te couper un moment pour ne pas te sentir débordé.",
+        "high": "Le retrait sous stress semble être un mécanisme important chez toi. Quand la relation devient trop lourde, trop tendue ou trop chargée émotionnellement, ton système peut rapidement chercher à sortir du lien pour faire baisser la pression. Il ne s'agit pas seulement d'avoir besoin de calme : ce qui s'active ici, c'est souvent la difficulté à rester disponible émotionnellement quand l'intensité dépasse ce que tu peux contenir sur le moment. La distance, la fermeture ou la coupure deviennent alors une manière de ne plus te sentir submergé, même si cela laisse l'autre face à du flou, de la froideur ou une rupture brutale de contact."
+      },
       "questionIds": [2, 8, 20],
       "thresholds": {
         "low": {
@@ -1078,32 +1043,6 @@
           "max": 4,
           "label": "élevé"
         }
-      },
-      "outputTexts": {
-        "low": "Quand la relation devient tendue ou émotionnellement lourde, tu ne sembles pas avoir automatiquement besoin de couper le lien pour retrouver ton équilibre. La montée de stress peut te toucher, mais elle ne paraît pas suffire à déclencher chez toi un réflexe fort de retrait, de fermeture ou de mise à distance. Cela suggère une meilleure capacité à rester en lien quand l'intensité monte, même si cela ne veut pas dire que ces moments sont faciles ou agréables.",
-        "medium": "Sous stress relationnel, tu peux parfois ressentir le besoin de prendre du recul, de sortir temporairement de l'échange ou de te protéger de la surcharge émotionnelle. Le retrait n'est pas forcément systématique, mais il peut apparaître lorsque le conflit dure, que la pression monte ou que la charge émotionnelle devient trop dense à gérer en restant pleinement ouvert. Selon le contexte, tu peux donc osciller entre tentative de rester présent et besoin de te couper un moment pour ne pas te sentir débordé.",
-        "high": "Le retrait sous stress semble être un mécanisme important chez toi. Quand la relation devient trop lourde, trop tendue ou trop chargée émotionnellement, ton système peut rapidement chercher à sortir du lien pour faire baisser la pression. Il ne s'agit pas seulement d'avoir besoin de calme : ce qui s'active ici, c'est souvent la difficulté à rester disponible émotionnellement quand l'intensité dépasse ce que tu peux contenir sur le moment. La distance, la fermeture ou la coupure deviennent alors une manière de ne plus te sentir submergé, même si cela laisse l'autre face à du flou, de la froideur ou une rupture brutale de contact."
-      },
-      "advices": {
-        "low": [
-          "Appuie-toi sur cette capacité à rester relativement en lien même quand la relation traverse des moments tendus.",
-          "Reste néanmoins attentif à ne pas confondre stabilité émotionnelle et suradaptation à des échanges réellement trop lourds ou destructeurs.",
-          "Pouvoir rester présent sous stress est une force, à condition que cela ne t'oblige pas à encaisser sans limite."
-        ],
-        "medium": [
-          "Repère le moment précis où le besoin de recul devient nécessaire : surcharge, conflit, honte, fatigue émotionnelle, pression de l'autre.",
-          "Quand tu as besoin de te retirer, essaie de le dire clairement plutôt que de disparaître émotionnellement sans repère pour l'autre.",
-          "Fais la différence entre une pause utile pour réguler et une fuite qui coupe le lien sans traiter le fond.",
-          "Prendre du recul n'est pas un problème ; le problème commence quand le retrait devient ton seul moyen de gérer l'intensité relationnelle."
-        ],
-        "high": [
-          "Travaille à identifier ce que tu ne supportes plus sur le moment : le conflit, la pression, l'intensité, la honte, la vulnérabilité, le sentiment d'être envahi ou dépassé.",
-          "Ne réduis pas automatiquement ton retrait à un simple besoin de calme ; parfois, ce qui se joue est surtout la difficulté à rester émotionnellement ouvert quand la charge devient trop forte.",
-          "Quand tu sens la fermeture monter, essaie de poser une limite explicite avant de couper brutalement le lien.",
-          "Observe si tu prends une vraie pause pour revenir ensuite, ou si tu te retires surtout pour ne plus ressentir ce que la situation active en toi.",
-          "Plus ton retrait est soudain ou opaque, plus l'autre risque de le vivre comme du rejet, du mépris ou une disparition émotionnelle, même si ce n'est pas ton intention.",
-          "Si tu veux construire un lien stable, il faudra apprendre à réguler la surcharge sans transformer chaque montée de stress en coupure relationnelle."
-        ]
       },
       "regulationRules": {
         "low": {
@@ -1181,16 +1120,58 @@
       "dimension": "mixed",
       "indicator": "niveau d'activation émotionnelle et de désorganisation relationnelle quand le lien entre en tension",
       "trigger": "Ce déclencheur s'active quand la relation entre dans une zone de tension ouverte : désaccord, frustration, reproche, incompréhension, froid, rupture de ton, ou conflit non résolu. Ce qui est difficile ici, ce n'est pas seulement d'avoir un problème avec l'autre, mais de supporter ce que le conflit réveille intérieurement en temps réel : menace sur le lien, perte de contrôle, montée émotionnelle, honte, colère, peur d'être rejeté, ou peur d'être envahi. Selon le fonctionnement dominant, cette tension peut être vécue comme quelque chose qu'il faut réparer immédiatement pour ne pas perdre la connexion, ou au contraire comme quelque chose qu'il faut fuir pour ne pas être débordé. En profondeur, ce tag mesure donc moins l'opinion que tu as du conflit que ta capacité réelle à rester stable, lisible et régulé quand la relation devient inconfortable, instable ou émotionnellement chargée.",
-      "associatedBehaviors": [
-        "se sent rapidement submergé quand une tension relationnelle apparaît",
-        "a du mal à garder une pensée claire pendant un conflit",
-        "cherche à réparer immédiatement pour faire baisser la tension",
-        "ou au contraire se retire pour ne plus subir l'intensité émotionnelle",
-        "supporte mal les désaccords qui durent ou restent non clarifiés",
-        "peut devenir plus réactif, plus impulsif ou plus fermé quand le conflit monte",
-        "a du mal à rester émotionnellement stable pendant une dispute",
-        "ressent une forte pression intérieure tant que la tension relationnelle n'est pas retombée"
-      ],
+      "associatedBehaviors": {
+        "anxiety": {
+          "low": "Lors des conflits, tu ressens rapidement de l'anxiété et tu as tendance à vouloir régler la situation assez vite.\n\nTu cherches à exprimer ce que tu ressens et à obtenir des réponses de ton partenaire pour apaiser ta peur.\n\nCette réaction reste encore modérée, mais elle montre que les tensions te perturbent émotionnellement.",
+          "medium": "Lors des conflits, tu paniques assez vite et tu as du mal à contenir tes émotions.\n\nTu multiplies les messages, tu insistes pour en parler immédiatement, tu exprimes tes reproches et tu cherches à tout prix à être rassuré(e) ou entendu(e).\n\nTu as peur que le conflit signe le début d'un abandon.",
+          "high": "Dès qu'un conflit éclate, tu es submergé(e) par la peur et l'anxiété.\n\nTu bombardes ton partenaire de messages, tu fais des reproches, tu pleures, tu supplies ou tu exiges des explications immédiates. Tu transformes souvent une petite dispute en drame existentiel par peur que ce soit la fin.\n\nPlus tu pousses fort pour résoudre le conflit rapidement, plus tu étouffes ton partenaire et plus tu risques d'obtenir exactement ce que tu redoutes : son retrait ou sa fuite."
+        },
+        "avoidance": {
+          "low": "Lors des conflits, tu as tendance à vouloir éviter les discussions trop longues ou trop intenses.\n\nTu préfères laisser retomber la tension plutôt que d'entrer dans des échanges émotionnels chargés.\n\nCe comportement reste encore léger, mais il crée parfois un sentiment d'inachevé.",
+          "medium": "Lors des conflits, tu te fermes et tu évites d'approfondir la discussion.\n\nTu deviens silencieux(se), tu réponds de façon courte, ou tu changes de sujet pour ne pas avoir à gérer l'émotion.\n\nTu penses que c'est mieux de ne pas envenimer les choses, même si cela frustre ton partenaire.",
+          "high": "Dès qu'un conflit apparaît, tu te refermes complètement ou tu fuis la discussion.\n\nTu deviens froid(e), tu donnes des réponses minimales, tu t'isoles ou tu refuses carrément d'en parler. Tu préfères tout enfouir plutôt que de gérer l'émotion.\n\nLe problème, c'est que plus tu évites le conflit, plus ton partenaire anxieux devient insistant, en colère et poursuivant. Ton retrait transforme une simple dispute en une énorme source de frustration et d'insécurité pour lui/elle."
+        }
+      },
+      "advices": {
+        "anxiety": {
+          "low": [
+            "Essaie de ne pas dramatiser immédiatement chaque petite tension.",
+            "Prends un temps de pause avant de réagir fortement pendant un conflit."
+          ],
+          "medium": [
+            "Ne cherche pas à résoudre le conflit dans l'urgence en bombardant ton partenaire.",
+            "Exprime tes besoins calmement plutôt qu'avec des reproches ou de l'insistance.",
+            "Tolère un peu plus longtemps le malaise d'un conflit non résolu.",
+            "Évite de transformer chaque dispute en peur d'abandon."
+          ],
+          "high": [
+            "Arrête de bombarder ou de faire des crises dès qu'un conflit surgit.",
+            "Laisse minimum 24h avant de revenir sur le sujet de façon posée.",
+            "Apprends à réguler ton anxiété sans exiger une résolution immédiate.",
+            "Exprime un seul besoin à la fois au lieu de tout déverser.",
+            "Si tu continues à dramatiser et à poursuivre pendant les conflits, tu vas pousser ton partenaire à se retirer encore plus."
+          ]
+        },
+        "avoidance": {
+          "low": [
+            "Essaie de rester un minimum présent pendant les petites tensions.",
+            "Évite de couper court trop rapidement à la discussion."
+          ],
+          "medium": [
+            "Ne te ferme pas complètement lors d'un conflit.",
+            "Donne au moins une réponse claire plutôt que des silences ou des réponses évasives.",
+            "Reviens vers ton partenaire après avoir pris un peu de recul.",
+            "Accepte d'aborder le sujet même si ça te met mal à l'aise."
+          ],
+          "high": [
+            "Arrête de fuir ou de te fermer totalement pendant les conflits.",
+            "Communique au minimum : dis que tu as besoin de temps au lieu de disparaître.",
+            "Reviens sur le sujet dans les 48h au lieu de tout enfouir.",
+            "Ne minimise plus les émotions de ton partenaire en les ignorant.",
+            "Si tu continues à éviter systématiquement les conflits, tu vas accumuler de la rancœur et rendre la relation explosive à long terme."
+          ]
+        }
+      },
       "questionIds": [7, 8, 15, 19],
       "thresholds": {
         "low": {
@@ -1213,27 +1194,6 @@
         "low": "Le conflit ne semble pas suffire à te désorganiser fortement sur le plan relationnel ou émotionnel. Les tensions peuvent être inconfortables, mais ton système ne paraît pas basculer trop vite dans l'urgence, la panique, la fuite ou la perte de lisibilité. Cela suggère une capacité relativement correcte à traverser le désaccord sans que le lien, ton équilibre intérieur ou ta régulation émotionnelle s'effondrent immédiatement.",
         "medium": "Les conflits peuvent t'activer de manière réelle, surtout lorsqu'ils durent, restent flous ou touchent des zones sensibles de la relation. Tu n'es pas forcément débordé à chaque tension, mais le désaccord peut commencer à peser sur ton équilibre émotionnel et sur ta manière d'être en lien. Selon le contexte, tu peux osciller entre tentative de rester présent, besoin de clarifier vite, ou envie de prendre du recul pour ne pas te sentir trop envahi.",
         "high": "Les conflits semblent être un déclencheur fort chez toi. Quand la relation entre en tension, ton système peut rapidement perdre en stabilité, en clarté ou en capacité de régulation. Ce n'est pas seulement le désaccord qui pose problème : ce qui s'active ici, c'est souvent tout ce que le conflit vient réveiller d'un coup — peur de perdre le lien, surcharge émotionnelle, impression d'être attaqué, débordement intérieur ou besoin urgent d'en sortir. Selon ton fonctionnement, cela peut te pousser soit à vouloir réparer immédiatement, soit à fuir l'intensité pour ne plus la subir."
-      },
-      "advices": {
-        "low": [
-          "Appuie-toi sur cette capacité à rester relativement stable quand la relation traverse une tension.",
-          "Reste néanmoins attentif à ne pas minimiser de vrais conflits sous prétexte que tu les supportes mieux que d'autres.",
-          "L'objectif n'est pas d'éviter tout conflit, mais de continuer à le traverser sans perdre ni le lien ni ta lisibilité."
-        ],
-        "medium": [
-          "Repère ce qui t'active le plus dans le conflit : la peur de perdre le lien, l'injustice, la honte, la critique, la montée d'intensité ou le fait de ne pas être compris.",
-          "Quand la tension monte, essaie d'identifier si tu veux réparer trop vite ou au contraire sortir trop vite de l'échange.",
-          "Fais la différence entre un conflit difficile mais gérable et un niveau d'intensité qui dépasse réellement ta capacité de régulation du moment.",
-          "Si tu as besoin d'une pause, pose-la clairement plutôt que de réagir dans l'urgence ou le flou."
-        ],
-        "high": [
-          "Travaille à reconnaître ce que le conflit active exactement en toi, au lieu de le vivre comme un bloc unique et insupportable.",
-          "Quand la tension monte, demande-toi si tu es en train de répondre au problème réel ou surtout à la surcharge émotionnelle que le conflit déclenche en toi.",
-          "Évite de confondre urgence émotionnelle et nécessité relationnelle : vouloir réparer tout de suite ou couper tout de suite soulage parfois l'activation, mais ne règle pas toujours le fond.",
-          "Apprends à ralentir la montée plutôt qu'à réagir immédiatement sous pression.",
-          "Si le conflit te désorganise fortement, privilégie des formulations simples, factuelles et temporaires plutôt que des échanges longs quand ton système est déjà saturé.",
-          "Construire un lien stable demandera de développer une meilleure tolérance à la tension sans basculer automatiquement dans la panique, la fuite ou la perte de contrôle."
-        ]
       },
       "regulationRules": {
         "low": {
