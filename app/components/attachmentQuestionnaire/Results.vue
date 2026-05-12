@@ -13,6 +13,7 @@ import GoDeeper from '~/components/GoDeeper.vue'
 import Accordeon from '~/components/designSystem/Accordeon.vue'
 import { useBillingStore } from '~/stores/billing'
 import { useAuthStore } from '~/stores/auth'
+import { useSiteConfigStore } from '~/stores/siteConfig'
 import { getProfileLabel } from '~/utils/attachmentProfileTranslations'
 import { normalizeAiExchange } from '~/utils/aiExchange'
 import regulationProfilesData from '~/assets/data/attachment/regulationProfiles.json'
@@ -63,7 +64,13 @@ const attachmentProfiles = computed(() => {
 
 const billingStore = useBillingStore()
 const authStore = useAuthStore()
-const hasResultsAccess = computed(() => props.sessionBillingInfo?.hasPaidResults ?? false)
+const siteConfigStore = useSiteConfigStore()
+await siteConfigStore.loadConfig()
+
+const isResultsPaywallEnabled = computed(() => siteConfigStore.isResultsPaywallEnabled)
+const hasResultsAccess = computed(() => {
+  return !isResultsPaywallEnabled.value || (props.sessionBillingInfo?.hasPaidResults ?? false)
+})
 const hasIaAccess = computed(() => props.sessionBillingInfo?.hasPaidIa ?? false)
 const hasMembershipAccess = computed(() => (props.sessionBillingInfo?.hasPaidMembership ?? false) || billingStore.hasPaidMembership)
 const hasFormationAccess = computed(() => (props.sessionBillingInfo?.hasPaidFormation ?? false) || billingStore.hasPaidFormation)

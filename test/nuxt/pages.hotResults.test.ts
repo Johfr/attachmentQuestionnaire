@@ -39,8 +39,17 @@ const mockBillingStore = vi.hoisted(() => ({
   goToCheckout: vi.fn().mockResolvedValue(undefined),
 }))
 
+const mockSiteConfigStore = vi.hoisted(() => ({
+  isResultsPaywallEnabled: true,
+  loadConfig: vi.fn().mockResolvedValue(undefined),
+}))
+
 vi.mock('~/stores/billing', () => ({
   useBillingStore: vi.fn(() => mockBillingStore),
+}))
+
+vi.mock('~/stores/siteConfig', () => ({
+  useSiteConfigStore: vi.fn(() => mockSiteConfigStore),
 }))
 
 // Drain the microtask queue without relying on setTimeout (safe with fake timers).
@@ -151,6 +160,8 @@ describe('attachment-questionnaire/results (hot / first render)', () => {
     mockBillingStore.hasPaidMembership = false
     mockBillingStore.hasPaidFormation = false
     mockBillingStore.checkUserPermissions.mockClear()
+    mockSiteConfigStore.isResultsPaywallEnabled = true
+    mockSiteConfigStore.loadConfig.mockClear().mockResolvedValue(undefined)
   })
 
   afterEach(() => {
@@ -180,6 +191,20 @@ describe('attachment-questionnaire/results (hot / first render)', () => {
     expect(wrapper.text()).toContain('Comprends ce qui se passe sur ton axe anxieux')
     expect(wrapper.text()).toContain('Comprends ce qui se passe sur ton axe évitant')
     expect(wrapper.text()).toContain('Lorem ipsum')
+  })
+
+  it('shows full hot results immediately when the results paywall is disabled', async () => {
+    mockSiteConfigStore.isResultsPaywallEnabled = false
+    mockApiHandler.mockResolvedValue(SUCCESS_RESPONSE)
+
+    const wrapper = await mountSuspended(HotResultsPage)
+
+    expect(mockSiteConfigStore.loadConfig).toHaveBeenCalled()
+    expect(wrapper.text()).not.toContain('Voir ton sous profil')
+    expect(wrapper.text()).not.toContain('Comprends ce qui se passe sur ton axe')
+    expect(wrapper.text()).toContain('Sous profil :')
+    expect(wrapper.text()).toContain('Ce qui te fait paniquer')
+    expect(wrapper.text()).toContain('Ce qui te fait fuir')
   })
 
   it('renders results even when persisted=false and sessionId is null', async () => {

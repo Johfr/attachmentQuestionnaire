@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import NumberDrawPyramid from '~/components/NumberDrawPyramid.vue'
 import { useAuthStore } from '~/stores/auth'
 import { useBillingStore } from '~/stores/billing'
 import { useSiteConfigStore } from '~/stores/siteConfig'
@@ -21,6 +20,7 @@ const featureFlagsError = ref('')
 const appEnv = computed(() => (runtimeConfig.public.appEnv || 'prod').toUpperCase())
 const firebaseProjectId = computed(() => runtimeConfig.public.firebaseProjectId || 'non configure')
 const stripeMode = computed(() => appEnv.value === 'TEST' ? 'Stripe test' : 'Stripe live')
+const isResultsPaywallEnabled = computed(() => siteConfigStore.isResultsPaywallEnabled)
 const isResultsSharingEnabled = computed(() => siteConfigStore.isResultsSharingEnabled)
 
 const startLiveCheckoutTest = async () => {
@@ -44,13 +44,29 @@ const toggleResultsSharing = async () => {
   try {
     await siteConfigStore.updateConfig({
       features: {
-        resultsSharing: !isResultsSharingEnabled.value,
+        resultsSharingEnabled: !isResultsSharingEnabled.value,
       },
     })
   } catch (error) {
     featureFlagsError.value = error instanceof Error
       ? error.message
       : 'Impossible de mettre à jour cette feature pour le moment.'
+  }
+}
+
+const toggleResultsPaywall = async () => {
+  featureFlagsError.value = ''
+
+  try {
+    await siteConfigStore.updateConfig({
+      features: {
+        resultsPaywallEnabled: !isResultsPaywallEnabled.value,
+      },
+    })
+  } catch (error) {
+    featureFlagsError.value = error instanceof Error
+      ? error.message
+      : 'Impossible de mettre a jour cette feature pour le moment.'
   }
 }
 
@@ -83,6 +99,29 @@ await siteConfigStore.loadConfig()
         <h2 class="mb-3 text-xl font-semibold text-theme-text">
           Feature flags
         </h2>
+        <p class="mb-2 text-sm text-theme-muted">
+          Blocage premium des resultats :
+          <span class="font-semibold text-theme-text">
+            {{ isResultsPaywallEnabled ? 'active' : 'desactive' }}
+          </span>
+        </p>
+        <p class="mb-4 text-sm text-theme-muted">
+          Si la feature est desactivee, les resultats complets sont visibles sans paiement et les CTA de debloquage disparaissent.
+        </p>
+        <button
+          class="bg-theme-button text-theme-buttonText mb-5 inline-flex items-center gap-2 rounded-3xl px-5 py-3 text-sm"
+          :disabled="siteConfigStore.isSaving"
+          @click="toggleResultsPaywall"
+        >
+          <LucideLoader v-if="siteConfigStore.isSaving" :size="18" class="animate-spin" />
+          <span>
+            {{ siteConfigStore.isSaving
+              ? 'Mise a jour en cours...'
+              : isResultsPaywallEnabled
+                ? 'Desactiver le blocage premium'
+                : 'Activer le blocage premium' }}
+          </span>
+        </button>
         <p class="mb-2 text-sm text-theme-muted">
           Partage des résultats partenaire :
           <span class="font-semibold text-theme-text">

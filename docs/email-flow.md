@@ -40,7 +40,7 @@ Important :
 - tant que Resend reste en mode sandbox, les invitations de partage partenaire ne peuvent pas être envoyées à de vrais users
 - `onboarding@resend.dev` est suffisant pour les tests du compte, pas pour une ouverture publique
 - pour ouvrir cette feature, il faudra acheter un domaine, par exemple chez OVH, puis le vérifier dans Resend
-- en attendant, laisser `appConfig/global.features.resultsSharing = false`
+- en attendant, laisser `appConfig/global.features.resultsSharingEnabled = false`
 
 Mode transitoire partage partenaire :
 

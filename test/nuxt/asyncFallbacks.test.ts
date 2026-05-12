@@ -34,8 +34,17 @@ const firestoreMocks = vi.hoisted(() => ({
   getDocs: vi.fn(),
 }))
 
+const mockSiteConfigStore = vi.hoisted(() => ({
+  isResultsPaywallEnabled: true,
+  loadConfig: vi.fn().mockResolvedValue(undefined),
+}))
+
 vi.mock('~/stores/auth', () => ({
   useAuthStore: vi.fn(() => authState),
+}))
+
+vi.mock('~/stores/siteConfig', () => ({
+  useSiteConfigStore: vi.fn(() => mockSiteConfigStore),
 }))
 
 vi.mock('firebase/firestore', () => ({
@@ -120,6 +129,8 @@ describe('async fallback regressions', () => {
     firestoreMocks.query.mockReset().mockReturnValue('query-ref')
     firestoreMocks.where.mockReset().mockReturnValue('where-ref')
     firestoreMocks.getDocs.mockReset().mockRejectedValue(new Error('Firestore unavailable'))
+    mockSiteConfigStore.isResultsPaywallEnabled = true
+    mockSiteConfigStore.loadConfig.mockClear().mockResolvedValue(undefined)
   })
 
   afterEach(() => {

@@ -10,7 +10,8 @@ export const useSiteConfigStore = defineStore('siteConfig', () => {
   const error = ref<string | null>(null)
   const loaded = ref(false)
 
-  const isResultsSharingEnabled = computed(() => config.value.features.resultsSharing === true)
+  const isResultsPaywallEnabled = computed(() => config.value.features.resultsPaywallEnabled !== false)
+  const isResultsSharingEnabled = computed(() => config.value.features.resultsSharingEnabled === true)
 
   const loadConfig = async (force = false) => {
     if (!force && loaded.value) {
@@ -74,6 +75,7 @@ export const useSiteConfigStore = defineStore('siteConfig', () => {
     isSaving,
     error,
     loaded,
+    isResultsPaywallEnabled,
     isResultsSharingEnabled,
     loadConfig,
     updateConfig,

@@ -31,5 +31,10 @@ export const saveAppConfig = async (patch: SiteConfigPatch) => {
 
 export const isResultsSharingEnabled = async () => {
   const config = await readSiteConfig()
-  return config.features.resultsSharing === true
+  return config.features.resultsSharingEnabled === true
+}
+
+export const isResultsPaywallEnabled = async () => {
+  const config = await readSiteConfig()
+  return config.features.resultsPaywallEnabled !== false
 }

@@ -1,5 +1,6 @@
 export type SiteFeatureFlags = {
-  resultsSharing: boolean
+  resultsPaywallEnabled: boolean
+  resultsSharingEnabled: boolean
   contactForm: boolean
 }
 
@@ -23,7 +24,8 @@ export type SiteConfigPatch = {
 
 export const DEFAULT_SITE_CONFIG: SiteConfig = {
   features: {
-    resultsSharing: false,
+    resultsPaywallEnabled: true,
+    resultsSharingEnabled: false,
     contactForm: true,
   },
   maintenance: {
@@ -47,7 +49,14 @@ export const normalizeSiteConfig = (value: unknown): SiteConfig => {
     createdAt: source.createdAt,
     updatedAt: source.updatedAt,
     features: {
-      resultsSharing: features.resultsSharing === true,
+      resultsPaywallEnabled: typeof features.resultsPaywallEnabled === 'boolean'
+        ? features.resultsPaywallEnabled
+        : DEFAULT_SITE_CONFIG.features.resultsPaywallEnabled,
+      resultsSharingEnabled: typeof features.resultsSharingEnabled === 'boolean'
+        ? features.resultsSharingEnabled
+        : typeof features.resultsSharing === 'boolean'
+          ? features.resultsSharing
+          : DEFAULT_SITE_CONFIG.features.resultsSharingEnabled,
       contactForm: typeof features.contactForm === 'boolean'
         ? features.contactForm
         : DEFAULT_SITE_CONFIG.features.contactForm,

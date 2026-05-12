@@ -41,6 +41,7 @@ const mockSessionsState = vi.hoisted(() => ({
 }))
 
 const mockSiteConfigStore = vi.hoisted(() => ({
+  isResultsPaywallEnabled: true,
   isResultsSharingEnabled: true,
   isSaving: false,
   loadConfig: vi.fn().mockResolvedValue(undefined),
@@ -173,29 +174,36 @@ describe('profile partner sharing flow', () => {
     mockBillingStore.loadPurchaseHistory.mockClear().mockResolvedValue(undefined)
     mockBillingStore.goToCheckout.mockClear().mockResolvedValue(undefined)
     mockContactRequestsStore.loadRequests.mockClear().mockResolvedValue(undefined)
+    mockSiteConfigStore.isResultsPaywallEnabled = true
     mockSiteConfigStore.isResultsSharingEnabled = true
     mockSiteConfigStore.loadConfig.mockClear().mockResolvedValue(undefined)
   })
 
-  it('opens the paywall popin when the user has not unlocked the results yet', async () => {
+  it('opens the paywall popin when the paywall is enabled and the user has not paid', async () => {
     const wrapper = await mountSuspended(ProfilePage)
 
     await wrapper.findAll('button').find(node => /Invite (ton|ta) partenaire/.test(node.text()))!.trigger('click')
 
-    expect(wrapper.text()).toContain("Débloque tes résultats")
+    expect(wrapper.text()).toContain('Débloque tes résultats')
     expect(wrapper.text()).toContain("Tu dois d'abord débloquer tes résultats avant de pouvoir faire ta demande.")
-    expect(wrapper.text()).toContain("Débloquer mes résultats pour 1,99 €")
+    expect(wrapper.text()).toContain('Débloquer mes résultats pour 1,99 €')
+    expect(wrapper.find('[data-testid="partner-share-email-input"]').exists()).toBe(false)
   })
 
-  it('opens the share popin and requires a valid email when the results are unlocked', async () => {
-    mockSessionsState.sessions = [makeSession({
-      billingInfo: {
-        hasPaidResults: true,
-        hasPaidIa: false,
-        hasPaidMembership: false,
-        hasPaidFormation: false,
-      },
-    })]
+  it('opens the share popin when the paywall is disabled even if the user has not paid', async () => {
+    mockSiteConfigStore.isResultsPaywallEnabled = false
+
+    const wrapper = await mountSuspended(ProfilePage)
+
+    await wrapper.findAll('button').find(node => /Invite (ton|ta) partenaire/.test(node.text()))!.trigger('click')
+
+    expect(wrapper.text()).toContain('Partager le questionnaire')
+    expect(wrapper.find('[data-testid="partner-share-email-input"]').exists()).toBe(true)
+    expect(wrapper.text()).not.toContain('Débloque tes résultats')
+  })
+
+  it('requires a valid email before allowing the share request once sharing is allowed', async () => {
+    mockSiteConfigStore.isResultsPaywallEnabled = false
 
     const wrapper = await mountSuspended(ProfilePage)
 
@@ -213,14 +221,7 @@ describe('profile partner sharing flow', () => {
   })
 
   it('replaces the sharing CTA with a sent state after a successful share request', async () => {
-    mockSessionsState.sessions = [makeSession({
-      billingInfo: {
-        hasPaidResults: true,
-        hasPaidIa: false,
-        hasPaidMembership: false,
-        hasPaidFormation: false,
-      },
-    })]
+    mockSiteConfigStore.isResultsPaywallEnabled = false
 
     const wrapper = await mountSuspended(ProfilePage)
 
@@ -233,12 +234,6 @@ describe('profile partner sharing flow', () => {
     wrapper.unmount()
 
     mockSessionsState.sessions = [makeSession({
-      billingInfo: {
-        hasPaidResults: true,
-        hasPaidIa: false,
-        hasPaidMembership: false,
-        hasPaidFormation: false,
-      },
       relationContext: {
         partnerFirstName: null,
         partnerAge: null,
@@ -292,7 +287,7 @@ describe('profile partner sharing flow', () => {
 
     const wrapper = await mountSuspended(ProfilePage)
 
-    expect(wrapper.text()).not.toContain('Demandes de partage re?ues')
+    expect(wrapper.text()).not.toContain('Demandes de partage reçues')
     expect(wrapper.text()).not.toMatch(/Invite (ton|ta) partenaire/)
     expect(wrapper.find('[data-testid="partner-share-email-input"]').exists()).toBe(false)
   })

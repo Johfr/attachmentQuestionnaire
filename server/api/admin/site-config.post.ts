@@ -13,7 +13,9 @@ export default defineEventHandler(async event => {
 
   return await saveAppConfig({
     features: {
-      ...(typeof features.resultsSharing === 'boolean' ? { resultsSharing: features.resultsSharing } : {}),
+      ...(typeof features.resultsPaywallEnabled === 'boolean' ? { resultsPaywallEnabled: features.resultsPaywallEnabled } : {}),
+      ...(typeof features.resultsSharingEnabled === 'boolean' ? { resultsSharingEnabled: features.resultsSharingEnabled } : {}),
+      ...(typeof features.resultsSharing === 'boolean' ? { resultsSharingEnabled: features.resultsSharing } : {}),
       ...(typeof features.contactForm === 'boolean' ? { contactForm: features.contactForm } : {}),
     },
     maintenance: {

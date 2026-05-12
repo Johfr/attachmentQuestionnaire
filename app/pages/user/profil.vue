@@ -77,6 +77,7 @@ const historySessions = computed(() => {
 })
 
 const isResultsSharingEnabled = computed(() => siteConfigStore.isResultsSharingEnabled)
+const isResultsPaywallEnabled = computed(() => siteConfigStore.isResultsPaywallEnabled)
 
 const normalizedPartnerShareEmail = computed(() => partnerShareEmail.value.trim().toLowerCase())
 const isPartnerShareEmailValid = computed(() => PARTNER_SHARE_EMAIL_PATTERN.test(normalizedPartnerShareEmail.value))
@@ -381,12 +382,12 @@ const openPartnerSharePopin = async (session: QuestionnaireSession) => {
   partnerSharePaywallError.value = null
 
   try {
-    if (hasPartnerShareAccess(session)) {
-      openPartnerShareFormPopin(session)
+    if (isResultsPaywallEnabled.value && !hasPartnerShareAccess(session)) {
+      openPartnerSharePaywallPopin(session)
       return
     }
 
-    openPartnerSharePaywallPopin(session)
+    openPartnerShareFormPopin(session)
   } finally {
     checkingPartnerShareAccessSessionId.value = null
   }
@@ -1158,9 +1159,9 @@ watch(
           :disabled="!partnerSharePaywallSessionId || isPartnerShareCheckoutLoading"
           @click="handlePartnerShareCheckout"
         >
-        <span>{{ isPartnerShareCheckoutLoading ?'Redirection...' : 'Débloquer mes résultats pour 1,99 €' }}</span>
-        <LucideLoader v-if="isPartnerShareCheckoutLoading" :size="18" class="animate-spin" />
-          <LucideExternalLink v-if="!isPartnerShareCheckoutLoading" :size="18" aria-hidden="true" />
+          <span>{{ isPartnerShareCheckoutLoading ? 'Redirection...' : 'Débloquer mes résultats pour 1,99 €' }}</span>
+          <LucideLoader v-if="isPartnerShareCheckoutLoading" :size="18" class="animate-spin" />
+          <LucideExternalLink v-else :size="18" aria-hidden="true" />
         </button>
       </div>
     </Popin>

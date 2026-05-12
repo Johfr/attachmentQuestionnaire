@@ -1,7 +1,7 @@
 import { FieldValue } from 'firebase-admin/firestore'
 import { adminDb } from '../../utils/firebaseAdmin'
 import { getAuthenticatedUid } from '../../utils/getAuthenticatedUid'
-import { isResultsSharingEnabled } from '../../utils/siteConfig'
+import { isResultsPaywallEnabled, isResultsSharingEnabled } from '../../utils/siteConfig'
 import {
   getLatestAttachmentSessionForUid,
   isEmailValid,
@@ -55,19 +55,21 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Cette session ne peut pas être partagée.' })
   }
 
-  const billingInfo = session.billingInfo ?? {}
-  const hasSharingAccess = Boolean(
-    billingInfo.hasPaidResults
-    || billingInfo.hasPaidIa
-    || billingInfo.hasPaidMembership
-    || billingInfo.hasPaidFormation,
-  )
+  if (await isResultsPaywallEnabled()) {
+    const billingInfo = session.billingInfo ?? {}
+    const hasSharingAccess = Boolean(
+      billingInfo.hasPaidResults
+      || billingInfo.hasPaidIa
+      || billingInfo.hasPaidMembership
+      || billingInfo.hasPaidFormation,
+    )
 
-  if (!hasSharingAccess) {
-    throw createError({
-      statusCode: 403,
-      statusMessage: 'Tu dois d’abord débloquer tes résultats avant de pouvoir faire ta demande.',
-    })
+    if (!hasSharingAccess) {
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'Tu dois d’abord débloquer tes résultats avant de pouvoir faire ta demande.',
+      })
+    }
   }
 
   const userSnap = await adminDb.collection('users').doc(uid).get()

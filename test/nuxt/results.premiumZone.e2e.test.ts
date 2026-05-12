@@ -14,8 +14,17 @@ const mockBillingStore = vi.hoisted(() => ({
   goToCheckout: vi.fn().mockResolvedValue(undefined),
 }))
 
+const mockSiteConfigStore = vi.hoisted(() => ({
+  isResultsPaywallEnabled: true,
+  loadConfig: vi.fn().mockResolvedValue(undefined),
+}))
+
 vi.mock('~/stores/billing', () => ({
   useBillingStore: vi.fn(() => mockBillingStore),
+}))
+
+vi.mock('~/stores/siteConfig', () => ({
+  useSiteConfigStore: vi.fn(() => mockSiteConfigStore),
 }))
 
 const DISPLAY_RESULTS_FIXTURE: AttachmentQuestionnaireDisplayResults = {
@@ -102,6 +111,8 @@ describe('results premium-zone browser regression', () => {
     mockBillingStore.hasPaidFormation = false
     mockBillingStore.checkUserPermissions.mockClear()
     mockBillingStore.goToCheckout.mockClear()
+    mockSiteConfigStore.isResultsPaywallEnabled = true
+    mockSiteConfigStore.loadConfig.mockClear().mockResolvedValue(undefined)
   })
 
   it('keeps the page interactive after clicking the premium-zone CTA', async () => {
@@ -201,5 +212,37 @@ describe('results premium-zone browser regression', () => {
     )
     expect(collapsedTriggerToggle).toBeTruthy()
     expect(triggerCard.classes()).not.toContain('max-h-full')
+  })
+
+  it('shows all results without premium blockers when the results paywall is disabled', async () => {
+    mockSiteConfigStore.isResultsPaywallEnabled = false
+
+    const wrapper = await mountSuspended(ResultsComponent, {
+      props: {
+        docId: 'session-123',
+        sessionBillingInfo: {
+          hasPaidResults: false,
+          hasPaidIa: false,
+          hasPaidMembership: false,
+          hasPaidFormation: false,
+        },
+        computedResults: DISPLAY_RESULTS_FIXTURE,
+        tagsResults: DISPLAY_RESULTS_FIXTURE.tagsResults,
+        tagData: DISPLAY_RESULTS_FIXTURE.tagData,
+        anxietyAverageScore: DISPLAY_RESULTS_FIXTURE.anxietyAverageScore,
+        avoidanceAverageScore: DISPLAY_RESULTS_FIXTURE.avoidanceAverageScore,
+        anxietyDatasets: DISPLAY_RESULTS_FIXTURE.anxietyDatasets,
+        avoidanceDatasets: DISPLAY_RESULTS_FIXTURE.avoidanceDatasets,
+      },
+    })
+
+    expect(mockSiteConfigStore.loadConfig).toHaveBeenCalled()
+    expect(wrapper.text()).not.toContain('Voir ton sous profil')
+    expect(wrapper.text()).not.toContain('Comprends ce qui se passe sur ton axe')
+    expect(wrapper.text()).toContain('Sous profil :')
+    expect(wrapper.text()).toContain('Ce qui te fait paniquer')
+    expect(wrapper.text()).toContain('Ce qui te fait fuir')
+    expect(wrapper.find('[data-testid="go-deeper-results-offer"]').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Debloquer mes resultats')
   })
 })

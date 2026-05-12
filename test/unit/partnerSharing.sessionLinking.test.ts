@@ -14,6 +14,8 @@ describe('POST /api/attachment/partner-share', () => {
     userDoc?: Record<string, unknown> | null
     partnerUserDoc?: { id: string, data: Record<string, unknown> } | null
     partnerSession?: Record<string, unknown> | null
+    paywallEnabled?: boolean
+    sharingEnabled?: boolean
   }) => {
     const uid = options?.uid ?? 'user-1'
     const body = options?.body ?? {
@@ -30,7 +32,7 @@ describe('POST /api/attachment/partner-share', () => {
         partnerGender: null,
       },
       billingInfo: {
-        hasPaidResults: true,
+        hasPaidResults: false,
         hasPaidIa: false,
         hasPaidMembership: false,
         hasPaidFormation: false,
@@ -42,6 +44,8 @@ describe('POST /api/attachment/partner-share', () => {
     }
     const partnerUserDoc = options?.partnerUserDoc ?? null
     const partnerSession = options?.partnerSession ?? null
+    const paywallEnabled = options?.paywallEnabled ?? true
+    const sharingEnabled = options?.sharingEnabled ?? true
 
     const sessionSetMock = vi.fn().mockResolvedValue(undefined)
     const sessionGetMock = vi.fn().mockResolvedValue({
@@ -57,7 +61,6 @@ describe('POST /api/attachment/partner-share', () => {
         data: () => partnerUserDoc.data,
       }] : [],
     })
-    const sendEmailMock = vi.fn().mockResolvedValue({ id: 'mail-1' })
 
     vi.stubGlobal('defineEventHandler', (handler: unknown) => handler)
     vi.stubGlobal('readBody', vi.fn().mockResolvedValue(body))
@@ -67,10 +70,6 @@ describe('POST /api/attachment/partner-share', () => {
       error.statusMessage = payload.statusMessage
       return error
     })
-    vi.stubGlobal('useRuntimeConfig', vi.fn(() => ({
-      resendApiKey: 'resend-key',
-      mailFrom: 'Relation anxieux-evitant <onboarding@resend.dev>',
-    })))
 
     vi.doMock('firebase-admin/firestore', () => ({
       FieldValue: {
@@ -79,15 +78,11 @@ describe('POST /api/attachment/partner-share', () => {
     }))
 
     vi.doMock('../../server/utils/attachment/partnerShare', () => ({
-      escapeHtml: (value: string) => value,
-      getBaseUrl: () => 'https://relation-anxieux-evitant-test.web.app',
       getLatestAttachmentSessionForUid: vi.fn().mockResolvedValue(
         partnerSession ? { id: 'partner-session-1', ...partnerSession } : null,
       ),
       isEmailValid: (value: string) => value.includes('@'),
-      normalizeEnvValue: (value: unknown) => typeof value === 'string' ? value.trim() : '',
       normalizeText: (value: unknown) => typeof value === 'string' ? value.trim() : '',
-      sendEmail: sendEmailMock,
     }))
 
     vi.doMock('../../server/utils/firebaseAdmin', () => ({
@@ -125,7 +120,8 @@ describe('POST /api/attachment/partner-share', () => {
     }))
 
     vi.doMock('../../server/utils/siteConfig', () => ({
-      isResultsSharingEnabled: vi.fn().mockResolvedValue(true),
+      isResultsSharingEnabled: vi.fn().mockResolvedValue(sharingEnabled),
+      isResultsPaywallEnabled: vi.fn().mockResolvedValue(paywallEnabled),
     }))
 
     const mod = await import('../../server/api/attachment/partner-share.post')
@@ -133,16 +129,12 @@ describe('POST /api/attachment/partner-share', () => {
     return {
       handler: mod.default as (event: unknown) => Promise<unknown>,
       sessionSetMock,
-      sendEmailMock,
     }
   }
 
   it('rejects an invalid partner email', async () => {
     const { handler, sessionSetMock } = await loadShareHandler({
-      body: {
-        sessionId: 'session-1',
-        partnerEmail: 'invalid-email',
-      },
+      body: { sessionId: 'session-1', partnerEmail: 'invalid-email' },
     })
 
     await expect(handler({})).rejects.toMatchObject({
@@ -154,28 +146,22 @@ describe('POST /api/attachment/partner-share', () => {
   })
 
   it('rejects self invitation when the typed email is the current user email', async () => {
-    const { handler, sendEmailMock } = await loadShareHandler({
-      body: {
-        sessionId: 'session-1',
-        partnerEmail: 'prenom@example.com',
-      },
+    const { handler } = await loadShareHandler({
+      body: { sessionId: 'session-1', partnerEmail: 'prenom@example.com' },
+      paywallEnabled: false,
     })
 
     await expect(handler({})).rejects.toMatchObject({
       statusCode: 400,
-      statusMessage: 'Tu ne peux pas t’inviter toi-même.',
     })
-
-    expect(sendEmailMock).not.toHaveBeenCalled()
+    await expect(handler({})).rejects.toThrow(/inviter toi-même/i)
   })
 
   it('stores an awaiting_validation state when the partner already exists and already has a session', async () => {
-    const { handler, sessionSetMock, sendEmailMock } = await loadShareHandler({
+    const { handler, sessionSetMock } = await loadShareHandler({
       partnerUserDoc: {
         id: 'user-2',
-        data: {
-          email: 'partner@example.com',
-        },
+        data: { email: 'partner@example.com' },
       },
       partnerSession: {
         uid: 'user-2',
@@ -183,6 +169,7 @@ describe('POST /api/attachment/partner-share', () => {
         status: 'completed',
         completedAt: { seconds: 1714300000 },
       },
+      paywallEnabled: false,
     })
 
     await expect(handler({})).resolves.toEqual({
@@ -192,7 +179,6 @@ describe('POST /api/attachment/partner-share', () => {
       deliveryMode: 'manual_queue',
     })
 
-    expect(sendEmailMock).not.toHaveBeenCalled()
     expect(sessionSetMock).toHaveBeenCalledWith({
       relationContext: expect.objectContaining({
         partnerEmail: 'partner@example.com',
@@ -209,6 +195,7 @@ describe('POST /api/attachment/partner-share', () => {
     const { handler, sessionSetMock } = await loadShareHandler({
       partnerUserDoc: null,
       partnerSession: null,
+      paywallEnabled: false,
     })
 
     await expect(handler({})).resolves.toEqual({
@@ -230,28 +217,53 @@ describe('POST /api/attachment/partner-share', () => {
     }, { merge: true })
   })
 
-  it('rejects share creation when the feature flag is disabled', async () => {
-    vi.resetModules()
-    vi.unstubAllGlobals()
-
-    vi.stubGlobal('defineEventHandler', (handler: unknown) => handler)
-    vi.stubGlobal('createError', (payload: { statusCode: number, statusMessage: string }) => {
-      const error = new Error(payload.statusMessage) as Error & { statusCode?: number, statusMessage?: string }
-      error.statusCode = payload.statusCode
-      error.statusMessage = payload.statusMessage
-      return error
+  it('rejects share creation when the paywall is enabled and the session has no paid access flags', async () => {
+    const { handler, sessionSetMock } = await loadShareHandler({
+      paywallEnabled: true,
+      partnerUserDoc: null,
+      partnerSession: null,
     })
 
-    vi.doMock('../../server/utils/siteConfig', () => ({
-      isResultsSharingEnabled: vi.fn().mockResolvedValue(false),
-    }))
-
-    const mod = await import('../../server/api/attachment/partner-share.post')
-
-    await expect(mod.default({})).rejects.toMatchObject({
+    await expect(handler({})).rejects.toMatchObject({
       statusCode: 403,
-      statusMessage: 'Le partage de résultats est temporairement indisponible.',
     })
+    await expect(handler({})).rejects.toThrow(/débloquer tes résultats/i)
+    expect(sessionSetMock).not.toHaveBeenCalled()
+  })
+
+  it('allows share creation when the paywall is disabled even if the session has no paid access flags', async () => {
+    const { handler, sessionSetMock } = await loadShareHandler({
+      paywallEnabled: false,
+      partnerUserDoc: null,
+      partnerSession: null,
+    })
+
+    await expect(handler({})).resolves.toEqual({
+      ok: true,
+      partnerExists: false,
+      status: 'invite_sent',
+      deliveryMode: 'manual_queue',
+    })
+
+    expect(sessionSetMock).toHaveBeenCalledWith({
+      relationContext: expect.objectContaining({
+        partnerEmail: 'partner@example.com',
+        partnerShareStatus: 'invite_sent',
+      }),
+      updatedAt: 'server-timestamp',
+    }, { merge: true })
+  })
+
+  it('rejects share creation when the feature flag is disabled', async () => {
+    const { handler } = await loadShareHandler({
+      sharingEnabled: false,
+      paywallEnabled: false,
+    })
+
+    await expect(handler({})).rejects.toMatchObject({
+      statusCode: 403,
+    })
+    await expect(handler({})).rejects.toThrow(/partage de résultats/i)
   })
 })
 
@@ -261,9 +273,10 @@ describe('POST /api/attachment/partner-share/validate', () => {
     vi.unstubAllGlobals()
   })
 
-  const loadValidateHandler = async () => {
+  const loadValidateHandler = async (sharingEnabled = true) => {
     const sourceSessionSetMock = vi.fn().mockResolvedValue(undefined)
     const targetSessionSetMock = vi.fn().mockResolvedValue(undefined)
+    const sendEmailMock = vi.fn().mockResolvedValue({ id: 'mail-2' })
 
     vi.stubGlobal('defineEventHandler', (handler: unknown) => handler)
     vi.stubGlobal('readBody', vi.fn().mockResolvedValue({
@@ -276,19 +289,16 @@ describe('POST /api/attachment/partner-share/validate', () => {
       error.statusMessage = payload.statusMessage
       return error
     })
+    vi.stubGlobal('useRuntimeConfig', vi.fn(() => ({
+      resendApiKey: 'resend-key',
+      mailFrom: 'Relation anxieux-evitant <onboarding@resend.dev>',
+    })))
 
     vi.doMock('firebase-admin/firestore', () => ({
       FieldValue: {
         serverTimestamp: vi.fn(() => 'server-timestamp'),
       },
     }))
-
-    const sendEmailMock = vi.fn().mockResolvedValue({ id: 'mail-2' })
-
-    vi.stubGlobal('useRuntimeConfig', vi.fn(() => ({
-      resendApiKey: 'resend-key',
-      mailFrom: 'Relation anxieux-evitant <onboarding@resend.dev>',
-    })))
 
     vi.doMock('../../server/utils/attachment/partnerShare', () => ({
       escapeHtml: (value: string) => value,
@@ -307,14 +317,8 @@ describe('POST /api/attachment/partner-share/validate', () => {
               doc: vi.fn((docId: string) => ({
                 get: vi.fn().mockResolvedValue({
                   data: () => {
-                    if (docId === 'user-2') {
-                      return { email: 'partner@example.com' }
-                    }
-
-                    if (docId === 'user-1') {
-                      return { email: 'prenom@example.com' }
-                    }
-
+                    if (docId === 'user-2') return { email: 'partner@example.com' }
+                    if (docId === 'user-1') return { email: 'prenom@example.com' }
                     return {}
                   },
                 }),
@@ -408,7 +412,7 @@ describe('POST /api/attachment/partner-share/validate', () => {
     }))
 
     vi.doMock('../../server/utils/siteConfig', () => ({
-      isResultsSharingEnabled: vi.fn().mockResolvedValue(true),
+      isResultsSharingEnabled: vi.fn().mockResolvedValue(sharingEnabled),
     }))
 
     const mod = await import('../../server/api/attachment/partner-share/validate.post')
@@ -421,7 +425,7 @@ describe('POST /api/attachment/partner-share/validate', () => {
   }
 
   it('mirrors both partner snapshots once an existing partner validates the request from the profile', async () => {
-    const { handler, sourceSessionSetMock, targetSessionSetMock } = await loadValidateHandler()
+    const { handler, sourceSessionSetMock, targetSessionSetMock } = await loadValidateHandler(true)
 
     await expect(handler({})).resolves.toEqual({ ok: true })
 
@@ -453,26 +457,10 @@ describe('POST /api/attachment/partner-share/validate', () => {
   })
 
   it('rejects validation when the feature flag is disabled', async () => {
-    vi.resetModules()
-    vi.unstubAllGlobals()
+    const { handler } = await loadValidateHandler(false)
 
-    vi.stubGlobal('defineEventHandler', (handler: unknown) => handler)
-    vi.stubGlobal('createError', (payload: { statusCode: number, statusMessage: string }) => {
-      const error = new Error(payload.statusMessage) as Error & { statusCode?: number, statusMessage?: string }
-      error.statusCode = payload.statusCode
-      error.statusMessage = payload.statusMessage
-      return error
-    })
-
-    vi.doMock('../../server/utils/siteConfig', () => ({
-      isResultsSharingEnabled: vi.fn().mockResolvedValue(false),
-    }))
-
-    const mod = await import('../../server/api/attachment/partner-share/validate.post')
-
-    await expect(mod.default({})).rejects.toMatchObject({
+    await expect(handler({})).rejects.toMatchObject({
       statusCode: 403,
-      statusMessage: 'Le partage de résultats est temporairement indisponible.',
     })
   })
 })
@@ -483,7 +471,7 @@ describe('GET /api/attachment/partner-share/pending', () => {
     vi.unstubAllGlobals()
   })
 
-  const loadPendingHandler = async () => {
+  const loadPendingHandler = async (sharingEnabled = true) => {
     vi.stubGlobal('defineEventHandler', (handler: unknown) => handler)
     vi.stubGlobal('createError', (payload: { statusCode: number, statusMessage: string }) => {
       const error = new Error(payload.statusMessage) as Error & { statusCode?: number, statusMessage?: string }
@@ -551,7 +539,7 @@ describe('GET /api/attachment/partner-share/pending', () => {
     }))
 
     vi.doMock('../../server/utils/siteConfig', () => ({
-      isResultsSharingEnabled: vi.fn().mockResolvedValue(true),
+      isResultsSharingEnabled: vi.fn().mockResolvedValue(sharingEnabled),
     }))
 
     const mod = await import('../../server/api/attachment/partner-share/pending.get')
@@ -562,7 +550,7 @@ describe('GET /api/attachment/partner-share/pending', () => {
   }
 
   it('returns pending partner-share requests for the current user email', async () => {
-    const { handler } = await loadPendingHandler()
+    const { handler } = await loadPendingHandler(true)
 
     await expect(handler({})).resolves.toEqual([{
       sourceSessionId: 'source-session-1',
@@ -578,26 +566,10 @@ describe('GET /api/attachment/partner-share/pending', () => {
   })
 
   it('rejects pending requests when the feature flag is disabled', async () => {
-    vi.resetModules()
-    vi.unstubAllGlobals()
+    const { handler } = await loadPendingHandler(false)
 
-    vi.stubGlobal('defineEventHandler', (handler: unknown) => handler)
-    vi.stubGlobal('createError', (payload: { statusCode: number, statusMessage: string }) => {
-      const error = new Error(payload.statusMessage) as Error & { statusCode?: number, statusMessage?: string }
-      error.statusCode = payload.statusCode
-      error.statusMessage = payload.statusMessage
-      return error
-    })
-
-    vi.doMock('../../server/utils/siteConfig', () => ({
-      isResultsSharingEnabled: vi.fn().mockResolvedValue(false),
-    }))
-
-    const mod = await import('../../server/api/attachment/partner-share/pending.get')
-
-    await expect(mod.default({})).rejects.toMatchObject({
+    await expect(handler({})).rejects.toMatchObject({
       statusCode: 403,
-      statusMessage: 'Le partage de résultats est temporairement indisponible.',
     })
   })
 })
@@ -650,10 +622,7 @@ describe('POST /api/attachment/results partner mirroring', () => {
     vi.stubGlobal('defineEventHandler', (handler: unknown) => handler)
     vi.stubGlobal('readBody', vi.fn().mockResolvedValue(requestBody))
     vi.stubGlobal('getHeader', vi.fn((_event: unknown, name: string) => {
-      if (name === 'authorization') {
-        return 'Bearer token-123'
-      }
-
+      if (name === 'authorization') return 'Bearer token-123'
       return undefined
     }))
     vi.stubGlobal('createError', (payload: { statusCode: number, statusMessage: string }) => {
@@ -771,10 +740,7 @@ describe('POST /api/attachment/results partner mirroring', () => {
                   get: vi.fn().mockResolvedValue({
                     exists: docId === 'source-session-1' || addedDocs.has(docId),
                     data: () => {
-                      if (docId === 'source-session-1') {
-                        return addedDocs.get(docId) ?? sourceSessionDoc
-                      }
-
+                      if (docId === 'source-session-1') return addedDocs.get(docId) ?? sourceSessionDoc
                       return addedDocs.get(docId)
                     },
                   }),
@@ -789,14 +755,8 @@ describe('POST /api/attachment/results partner mirroring', () => {
               doc: vi.fn((docId: string) => ({
                 get: vi.fn().mockResolvedValue({
                   data: () => {
-                    if (docId === 'user-1') {
-                      return { name: 'Johan', email: 'prenom@example.com', age: 39, gender: 'male' }
-                    }
-
-                    if (docId === 'user-2') {
-                      return { name: 'Camille', email: 'partner@example.com', age: 37, gender: 'female' }
-                    }
-
+                    if (docId === 'user-1') return { name: 'Johan', email: 'prenom@example.com', age: 39, gender: 'male' }
+                    if (docId === 'user-2') return { name: 'Camille', email: 'partner@example.com', age: 37, gender: 'female' }
                     return {}
                   },
                 }),
@@ -814,9 +774,7 @@ describe('POST /api/attachment/results partner mirroring', () => {
 
     return {
       handler: mod.default as (event: unknown) => Promise<unknown>,
-      addedDocs,
       sessionSets,
-      userSetMock,
     }
   }
 

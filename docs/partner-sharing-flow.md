@@ -27,12 +27,12 @@ Le partage partenaire est piloté par une configuration globale stockée dans Fi
 
 - collection : `appConfig`
 - document : `global`
-- clé utilisée : `features.resultsSharing`
+- clé utilisée : `features.resultsSharingEnabled`
 
 Comportement attendu :
 
-- si `features.resultsSharing === false`, le bouton de partage et l'icône entre les deux résultats sont masqués dans le profil
-- si `features.resultsSharing === false`, les endpoints de partage refusent aussi les requêtes
+- si `features.resultsSharingEnabled === false`, le bouton de partage et l'icône entre les deux résultats sont masqués dans le profil
+- si `features.resultsSharingEnabled === false`, les endpoints de partage refusent aussi les requêtes
 - tant que l'infrastructure email publique n'est pas prête, laisser cette feature à `false`
 
 ## Dépendance email
@@ -48,13 +48,13 @@ En l'état :
 Tant que ce domaine n'est pas acheté et vérifié :
 
 - les users ne peuvent pas recevoir les invitations de partage
-- la feature doit rester désactivée via `appConfig/global.features.resultsSharing`
+- la feature doit rester désactivée via `appConfig/global.features.resultsSharingEnabled`
 
 ## Mode transitoire actuel
 
 Tant que le domaine n'est pas prêt, le flow de partage reste dans un mode MVP transitoire :
 
-- le bouton de partage reste visible si `appConfig/global.features.resultsSharing === true`
+- le bouton de partage reste visible si `appConfig/global.features.resultsSharingEnabled === true`
 - au clic, on vérifie uniquement `questionnaireSessions/{sessionId}.billingInfo`
 - si la session n'a pas d'accès résultats (`hasPaidResults`, `hasPaidIa`, `hasPaidMembership`, `hasPaidFormation`), on ouvre une popin d'incitation à l'achat
 - le bouton de cette popin renvoie directement vers la checkout `results`
